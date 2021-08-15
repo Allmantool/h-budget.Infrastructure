@@ -9,6 +9,7 @@ export class UnifiedCurrencyRates {
     this.scale = rate.Cur_Scale;
     this.name = rate.Cur_Name;
     this.officialRate = rate.Cur_OfficialRate;
+    this.updateDate = rate.Date;
     this.ratePerUnit =
       rate.Cur_OfficialRate && rate.Cur_Scale
         ? _.round(rate.Cur_OfficialRate / rate.Cur_Scale, 4)
@@ -20,5 +21,6 @@ export class UnifiedCurrencyRates {
   scale?: number;
   name?: string;
   officialRate?: number;
+  updateDate?: Date;
   ratePerUnit?: number;
 }
