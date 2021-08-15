@@ -12,6 +12,15 @@ import { NationalBankCurrencyProvider } from '../providers/national-bank-currenc
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CurrencyRatesComponent {
+  public displayedColumns: string[] = [
+    'id',
+    'abbreviation',
+    'scale',
+    'name',
+    'officialRate',
+    'ratePerUnit',
+  ];
+
   public todayCurrencyRates$: Observable<UnifiedCurrencyRates[]> | undefined;
 
   constructor(public currencyRateProvider: NationalBankCurrencyProvider) {}

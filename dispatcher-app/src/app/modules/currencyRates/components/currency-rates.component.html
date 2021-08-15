@@ -1,23 +1,40 @@
-<table class="table">
-  <thead>
-    <tr class="table-primary">
-      <th>#Currency id</th>
-      <th>Abbreviation</th>
-      <th>Scale</th>
-      <th>Name</th>
-      <th>Official rate</th>
-    </tr>
-  </thead>
-  <tbody *ngIf="todayCurrencyRates$ | async as todayCurrencyRates; else noData">
-    <tr *ngFor="let rate of todayCurrencyRates">
-      <th scope="row">{{ rate.id }}</th>
-      <td>{{ rate.abbreviation }}</td>
-      <td>{{ rate.scale }}</td>
-      <td>{{ rate.name }}</td>
-      <td>{{ rate.officialRate }}</td>
-      <td>{{ rate.ratePerUnit }}</td>
-    </tr>
-  </tbody>
-  <ng-template #noData>No Data Available</ng-template>
-</table>
+
+<div *ngIf="todayCurrencyRates$ | async as todayCurrencyRates">
+  <table mat-table [dataSource]="todayCurrencyRates" class="mat-elevation-z8">
+
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef>#Currency id</th>
+      <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="abbreviation">
+      <th mat-header-cell *matHeaderCellDef>Abbreviation</th>
+      <td mat-cell *matCellDef="let element">{{ element.abbreviation }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="scale">
+      <th mat-header-cell *matHeaderCellDef>Scale</th>
+      <td mat-cell *matCellDef="let element">{{ element.scale }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>Name</th>
+      <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="officialRate">
+      <th mat-header-cell *matHeaderCellDef>Official rate</th>
+      <td mat-cell *matCellDef="let element">{{ element.officialRate }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="ratePerUnit">
+      <th mat-header-cell *matHeaderCellDef>Rate per unit</th>
+      <td mat-cell *matCellDef="let element">{{ element.ratePerUnit }}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+  </table>
+</div>
 <button (click)="showUpTodayCurrencyRates()">Get today currency rates</button>
