@@ -19,7 +19,7 @@ export class CurrencyRatesComponent {
     'name',
     'officialRate',
     'ratePerUnit',
-    'updateDate'
+    'updateDate',
   ];
 
   public todayCurrencyRates$: Observable<UnifiedCurrencyRates[]> | undefined;
