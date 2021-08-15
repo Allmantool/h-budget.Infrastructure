@@ -5,9 +5,9 @@ import { DashboardModule as DashboardModule } from './app/modules/dashboard/dash
 import { environment } from './environments/environment';
 
 if (environment.production) {
-  enableProdMode();
+	enableProdMode();
 }
 
 platformBrowserDynamic()
-  .bootstrapModule(DashboardModule)
-  .catch((err) => console.error(err));
+	.bootstrapModule(DashboardModule)
+	.catch((err) => console.error(err));
