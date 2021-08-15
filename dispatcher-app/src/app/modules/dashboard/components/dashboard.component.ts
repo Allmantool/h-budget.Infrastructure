@@ -3,7 +3,7 @@ import { Meta, Title } from '@angular/platform-browser';
 import { Location } from "@angular/common"
 
 @Component({
-  selector: 'dashboard-root',
+  selector: 'app-dashboard-root',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -28,7 +28,7 @@ export class DashboardComponent implements OnInit {
   goBack() {
     this.location.back()
   }
-  
+
   goForward() {
     this.location.forward()
   }

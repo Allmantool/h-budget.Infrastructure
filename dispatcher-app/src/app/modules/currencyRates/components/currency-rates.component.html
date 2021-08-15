@@ -1,0 +1,23 @@
+<table class="table">
+  <thead>
+    <tr class="table-primary">
+      <th>#Currency id</th>
+      <th>Abbreviation</th>
+      <th>Scale</th>
+      <th>Name</th>
+      <th>Official rate</th>
+    </tr>
+  </thead>
+  <tbody *ngIf="todayCurrencyRates$ | async as todayCurrencyRates; else noData">
+    <tr *ngFor="let rate of todayCurrencyRates">
+      <th scope="row">{{ rate.id }}</th>
+      <td>{{ rate.abbreviation }}</td>
+      <td>{{ rate.scale }}</td>
+      <td>{{ rate.name }}</td>
+      <td>{{ rate.officialRate }}</td>
+      <td>{{ rate.ratePerUnit }}</td>
+    </tr>
+  </tbody>
+  <ng-template #noData>No Data Available</ng-template>
+</table>
+<button (click)="showUpTodayCurrencyRates()">Get today currency rates</button>

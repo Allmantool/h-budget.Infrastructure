@@ -1,26 +1,15 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
 
-import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './components/dashboard.component';
-import { MockBackendInterceptor } from '../core/interceptors/mock-backend-interceptor';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { CurrencyRatesComponent } from '../currencyRates/components/currency-rates.component';
 
 @NgModule({
-  declarations: [
-    DashboardComponent
-  ],
-  imports: [
-    BrowserModule,
-    DashboardRoutingModule
-  ],
+  declarations: [DashboardComponent, CurrencyRatesComponent],
+  imports: [BrowserModule, HttpClientModule],
   providers: [
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: MockBackendInterceptor,
-      multi: true
-    }
   ],
-  bootstrap: [DashboardComponent]
+  bootstrap: [DashboardComponent],
 })
-export class DashboardModule { }
+export class DashboardModule {}
