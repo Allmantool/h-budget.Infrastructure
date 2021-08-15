@@ -5,12 +5,8 @@ import { DashboardComponent } from './components/dashboard.component';
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule
-      ],
-      declarations: [
-        DashboardComponent
-      ],
+      imports: [RouterTestingModule],
+      declarations: [DashboardComponent],
     }).compileComponents();
   });
 
@@ -30,6 +26,8 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(DashboardComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('.content span').textContent).toContain('default-title app is running!');
+    expect(compiled.querySelector('.content span').textContent).toContain(
+      'default-title app is running!'
+    );
   });
 });
