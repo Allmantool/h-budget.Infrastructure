@@ -26,7 +26,8 @@ export class CurrencyRatesComponent {
 
 	constructor(public currencyRateProvider: NationalBankCurrencyProvider) {}
 
-	public showUpTodayCurrencyRates() {
+	public showUpTodayCurrencyRates(): void {
 		this.todayCurrencyRates$ = this.currencyRateProvider.getCurrencies();
+		return;
 	}
 }
