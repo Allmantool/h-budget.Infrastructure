@@ -26,8 +26,6 @@ namespace HomeBudget_Web_API.Controllers
         [HttpPost]
         public async Task<int> SaveRatesAsync([FromBody] CurrencySaveRatesRequest saveRatesRequest)
         {
-            // TODO: Apply fluent validation for a request validation
-
             var unifiedCurrencyRates = _mapper
                 .Map<IReadOnlyCollection<CurrencyRate>>(saveRatesRequest.CurrencyRates);
 

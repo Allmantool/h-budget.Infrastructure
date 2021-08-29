@@ -15,8 +15,8 @@ namespace HomeBudget.Components.CurrencyRates.Providers
         public Task<int> SaveRatesAsync(IEnumerable<CurrencyRate> rates)
         {
             const string query = "INSERT INTO dbo.[CurrencyRates] " +
-                                        "([CurencyId], [Name], [Abbreviation], [Scale], [OfficialRate], [RatePerUnit], [UpdateDate]) " +
-                                 "VALUES (@CurencyId, @Name, @Abbreviation, @Scale, @OfficialRate, @RatePerUnit, @UpdateDate);";
+                                        "([CurrencyId], [Name], [Abbreviation], [Scale], [OfficialRate], [RatePerUnit], [UpdateDate]) " +
+                                 "VALUES (@CurrencyId, @Name, @Abbreviation, @Scale, @OfficialRate, @RatePerUnit, @UpdateDate);";
 
             // TODO: Apply mapper there, each layer have it's own model/dto
 

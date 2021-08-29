@@ -8,7 +8,7 @@ namespace HomeBudget_Web_API.MapperProfileConfigurations
         public CurrencyRateProfiler()
             => CreateMap<CurrencyRate, HomeBudget.Components.CurrencyRates.Models.CurrencyRate>()
                 .ForMember(dest =>
-                    dest.CurencyId,
+                    dest.CurrencyId,
                     opt => opt.MapFrom(src => src.Id));
     }
 }

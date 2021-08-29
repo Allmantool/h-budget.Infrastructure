@@ -4,7 +4,7 @@ namespace HomeBudget.Components.CurrencyRates.Models
 {
     public class CurrencyRate
     {
-        public int CurencyId { get; set; }
+        public int CurrencyId { get; set; }
 
         public string Name { get; set; }
 
