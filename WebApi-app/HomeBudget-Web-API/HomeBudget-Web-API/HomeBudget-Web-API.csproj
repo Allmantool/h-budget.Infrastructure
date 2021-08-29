@@ -3,10 +3,22 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>HomeBudget_Web_API</RootNamespace>
+    <UserSecretsId>643b3ebf-9227-4642-9075-ffa462c6b4d3</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+    <PackageReference Include="FluentValidation" Version="10.3.3" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.3" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="10.3.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HomeBudget.Components.CurrencyRates\HomeBudget.Components.CurrencyRates.csproj" />
+    <ProjectReference Include="..\HomeBudget.Core\HomeBudget.Core.csproj" />
+    <ProjectReference Include="..\HomeBudget.DataAccess.Dapper\HomeBudget.DataAccess.Dapper.csproj" />
   </ItemGroup>
 
 </Project>

@@ -3,7 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31515.178
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeBudget-Web-API", "HomeBudget-Web-API\HomeBudget-Web-API.csproj", "{F570CD27-22CC-4804-A3BC-7E1B1A28DF7D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeBudget-Web-API", "HomeBudget-Web-API\HomeBudget-Web-API.csproj", "{F570CD27-22CC-4804-A3BC-7E1B1A28DF7D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeBudget.DataAccess", "HomeBudget.DataAccess\HomeBudget.DataAccess.csproj", "{167ABC51-6C95-43D9-B6C8-B7CBF9949E19}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{C9A95CBF-4CFB-4636-A128-2D014B6328D8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeBudget.DataAccess.Dapper", "HomeBudget.DataAccess.Dapper\HomeBudget.DataAccess.Dapper.csproj", "{D0F4125B-A61E-4B43-A456-8605CE463166}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Components", "Components", "{CF05E9B6-5517-4474-97D4-BAEC64BD4A5F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeBudget.Components.CurrencyRates", "HomeBudget.Components.CurrencyRates\HomeBudget.Components.CurrencyRates.csproj", "{88FF306C-510A-4D7A-89A7-9159CF4D7FFD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{103D3E60-FF97-4451-9A79-77D69173F6A6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeBudget.Core", "HomeBudget.Core\HomeBudget.Core.csproj", "{B5533608-2B99-4A41-8785-7FD652A8A58A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,9 +29,31 @@ Global
 		{F570CD27-22CC-4804-A3BC-7E1B1A28DF7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F570CD27-22CC-4804-A3BC-7E1B1A28DF7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F570CD27-22CC-4804-A3BC-7E1B1A28DF7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{167ABC51-6C95-43D9-B6C8-B7CBF9949E19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{167ABC51-6C95-43D9-B6C8-B7CBF9949E19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{167ABC51-6C95-43D9-B6C8-B7CBF9949E19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{167ABC51-6C95-43D9-B6C8-B7CBF9949E19}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0F4125B-A61E-4B43-A456-8605CE463166}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0F4125B-A61E-4B43-A456-8605CE463166}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0F4125B-A61E-4B43-A456-8605CE463166}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0F4125B-A61E-4B43-A456-8605CE463166}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88FF306C-510A-4D7A-89A7-9159CF4D7FFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88FF306C-510A-4D7A-89A7-9159CF4D7FFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88FF306C-510A-4D7A-89A7-9159CF4D7FFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88FF306C-510A-4D7A-89A7-9159CF4D7FFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5533608-2B99-4A41-8785-7FD652A8A58A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5533608-2B99-4A41-8785-7FD652A8A58A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5533608-2B99-4A41-8785-7FD652A8A58A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5533608-2B99-4A41-8785-7FD652A8A58A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{167ABC51-6C95-43D9-B6C8-B7CBF9949E19} = {C9A95CBF-4CFB-4636-A128-2D014B6328D8}
+		{D0F4125B-A61E-4B43-A456-8605CE463166} = {C9A95CBF-4CFB-4636-A128-2D014B6328D8}
+		{88FF306C-510A-4D7A-89A7-9159CF4D7FFD} = {CF05E9B6-5517-4474-97D4-BAEC64BD4A5F}
+		{B5533608-2B99-4A41-8785-7FD652A8A58A} = {103D3E60-FF97-4451-9A79-77D69173F6A6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A606D611-EA61-447E-8B56-4B213FAD4A51}
