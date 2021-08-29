@@ -5,7 +5,7 @@ import { MatTableModule } from '@angular/material/table';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { DashboardComponent } from './components/dashboard.component';
-import { CurrencyRatesComponent } from '../currencyRates/components/currency-rates.component';
+import { CurrencyRatesComponent } from '../currency-rates/components/currency-rates.component';
 
 @NgModule({
 	declarations: [DashboardComponent, CurrencyRatesComponent],

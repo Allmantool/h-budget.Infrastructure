@@ -20,17 +20,17 @@ export class DashboardComponent implements OnInit {
 		this.meta.updateTag({ name: 'site', content: 'My Site' });
 	}
 
-	public browserTitle = 'default-title';
+	public browserTitle = 'Home budget';
 
-	navigateTo(url: string) {
+	public navigateTo(url: string): void {
 		this.location.go(url);
 	}
 
-	goBack() {
+	public goBack(): void {
 		this.location.back();
 	}
 
-	goForward() {
+	public goForward(): void {
 		this.location.forward();
 	}
 }

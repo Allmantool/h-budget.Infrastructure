@@ -9,8 +9,6 @@ import {
 
 @Injectable()
 export class ErrorLoggingInterceptor implements HttpInterceptor {
-	constructor() {}
-
 	intercept(
 		request: HttpRequest<any>,
 		next: HttpHandler
