@@ -1,4 +1,7 @@
+using System.Collections.Generic;
+using System.Reflection;
 using FluentValidation.AspNetCore;
+using HomeBudget.Components.CurrencyRates.MapperProfileConfigurations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -25,7 +28,11 @@ namespace HomeBudget_Web_API
             });
 
             services.SetUpDi(Configuration);
-            services.AddAutoMapper(typeof(Startup));
+            services.AddAutoMapper(new List<Assembly>
+            {
+                Assembly.GetExecutingAssembly(),
+                CurrencyRatesComponentMappingProfiles.GetExecutingAssembly()
+            });
 
             services.AddMvc()
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());

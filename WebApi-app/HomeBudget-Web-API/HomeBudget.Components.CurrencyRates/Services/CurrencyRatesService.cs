@@ -24,7 +24,7 @@ namespace HomeBudget.Components.CurrencyRates.Services
         {
             var todayRates = await _currencyRatesReadProvider.GetTodayRatesAsync();
 
-            return todayRates.Any()
+            return todayRates.Any() || !rates.Any()
                 ? default
                 : await _currencyRatesWriteProvider.SaveRatesAsync(rates);
         }
