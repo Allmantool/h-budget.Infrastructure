@@ -21,7 +21,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeBudget.Core", "HomeBudg
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{7686A7DD-01EB-455E-A6AF-6C4623BE2046}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeBudget.Components.CurrencyRates.Tests", "HomeBudget.Components.CurrencyRates.Tests\HomeBudget.Components.CurrencyRates.Tests.csproj", "{7CB3B1FF-AEE3-4162-B78C-10C1C34C7B34}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeBudget.Components.CurrencyRates.Tests", "HomeBudget.Components.CurrencyRates.Tests\HomeBudget.Components.CurrencyRates.Tests.csproj", "{7CB3B1FF-AEE3-4162-B78C-10C1C34C7B34}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{C74AF261-BB7E-44FA-B4A4-CEFF89B80AE8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -58,6 +60,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{F570CD27-22CC-4804-A3BC-7E1B1A28DF7D} = {C74AF261-BB7E-44FA-B4A4-CEFF89B80AE8}
 		{167ABC51-6C95-43D9-B6C8-B7CBF9949E19} = {C9A95CBF-4CFB-4636-A128-2D014B6328D8}
 		{D0F4125B-A61E-4B43-A456-8605CE463166} = {C9A95CBF-4CFB-4636-A128-2D014B6328D8}
 		{88FF306C-510A-4D7A-89A7-9159CF4D7FFD} = {CF05E9B6-5517-4474-97D4-BAEC64BD4A5F}
