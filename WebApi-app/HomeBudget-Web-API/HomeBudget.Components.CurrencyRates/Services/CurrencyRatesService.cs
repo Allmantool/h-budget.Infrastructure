@@ -7,7 +7,7 @@ using HomeBudget.Components.CurrencyRates.Services.Interfaces;
 
 namespace HomeBudget.Components.CurrencyRates.Services
 {
-    public class CurrencyRatesService : ICurrencyRatesService
+    internal class CurrencyRatesService : ICurrencyRatesService
     {
         private readonly ICurrencyRatesReadProvider _currencyRatesReadProvider;
         private readonly ICurrencyRatesWriteProvider _currencyRatesWriteProvider;
