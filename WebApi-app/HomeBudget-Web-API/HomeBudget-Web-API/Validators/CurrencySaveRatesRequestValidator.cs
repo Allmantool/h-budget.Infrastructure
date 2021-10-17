@@ -7,6 +7,5 @@ namespace HomeBudget_Web_API.Validators
     {
         public CurrencySaveRatesRequestValidator() => RuleForEach(x => x.CurrencyRates)
             .SetValidator(new CurrencyRateValidator());
-
     }
 }

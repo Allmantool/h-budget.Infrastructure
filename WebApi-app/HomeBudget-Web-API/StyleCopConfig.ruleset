@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="My StyleCop and SonarLint rules" Description="" ToolsVersion="14.0">
+  <Include Path="StyleCop.Analyzers.ruleset" Action="Default" />
+  <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
+    <!-- Using directive should appear within a namespace declaration -->
+    <Rule Id="SA1200" Action="None" />
+    
+    <!-- XML comment analysis is disabled due to project configuration -->
+    <Rule Id="SA0001" Action="None" />
+    
+    <!-- The file header is missing or not located at the top of the file -->
+    <Rule Id="SA1633" Action="None" /> 
+    
+    <!-- Use string.Empty for empty strings -->
+    <Rule Id="SA1122" Action="None" />
+    
+    <!-- Variable '_' should begin with lower-case letter -->
+    <Rule Id="SA1312" Action="None" />
+    
+    <!-- Parameter '_' should begin with lower-case letter -->
+    <Rule Id="SA1313" Action="None" />
+    
+    <!-- Elements should be documented -->
+    <Rule Id="SA1600" Action="None" />
+    
+    <!-- Prefix local calls with this -->
+    <Rule Id="SA1101" Action="None" />
+    
+    <!-- 'public' members should come before 'private' members -->
+    <Rule Id="SA1202" Action="None" />
+    
+    <!-- Comments should contain text -->
+    <Rule Id="SA1120" Action="None" />
+    
+    <!-- Constant fields should appear before non-constant fields -->
+    <Rule Id="SA1203" Action="None" />
+    
+    <!-- Field '_blah' should not begin with an underscore -->
+    <Rule Id="SA1309" Action="None" />
+    
+    <!-- Use trailing comma in multi-line initializers -->
+    <Rule Id="SA1413" Action="None" />
+
+    <!-- A method should not follow a class -->
+    <Rule Id="SA1201" Action="None" />
+
+    <!-- Elements should be separated by blank line -->
+    <Rule Id="SA1516" Action="None" />
+
+    <!-- The parameter spans multiple lines -->
+    <Rule Id="SA1118" Action="None" />
+    
+    <!-- Static members should appear before non-static members -->
+    <Rule Id="SA1204" Action="None" />
+
+    <!-- Put constructor initializers on their own line -->
+    <Rule Id="SA1128" Action="None" />
+
+    <!-- Opening braces should not be preceded by blank line -->
+    <Rule Id="SA1509" Action="None" />
+    
+    <!-- The parameter should begin on the line after the previous parameter -->
+    <Rule Id="SA1115" Action="None" />
+
+    <!-- File name should match first type name -->
+    <Rule Id="SA1649" Action="None" />
+
+    <!-- File may only contain a single type -->
+    <Rule Id="SA1402" Action="None" />
+
+    <!-- Enumeration items should be documented -->
+    <Rule Id="SA1602" Action="None" />
+
+    <!-- Element should not be on a single line -->
+    <Rule Id="SA1502" Action="None" />
+
+    <!-- Closing parenthesis should not be preceded by a space -->
+    <Rule Id="SA1009" Action="None" />
+
+    <!-- Closing parenthesis should be on line of last parameter -->
+    <Rule Id="SA1111" Action="None" />
+
+    <!-- Braces should not be ommitted -->
+    <Rule Id="SA1503" Action="None" />
+  </Rules>
+  
+  <Rules AnalyzerId="SonarAnalyzer.CSharp" RuleNamespace="SonarAnalyzer.CSharp">
+    <!-- Update this method so that its implementation is not identical to 'blah' -->
+    <Rule Id="S4144" Action="None" />
+    
+    <!-- Update this implementation of 'ISerializable' to conform to the recommended serialization pattern -->
+    <Rule Id="S3925" Action="None" />
+    
+    <!-- Rename class 'IOCActivator' to match pascal case naming rules, consider using 'IocActivator' -->
+    <Rule Id="S101" Action="None" />
+    
+    <!-- Extract this nested code block into a separate method -->
+    <Rule Id="S1199" Action="None" />
+
+    <!-- Remove unassigned auto-property 'Blah', or set its value -->
+    <Rule Id="S3459" Action="None" />
+
+    <!-- Remove the unused private set accessor in property 'Version' -->
+    <Rule Id="S1144" Action="None" />
+
+    <!-- Remove this commented out code -->
+    <Rule Id="S125" Action="None" />
+    
+    <!-- 'System.Exception' should not be thrown by user code -->
+    <Rule Id="S112" Action="None" />
+  </Rules>
+</RuleSet>

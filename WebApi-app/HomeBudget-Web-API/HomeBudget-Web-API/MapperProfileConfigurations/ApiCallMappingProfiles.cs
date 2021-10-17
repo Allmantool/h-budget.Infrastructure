@@ -2,7 +2,7 @@
 
 namespace HomeBudget_Web_API.MapperProfileConfigurations
 {
-    public class ApiCallMappingProfiles
+    internal static class ApiCallMappingProfiles
     {
         public static Assembly GetExecutingAssembly() => Assembly.GetExecutingAssembly();
     }

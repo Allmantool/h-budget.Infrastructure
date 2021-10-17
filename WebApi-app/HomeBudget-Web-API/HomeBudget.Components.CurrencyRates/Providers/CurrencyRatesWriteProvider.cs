@@ -19,7 +19,6 @@ namespace HomeBudget.Components.CurrencyRates.Providers
                                  "VALUES (@CurrencyId, @Name, @Abbreviation, @Scale, @OfficialRate, @RatePerUnit, @UpdateDate);";
 
             // TODO: Apply mapper there, each layer have it's own model/dto
-
             return _writeRepository.SaveAsync(query, rates);
         }
     }

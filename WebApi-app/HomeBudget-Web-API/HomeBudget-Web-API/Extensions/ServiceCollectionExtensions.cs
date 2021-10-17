@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using HomeBudget.Components.CurrencyRates.Extensions;
+﻿using HomeBudget.Components.CurrencyRates.Extensions;
 using HomeBudget.Core.Constants;
 using HomeBudget.Core.Models;
 using HomeBudget.DataAccess.Dapper.Extensions;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace HomeBudget_Web_API.Extensions
 {

@@ -2,13 +2,13 @@ using System.Collections.Generic;
 using System.Reflection;
 using FluentValidation.AspNetCore;
 using HomeBudget.Components.CurrencyRates.MapperProfileConfigurations;
+using HomeBudget_Web_API.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using HomeBudget_Web_API.Extensions;
 
 namespace HomeBudget_Web_API
 {

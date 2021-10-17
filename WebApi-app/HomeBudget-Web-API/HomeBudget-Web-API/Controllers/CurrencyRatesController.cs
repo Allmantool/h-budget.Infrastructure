@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
 using HomeBudget.Components.CurrencyRates.Services.Interfaces;
 using HomeBudget_Web_API.Models;
+using Microsoft.AspNetCore.Mvc;
 using CurrencyRate = HomeBudget.Components.CurrencyRates.Models.CurrencyRate;
 
 namespace HomeBudget_Web_API.Controllers

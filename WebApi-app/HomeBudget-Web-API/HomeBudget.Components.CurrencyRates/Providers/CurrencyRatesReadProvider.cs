@@ -18,9 +18,9 @@ namespace HomeBudget.Components.CurrencyRates.Providers
             const string query = "SELECT * FROM [CurrencyRates] WHERE [UpdateDate] = @Today;";
 
             return _readRepository.GetAsync<CurrencyRate>(
-                query, 
-                new 
-                { 
+                query,
+                new
+                {
                     Today = DateTime.Now.ToShortDateString()
                 });
         }
