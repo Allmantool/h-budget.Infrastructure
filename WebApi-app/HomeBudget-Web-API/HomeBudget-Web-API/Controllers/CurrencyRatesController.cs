@@ -31,5 +31,12 @@ namespace HomeBudget_Web_API.Controllers
 
             return await _currencyRatesService.SaveTodayRatesIfNotExistAsync(unifiedCurrencyRates);
         }
+
+        [HttpGet]
+        public async Task<IEnumerable<CurrencyRate>> GetRatesAsync()
+        {
+            var result = await _currencyRatesService.GetRatesAsync();
+            return result;
+        }
     }
 }

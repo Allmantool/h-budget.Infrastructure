@@ -20,6 +20,11 @@ namespace HomeBudget.Components.CurrencyRates.Services
             _currencyRatesWriteProvider = currencyRatesWriteProvider;
         }
 
+        public async Task<IEnumerable<CurrencyRate>> GetRatesAsync()
+        {
+            return await _currencyRatesReadProvider.GetRatesAsync();
+        }
+
         public async Task<int> SaveTodayRatesIfNotExistAsync(IEnumerable<CurrencyRate> rates)
         {
             var todayRates = await _currencyRatesReadProvider.GetTodayRatesAsync();

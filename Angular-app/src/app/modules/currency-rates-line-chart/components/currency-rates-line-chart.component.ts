@@ -1,41 +1,95 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
-import { Color, Label } from 'ng2-charts';
+import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+
+import {
+	ApexAxisChartSeries,
+	ApexChart,
+	ApexXAxis,
+	ApexTitleSubtitle,
+	ChartComponent,
+} from 'ng-apexcharts';
+import { Subject, Subscription } from 'rxjs';
+import { UnifiedCurrencyRates } from '../../currency-rates/models/unified-currency-rates';
+import { NationalBankCurrencyProvider } from '../../currency-rates/providers/national-bank-currency.provider';
+
+export type ChartOptions = {
+	series: ApexAxisChartSeries;
+	chart: ApexChart;
+	xaxis: ApexXAxis;
+	title: ApexTitleSubtitle;
+};
 
 @Component({
 	selector: 'app-currency-rates-line-chart',
 	templateUrl: './currency-rates-line-chart.component.html',
 	styleUrls: ['./currency-rates-line-chart.component.css'],
 })
-export class CurrencyRatesLineChartComponent implements OnInit {
-	ngOnInit(): void {
-		this.lineChartData = [
-			{ data: [65, 59, 80, 81, 56, 55, 40], label: this.usdCodeLabel },
-		];
+export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
+	@ViewChild('chart') chart!: ChartComponent;
+	@Input() public currencyIsoCodeLabel = '';
+	public chartOptions: ChartOptions;
+
+	public currencyRates$: Subject<UnifiedCurrencyRates[]> = new Subject<
+		UnifiedCurrencyRates[]
+	>();
+
+	private subs: Subscription[] = [];
+
+	constructor(private currencyRateProvider: NationalBankCurrencyProvider) {
+		this.chartOptions = {} as ChartOptions;
 	}
-	@Input() public usdCodeLabel: string = '';
-	public chartWIdth: number = 1800;
-	public chartHeight: number = 180;
-	public lineChartData: ChartDataSets[] = [];
-	public lineChartLabels: Label[] = [
-		'January',
-		'February',
-		'March',
-		'April',
-		'May',
-		'June',
-		'July',
-	];
-	public lineChartOptions: ChartOptions = {
-		responsive: true,
-	};
-	public lineChartColors: Color[] = [
-		{
-			borderColor: 'black',
-			backgroundColor: 'rgba(255,0,0,0.3)',
-		},
-	];
-	public lineChartLegend = true;
-	public lineChartType: ChartType = 'line';
-	public lineChartPlugins = [];
+
+	ngOnDestroy(): void {
+		this.subs.forEach((s) => s.unsubscribe());
+	}
+
+	ngOnInit(): void {
+		const getCurreyncy$ = this.currencyRateProvider
+			.getCurrencies()
+			.subscribe(
+				(r) =>
+					(this.chartOptions = {
+						series: [
+							{
+								name: 'My-series',
+								data: [
+									2.6, 2.54, 2.55, 2.57, 2.62, 2.48, 2.45,
+									2.42, 2.38,
+								],
+							},
+							{
+								name: 'My-series-2',
+								data: [
+									3.6, 3.54, 2.55, 3.57, 3.62, 4.48, 3.45,
+									2.42, 4.38,
+								],
+							},
+						],
+						chart: {
+							height: '200',
+							width: '350%',
+							type: 'area',
+						},
+						title: {
+							text: this.currencyIsoCodeLabel,
+						},
+						xaxis: {
+							categories: [
+								'Jan',
+								'Feb',
+								'Mar',
+								'Apr',
+								'May',
+								'Jun',
+								'Jul',
+								'Aug',
+								'Sep',
+							],
+						},
+					})
+			);
+
+		if (getCurreyncy$) {
+			this.subs.push(getCurreyncy$);
+		}
+	}
 }

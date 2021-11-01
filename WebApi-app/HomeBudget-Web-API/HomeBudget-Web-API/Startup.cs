@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Reflection;
 using FluentValidation.AspNetCore;
 using HomeBudget.Components.CurrencyRates.MapperProfileConfigurations;
@@ -27,11 +27,11 @@ namespace HomeBudget_Web_API
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "HomeBudget_Web_API", Version = "v1" });
             });
 
-            services.SetUpDi(Configuration);
+            services.SetUpDi(this.Configuration);
             services.AddAutoMapper(new List<Assembly>
             {
-                Assembly.GetExecutingAssembly(),
-                CurrencyRatesComponentMappingProfiles.GetExecutingAssembly()
+                typeof(Startup).Assembly,
+                CurrencyRatesComponentMappingProfiles.GetExecutingAssembly(),
             });
 
             services.AddMvc()
@@ -39,7 +39,7 @@ namespace HomeBudget_Web_API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {

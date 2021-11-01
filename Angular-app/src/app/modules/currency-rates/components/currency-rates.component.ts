@@ -33,12 +33,12 @@ export class CurrencyRatesComponent implements OnInit, OnDestroy {
 		UnifiedCurrencyRates[]
 	>();
 
-	constructor(public currencyRateProvider: NationalBankCurrencyProvider) {}
+	constructor(private currencyRateProvider: NationalBankCurrencyProvider) {}
 	ngOnDestroy(): void {
 		this.subs.forEach((s) => s.unsubscribe());
 	}
 	ngOnInit(): void {
-		const getRatesSub = this.todayCurrencyRates$
+		const getRatesSub$ = this.todayCurrencyRates$
 			.pipe(
 				switchMap((rates) =>
 					this.currencyRateProvider.saveCurrencies(rates)
@@ -46,14 +46,14 @@ export class CurrencyRatesComponent implements OnInit, OnDestroy {
 			)
 			.subscribe((affectedRowCount) => console.log(affectedRowCount));
 
-		if (getRatesSub) {
-			this.subs.push(getRatesSub);
+		if (getRatesSub$) {
+			this.subs.push(getRatesSub$);
 		}
 	}
 
 	public showUpTodayCurrencyRates(): void {
 		this.currencyRateProvider
-			.getCurrencies()
+			.getTodayCurrencies()
 			.subscribe((r) => this.todayCurrencyRates$.next(r));
 
 		return;

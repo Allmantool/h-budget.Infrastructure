@@ -13,6 +13,18 @@ namespace HomeBudget.Components.CurrencyRates.Providers
 
         public CurrencyRatesReadProvider(IBaseReadRepository readRepository) => _readRepository = readRepository;
 
+        public Task<IEnumerable<CurrencyRate>> GetRatesAsync()
+        {
+            const string query = "SELECT * FROM [CurrencyRates]";
+
+            return _readRepository.GetAsync<CurrencyRate>(
+                query,
+                new
+                {
+                    Today = DateTime.Now.ToShortDateString()
+                });
+        }
+
         public Task<IEnumerable<CurrencyRate>> GetTodayRatesAsync()
         {
             const string query = "SELECT * FROM [CurrencyRates] WHERE [UpdateDate] = @Today;";

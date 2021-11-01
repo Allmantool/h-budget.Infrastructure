@@ -1,15 +1,8 @@
-<div style="display: block">
-	<canvas
-		baseChart
-		[width]="chartWIdth"
-		[height]="chartHeight"
-		[datasets]="lineChartData"
-		[labels]="lineChartLabels"
-		[options]="lineChartOptions"
-		[colors]="lineChartColors"
-		[legend]="lineChartLegend"
-		[chartType]="lineChartType"
-		[plugins]="lineChartPlugins"
-	>
-	</canvas>
+<div style="text-align: center">
+	<apx-chart
+		[series]="chartOptions.series"
+		[chart]="chartOptions.chart"
+		[xaxis]="chartOptions.xaxis"
+		[title]="chartOptions.title"
+	></apx-chart>
 </div>

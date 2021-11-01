@@ -7,5 +7,7 @@ namespace HomeBudget.Components.CurrencyRates.Services.Interfaces
     public interface ICurrencyRatesService
     {
         public Task<int> SaveTodayRatesIfNotExistAsync(IEnumerable<CurrencyRate> rates);
+
+        public Task<IEnumerable<CurrencyRate>> GetRatesAsync();
     }
 }
