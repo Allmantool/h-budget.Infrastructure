@@ -18,7 +18,7 @@ namespace HomeBudget.DataAccess.Dapper.SqlClients.MsSql
         {
             using IDbConnection db = new SqlConnection(_databaseOptions.ConnectionString);
 
-            return await db.ExecuteAsync(sqlQuery, parameters);
+            return await db.ExecuteAsync(sqlQuery, parameters).ConfigureAwait(false);
         }
     }
 }

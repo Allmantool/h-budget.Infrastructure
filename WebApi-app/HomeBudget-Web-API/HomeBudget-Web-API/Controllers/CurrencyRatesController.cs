@@ -29,13 +29,13 @@ namespace HomeBudget_Web_API.Controllers
             var unifiedCurrencyRates = _mapper
                 .Map<IReadOnlyCollection<CurrencyRate>>(saveRatesRequest.CurrencyRates);
 
-            return await _currencyRatesService.SaveTodayRatesIfNotExistAsync(unifiedCurrencyRates);
+            return await _currencyRatesService.SaveTodayRatesIfNotExistAsync(unifiedCurrencyRates).ConfigureAwait(false);
         }
 
         [HttpGet]
         public async Task<IEnumerable<CurrencyRate>> GetRatesAsync()
         {
-            var result = await _currencyRatesService.GetRatesAsync();
+            var result = await _currencyRatesService.GetRatesAsync().ConfigureAwait(false);
             return result;
         }
     }

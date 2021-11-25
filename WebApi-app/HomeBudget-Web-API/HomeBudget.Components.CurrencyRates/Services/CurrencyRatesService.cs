@@ -22,16 +22,16 @@ namespace HomeBudget.Components.CurrencyRates.Services
 
         public async Task<IEnumerable<CurrencyRate>> GetRatesAsync()
         {
-            return await _currencyRatesReadProvider.GetRatesAsync();
+            return await _currencyRatesReadProvider.GetRatesAsync().ConfigureAwait(false);
         }
 
         public async Task<int> SaveTodayRatesIfNotExistAsync(IEnumerable<CurrencyRate> rates)
         {
-            var todayRates = await _currencyRatesReadProvider.GetTodayRatesAsync();
+            var todayRates = await _currencyRatesReadProvider.GetTodayRatesAsync().ConfigureAwait(false);
 
             return todayRates.Any() || !rates.Any()
                 ? default
-                : await _currencyRatesWriteProvider.SaveRatesAsync(rates);
+                : await _currencyRatesWriteProvider.SaveRatesAsync(rates).ConfigureAwait(false);
         }
     }
 }

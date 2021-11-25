@@ -81,6 +81,8 @@
       <Rule Id="CA1900" Action="Error" />
       <Rule Id="CA1901" Action="Error" />
       <Rule Id="CA2002" Action="Error" />
+	  <!-- Do not directly await a Task -->
+      <Rule Id="CA2007" Action="Error" />
       <Rule Id="CA2100" Action="Error" />
       <Rule Id="CA2101" Action="Error" />
       <Rule Id="CA2108" Action="Error" />
@@ -550,7 +552,7 @@
       <Rule Id="S3973" Action="Warning" />
       <Rule Id="S3981" Action="Warning" />
       <Rule Id="S3984" Action="Warning" />
-      <Rule Id="S3990" Action="Warning" />
+      <Rule Id="S3990" Action="Info" />
       <Rule Id="S3993" Action="Warning" />
       <Rule Id="S3994" Action="Warning" />
       <Rule Id="S3995" Action="Warning" />
@@ -602,7 +604,7 @@
       <Rule Id="S4225" Action="Info" />
       <Rule Id="S4226" Action="Info" />
       <Rule Id="S4260" Action="Warning" />
-      <Rule Id="S4261" Action="None" />
+      <Rule Id="S4261" Action="Warning" />
       <Rule Id="S4275" Action="Warning" />
       <Rule Id="S4277" Action="Warning" />
       <Rule Id="S4423" Action="Warning" />

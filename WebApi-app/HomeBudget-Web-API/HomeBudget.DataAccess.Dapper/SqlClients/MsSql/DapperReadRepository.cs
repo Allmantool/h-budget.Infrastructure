@@ -19,7 +19,7 @@ namespace HomeBudget.DataAccess.Dapper.SqlClients.MsSql
         {
             using IDbConnection db = new SqlConnection(_databaseOptions.ConnectionString);
 
-            return await db.QueryAsync<T>(sqlQuery, parameters);
+            return await db.QueryAsync<T>(sqlQuery, parameters).ConfigureAwait(false);
         }
     }
 }
