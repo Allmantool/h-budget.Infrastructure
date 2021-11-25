@@ -22,9 +22,10 @@ namespace HomeBudget_Web_API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddSwaggerGen(c =>
+            services.AddSwaggerGen(options =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "HomeBudget_Web_API", Version = "v1" });
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "HomeBudget_Web_API", Version = "v1" });
+                options.CustomSchemaIds(type => type.ToString());
             });
 
             services.SetUpDi(this.Configuration);
@@ -45,7 +46,7 @@ namespace HomeBudget_Web_API
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "HomeBudget_Web_API v1"));
+                app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v1/swagger.json", "HomeBudget_Web_API v1"));
                 app.UseCors(builder =>
                 {
                     builder.AllowAnyOrigin();
