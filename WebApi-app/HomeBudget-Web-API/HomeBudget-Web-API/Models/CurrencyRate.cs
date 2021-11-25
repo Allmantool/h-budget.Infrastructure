@@ -4,7 +4,7 @@ namespace HomeBudget_Web_API.Models
 {
     public class CurrencyRate
     {
-        public int Id { get; set; }
+        public int CurrencyId { get; set; }
 
         public string Name { get; set; }
 

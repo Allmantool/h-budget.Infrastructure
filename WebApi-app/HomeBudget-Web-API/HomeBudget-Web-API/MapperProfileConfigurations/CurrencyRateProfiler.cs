@@ -10,6 +10,6 @@ namespace HomeBudget_Web_API.MapperProfileConfigurations
             => CreateMap<Api.CurrencyRate, CurrencyRate>()
                 .ForMember(
                     dest => dest.CurrencyId,
-                    opt => opt.MapFrom(src => src.Id));
+                    opt => opt.MapFrom(src => src.CurrencyId));
     }
 }
