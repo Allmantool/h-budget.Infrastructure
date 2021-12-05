@@ -29,7 +29,11 @@ export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
 	@Input() public currencyIsoCodeLabel = '';
 
 	@Input() public chartWidth = '550%';
-	public chartOptions: ChartOptions;
+	public chartOptions: ChartOptions = {} as ChartOptions;
+
+	public get isChartInitialized(): boolean {
+		return !_.isEmpty(this.chartOptions);
+	}
 
 	public currencyRates$: Subject<UnifiedCurrencyRates[]> = new Subject<
 		UnifiedCurrencyRates[]
@@ -37,9 +41,7 @@ export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
 
 	private subs: Subscription[] = [];
 
-	constructor(private currencyRateProvider: NationalBankCurrencyProvider) {
-		this.chartOptions = {} as ChartOptions;
-	}
+	constructor(private currencyRateProvider: NationalBankCurrencyProvider) {}
 
 	ngOnDestroy(): void {
 		this.subs.forEach((s) => s.unsubscribe());
@@ -48,43 +50,44 @@ export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
 	ngOnInit(): void {
 		const getCurreyncy$ = this.currencyRateProvider
 			.getCurrencies()
-			.subscribe(
-				(rates) =>
-					(this.chartOptions = {
-						series: [
-							{
-								name: 'USD',
-								data: _.map(
-									rates.filter((r) => r.currencyId == 431),
-									(r) => r.ratePerUnit ?? 0
-								),
-							},
-						],
-						chart: {
-							height: '600',
-							width: this.chartWidth,
-							type: 'area',
-						},
-						title: {
-							text: this.currencyIsoCodeLabel,
-						},
-						xaxis: {
-							categories: _.map(
-								_.groupBy(
-									rates.filter((r) => r.currencyId == 431),
-									(r) => new Date(r.updateDate ?? Date.now())
-								),
-								(i) =>
-									new Date(
-										i[0].updateDate ?? Date.now()
-									).toLocaleDateString()
-							),
-						},
-					})
-			);
+			.subscribe((rates) => this.populateChartOptions(rates));
 
 		if (getCurreyncy$) {
 			this.subs.push(getCurreyncy$);
 		}
+	}
+
+	private populateChartOptions(rates: UnifiedCurrencyRates[]): void {
+		this.chartOptions = {
+			series: [
+				{
+					name: 'USD',
+					data: _.map(
+						rates.filter((r) => r.currencyId == 431),
+						(r) => r.ratePerUnit ?? 0
+					),
+				},
+			],
+			chart: {
+				height: '550',
+				width: this.chartWidth,
+				type: 'area',
+			},
+			title: {
+				text: this.currencyIsoCodeLabel,
+			},
+			xaxis: {
+				categories: _.map(
+					_.groupBy(
+						rates.filter((r) => r.currencyId == 431),
+						(r) => new Date(r.updateDate ?? Date.now())
+					),
+					(i) =>
+						new Date(
+							i[0].updateDate ?? Date.now()
+						).toLocaleDateString()
+				),
+			},
+		};
 	}
 }

@@ -16,7 +16,7 @@
 	<table mat-table [dataSource]="todayCurrencyRates" class="mat-elevation-z8">
 		<ng-container matColumnDef="id">
 			<th mat-header-cell *matHeaderCellDef>#Currency id</th>
-			<td mat-cell *matCellDef="let element">{{ element.id }}</td>
+			<td mat-cell *matCellDef="let element">{{ element.currencyId }}</td>
 		</ng-container>
 
 		<ng-container matColumnDef="abbreviation">
