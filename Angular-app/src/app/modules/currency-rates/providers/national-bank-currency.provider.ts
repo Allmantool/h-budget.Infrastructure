@@ -34,14 +34,10 @@ export class NationalBankCurrencyProvider implements BankCurrencyProvider {
 
 	public getCurrencies(): Observable<UnifiedCurrencyRates[]> {
 		return this.http
-			.get<NationalBankCurrencyRate[]>(
+			.get<UnifiedCurrencyRates[]>(
 				`${RoutesSegments.HOME_BUDGET_APP_HOST}/CurrencyRates`
 			)
-			.pipe(
-				map((rates) => rates.map((r) => new UnifiedCurrencyRates(r))),
-				retry(3),
-				take(1)
-			);
+			.pipe(retry(3), take(1));
 	}
 
 	public getTodayCurrencies(): Observable<UnifiedCurrencyRates[]> {

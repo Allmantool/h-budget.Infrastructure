@@ -1,4 +1,5 @@
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import * as _ from 'lodash';
 
 import {
 	ApexAxisChartSeries,
@@ -26,6 +27,8 @@ export type ChartOptions = {
 export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
 	@ViewChild('chart') chart!: ChartComponent;
 	@Input() public currencyIsoCodeLabel = '';
+
+	@Input() public chartWidth = '550%';
 	public chartOptions: ChartOptions;
 
 	public currencyRates$: Subject<UnifiedCurrencyRates[]> = new Subject<
@@ -46,44 +49,36 @@ export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
 		const getCurreyncy$ = this.currencyRateProvider
 			.getCurrencies()
 			.subscribe(
-				(r) =>
+				(rates) =>
 					(this.chartOptions = {
 						series: [
 							{
-								name: 'My-series',
-								data: [
-									2.6, 2.54, 2.55, 2.57, 2.62, 2.48, 2.45,
-									2.42, 2.38,
-								],
-							},
-							{
-								name: 'My-series-2',
-								data: [
-									3.6, 3.54, 2.55, 3.57, 3.62, 4.48, 3.45,
-									2.42, 4.38,
-								],
+								name: 'USD',
+								data: _.map(
+									rates.filter((r) => r.currencyId == 431),
+									(r) => r.ratePerUnit ?? 0
+								),
 							},
 						],
 						chart: {
-							height: '200',
-							width: '350%',
+							height: '600',
+							width: this.chartWidth,
 							type: 'area',
 						},
 						title: {
 							text: this.currencyIsoCodeLabel,
 						},
 						xaxis: {
-							categories: [
-								'Jan',
-								'Feb',
-								'Mar',
-								'Apr',
-								'May',
-								'Jun',
-								'Jul',
-								'Aug',
-								'Sep',
-							],
+							categories: _.map(
+								_.groupBy(
+									rates.filter((r) => r.currencyId == 431),
+									(r) => new Date(r.updateDate ?? Date.now())
+								),
+								(i) =>
+									new Date(
+										i[0].updateDate ?? Date.now()
+									).toLocaleDateString()
+							),
 						},
 					})
 			);

@@ -4,7 +4,7 @@ import { NationalBankCurrencyRate } from './national-bank-currency-rate';
 
 export class UnifiedCurrencyRates {
 	constructor(private rate: Partial<NationalBankCurrencyRate>) {
-		this.id = rate.Cur_ID;
+		this.currencyId = rate.Cur_ID;
 		this.abbreviation = rate.Cur_Abbreviation;
 		this.scale = rate.Cur_Scale;
 		this.name = rate.Cur_Name;
@@ -16,7 +16,7 @@ export class UnifiedCurrencyRates {
 				: undefined;
 	}
 
-	id?: number;
+	currencyId?: number;
 	abbreviation?: string;
 	scale?: number;
 	name?: string;
