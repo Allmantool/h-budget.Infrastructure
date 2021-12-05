@@ -1,0 +1,39 @@
+version: '3.9'
+
+services:
+  homebudget-web-api:
+    image: ${DOCKER_REGISTRY-}docker-compose-homebudget-webapi
+    container_name: homebudget-webapi
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+    build:
+      context: .
+      dockerfile: dockerfile
+    ports:
+      - "5001:80"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+    depends_on:
+      - homebudget-sql-server
+
+  homebudget-sql-server:
+    image: "mcr.microsoft.com/mssql/server:2019-latest"
+    container_name: "${DOCKER_REGISTRY-}homebudget-sql-server"
+    environment:
+        ACCEPT_EULA: "Y"
+        SA_PASSWORD: "*SuperSecretPassword*1"
+    ports:
+      - "1433:1433"
+    volumes:
+      - D:\Development\HomeBudget\Storage:/var/opt/mssql/data
+
+  flyway:
+    image: flyway/flyway
+    container_name: flyway-migration
+    command: -url=jdbc:sqlserver://homebudget-sql-server -schemas=myschema -user=sa -password=*SuperSecretPassword*1 -connectRetries=10 migrate
+    volumes:
+      - D:\Development\HomeBudget\scripts\ms-sql:/flyway/sql
+    depends_on:
+      - homebudget-sql-server
