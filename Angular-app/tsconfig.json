@@ -5,7 +5,7 @@
     "baseUrl": "./",
     "watch": true,
     "outDir": "./dist/out-tsc",
-    "forceConsistentCasingInFileNames": true,
+    "forceConsistentCasingInFileNames": false,
     "strict": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
@@ -22,6 +22,9 @@
       "dom"
     ]
   },
+  "include": [
+    "./src"
+  ],
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,

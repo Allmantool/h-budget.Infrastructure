@@ -4,12 +4,15 @@ import {
 	OnDestroy,
 	OnInit,
 } from '@angular/core';
-
 import { Subject, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { Store } from '@ngxs/store';
+import * as _ from 'lodash';
 
 import { UnifiedCurrencyRates } from '../models/unified-currency-rates';
 import { NationalBankCurrencyProvider } from '../providers/national-bank-currency.provider';
+import { CurrencyRate } from '../../shared/Store/models/currency-rate';
+import { AddRange } from '../../shared/store/actions/currency-rates.actions';
 
 @Component({
 	selector: 'app-currency-rates',
@@ -33,16 +36,31 @@ export class CurrencyRatesComponent implements OnInit, OnDestroy {
 		UnifiedCurrencyRates[]
 	>();
 
-	constructor(private currencyRateProvider: NationalBankCurrencyProvider) {}
+	constructor(
+		private currencyRateProvider: NationalBankCurrencyProvider,
+		private store: Store
+	) {}
 	ngOnDestroy(): void {
 		this.subs.forEach((s) => s.unsubscribe());
 	}
 	ngOnInit(): void {
 		const getRatesSub$ = this.todayCurrencyRates$
 			.pipe(
-				switchMap((rates) =>
-					this.currencyRateProvider.saveCurrencies(rates)
-				)
+				switchMap((rates) => {
+					const currencyRates: CurrencyRate[] = _.map(
+						rates,
+						(r) =>
+							({
+								currencyId: r.currencyId,
+								updateDate: r.updateDate,
+								ratePerUnit: r.ratePerUnit,
+							} as CurrencyRate)
+					);
+
+					this.store.dispatch(new AddRange(currencyRates));
+
+					return this.currencyRateProvider.saveCurrencies(rates);
+				})
 			)
 			.subscribe((affectedRowCount) => console.log(affectedRowCount));
 
