@@ -4,15 +4,16 @@ import {
 	OnDestroy,
 	OnInit,
 } from '@angular/core';
-import { Subject, Subscription } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { Store } from '@ngxs/store';
+import { Select, Store } from '@ngxs/store';
 import * as _ from 'lodash';
 
 import { UnifiedCurrencyRates } from '../models/unified-currency-rates';
 import { NationalBankCurrencyProvider } from '../providers/national-bank-currency.provider';
 import { CurrencyRate } from '../../shared/Store/models/currency-rate';
 import { AddRange } from '../../shared/store/actions/currency-rates.actions';
+import { CurrencyRatesState } from '../../shared/store/states/currency-rates.state';
 
 @Component({
 	selector: 'app-currency-rates',
@@ -21,6 +22,7 @@ import { AddRange } from '../../shared/store/actions/currency-rates.actions';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CurrencyRatesComponent implements OnInit, OnDestroy {
+	@Select(CurrencyRatesState.getRates) rates$: Observable<CurrencyRate[]>;
 	public displayedColumns: string[] = [
 		'id',
 		'abbreviation',
@@ -58,6 +60,8 @@ export class CurrencyRatesComponent implements OnInit, OnDestroy {
 					);
 
 					this.store.dispatch(new AddRange(currencyRates));
+
+					//const storeRates$ = rates$;
 
 					return this.currencyRateProvider.saveCurrencies(rates);
 				})
