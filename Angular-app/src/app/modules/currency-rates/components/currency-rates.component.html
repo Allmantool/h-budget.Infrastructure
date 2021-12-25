@@ -40,6 +40,7 @@
 			<th mat-header-cell *matHeaderCellDef>Official rate</th>
 			<td mat-cell *matCellDef="let element">
 				{{ element.officialRate }}
+				<span class="material-icons md-18">trending_down</span>
 			</td>
 		</ng-container>
 
@@ -47,6 +48,8 @@
 			<th mat-header-cell *matHeaderCellDef>Rate per unit</th>
 			<td mat-cell *matCellDef="let element">
 				{{ element.ratePerUnit }}
+				{{ element.CurrencyTrend }}
+				<span *ngIf="element.CurrencyTrend === 0" class="material-icons md-18">trending_up</span>
 			</td>
 		</ng-container>
 

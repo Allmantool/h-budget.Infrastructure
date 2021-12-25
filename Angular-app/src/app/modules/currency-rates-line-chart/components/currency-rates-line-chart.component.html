@@ -1,4 +1,4 @@
-<div *ngIf="isChartInitialized" style="text-align: center">
+<div *ngIf="isChartInitialized | async" style="text-align: center">
 	<apx-chart
 		[series]="chartOptions.series"
 		[chart]="chartOptions.chart"

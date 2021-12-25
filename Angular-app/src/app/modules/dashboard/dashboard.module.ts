@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { NgxsModule } from '@ngxs/store';
+import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
+import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { MatTableModule } from '@angular/material/table';
@@ -28,6 +30,8 @@ import { CurrencyRatesState } from '../shared/store/states/currency-rates.state'
 		NgxsModule.forRoot([CurrencyRatesState], {
 			developmentMode: !environment.production,
 		}),
+		NgxsLoggerPluginModule.forRoot(),
+		NgxsReduxDevtoolsPluginModule.forRoot()
 	],
 	providers: [],
 	bootstrap: [DashboardComponent],

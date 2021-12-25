@@ -17,9 +17,19 @@ export interface ICurrencyRatesStateModel {
 })
 @Injectable()
 export class CurrencyRatesState {
-	@Selector()
+	@Selector([CurrencyRatesState])
 	static getRates(state: ICurrencyRatesStateModel): CurrencyRate[] {
 		return state.rates;
+	}
+
+	@Selector([CurrencyRatesState])
+	static getCurrencyRatesByCurrencyId(state: ICurrencyRatesStateModel): (id: number) => CurrencyRate[] {
+		return (id: number) => _.filter(state.rates, r => r.currencyId === id);
+	}
+
+	@Selector([CurrencyRatesState.getRates])
+	static getCurrencyRatesFromPreviousDay(state: ICurrencyRatesStateModel): CurrencyRate[] {
+		return _.filter(state.rates, r => Math.ceil((new Date().valueOf() - new Date(r.updateDate).valueOf()) / (1000 * 60 * 60 * 24)) === 1);
 	}
 
 	@Action(Add)
@@ -40,7 +50,7 @@ export class CurrencyRatesState {
 	): void {
 		const state = getState();
 		patchState({
-			rates: _.concat(state.rates, _.difference(rates, state.rates)),
+			rates: _.concat(state.rates, _.differenceWith(rates, state.rates, _.isEqual)),
 		});
 	}
 

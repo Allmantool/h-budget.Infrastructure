@@ -4,15 +4,17 @@ import {
 	OnDestroy,
 	OnInit,
 } from '@angular/core';
-import { Subject, Subscription } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
-import { Store } from '@ngxs/store';
+import { combineLatest, Observable, Subject, Subscription } from 'rxjs';
+import { switchMap, take } from 'rxjs/operators';
+import { Select, Store } from '@ngxs/store';
 import * as _ from 'lodash';
 
 import { UnifiedCurrencyRates } from '../models/unified-currency-rates';
 import { NationalBankCurrencyProvider } from '../providers/national-bank-currency.provider';
 import { CurrencyRate } from '../../shared/Store/models/currency-rate';
 import { AddRange } from '../../shared/store/actions/currency-rates.actions';
+import { CurrencyRatesState } from '../../shared/store/states/currency-rates.state';
+import { CurrencyTrend } from '../../shared/Store/models/currency-trend';
 
 @Component({
 	selector: 'app-currency-rates',
@@ -21,6 +23,9 @@ import { AddRange } from '../../shared/store/actions/currency-rates.actions';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CurrencyRatesComponent implements OnInit, OnDestroy {
+	@Select(CurrencyRatesState.getRates) rates$!: Observable<CurrencyRate[]>;
+	@Select(CurrencyRatesState.getCurrencyRatesFromPreviousDay) previousDayrates$!: Observable<CurrencyRate[]>;
+
 	public displayedColumns: string[] = [
 		'id',
 		'abbreviation',
@@ -39,7 +44,7 @@ export class CurrencyRatesComponent implements OnInit, OnDestroy {
 	constructor(
 		private currencyRateProvider: NationalBankCurrencyProvider,
 		private store: Store
-	) {}
+	) { }
 	ngOnDestroy(): void {
 		this.subs.forEach((s) => s.unsubscribe());
 	}
@@ -50,11 +55,11 @@ export class CurrencyRatesComponent implements OnInit, OnDestroy {
 					const currencyRates: CurrencyRate[] = _.map(
 						rates,
 						(r) =>
-							({
-								currencyId: r.currencyId,
-								updateDate: r.updateDate,
-								ratePerUnit: r.ratePerUnit,
-							} as CurrencyRate)
+						({
+							currencyId: r.currencyId,
+							updateDate: r.updateDate,
+							ratePerUnit: r.ratePerUnit,
+						} as CurrencyRate)
 					);
 
 					this.store.dispatch(new AddRange(currencyRates));
@@ -70,10 +75,41 @@ export class CurrencyRatesComponent implements OnInit, OnDestroy {
 	}
 
 	public showUpTodayCurrencyRates(): void {
-		this.currencyRateProvider
-			.getTodayCurrencies()
-			.subscribe((r) => this.todayCurrencyRates$.next(r));
+		combineLatest(this.previousDayrates$, this.currencyRateProvider.getTodayCurrencies())
+			.pipe(
+				take(1)
+			)
+			.subscribe(([previousDayrates, todayRates]) => {
+				this.todayCurrencyRates$.next(todayRates);
 
-		return;
+				const currencyRates: CurrencyRate[] = _.map(
+					todayRates,
+					(r) =>
+					({
+						currencyId: r.currencyId,
+						updateDate: r.updateDate,
+						ratePerUnit: r.ratePerUnit,
+						currencyTrend: this.getTrend(r.ratePerUnit, previousDayrates.find(i => i.currencyId == r.currencyId)?.ratePerUnit)
+					} as CurrencyRate)
+				);
+
+				this.store.dispatch(new AddRange(currencyRates));
+			})
+	}
+
+	private getTrend(todayDayRate?: number, previousDayRate?: number): CurrencyTrend {
+		if (_.isNil(todayDayRate) || _.isNil(previousDayRate)) {
+			return CurrencyTrend.NotChanged;
+		}
+
+		if (todayDayRate === previousDayRate) {
+			return CurrencyTrend.NotChanged;
+		}
+
+		if (todayDayRate > previousDayRate) {
+			return CurrencyTrend.Up;
+		}
+
+		return CurrencyTrend.Down;
 	}
 }
