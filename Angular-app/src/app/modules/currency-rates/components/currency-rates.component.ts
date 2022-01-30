@@ -26,6 +26,11 @@ export class CurrencyRatesComponent implements OnInit, OnDestroy {
 	@Select(CurrencyRatesState.getRates) rates$!: Observable<CurrencyRate[]>;
 	@Select(CurrencyRatesState.getCurrencyRatesFromPreviousDay) previousDayrates$!: Observable<CurrencyRate[]>;
 
+	public trendRateLookup: { [email: string]: string; } = {
+		[CurrencyTrend.up]: 'chartreuse',
+		[CurrencyTrend.down]: 'crimson'
+	}
+
 	public displayedColumns: string[] = [
 		'id',
 		'abbreviation',
@@ -75,11 +80,18 @@ export class CurrencyRatesComponent implements OnInit, OnDestroy {
 	}
 
 	public showUpTodayCurrencyRates(): void {
-		combineLatest(this.previousDayrates$, this.currencyRateProvider.getTodayCurrencies())
+		combineLatest([this.previousDayrates$, this.currencyRateProvider.getTodayCurrencies()])
 			.pipe(
 				take(1)
 			)
 			.subscribe(([previousDayrates, todayRates]) => {
+
+				todayRates.forEach(tr => {
+					tr.currencyTrend = this.getTrend(
+						tr.ratePerUnit,
+						previousDayrates.find(i => i.currencyId == tr.currencyId)?.ratePerUnit)
+				});
+
 				this.todayCurrencyRates$.next(todayRates);
 
 				const currencyRates: CurrencyRate[] = _.map(
@@ -89,7 +101,7 @@ export class CurrencyRatesComponent implements OnInit, OnDestroy {
 						currencyId: r.currencyId,
 						updateDate: r.updateDate,
 						ratePerUnit: r.ratePerUnit,
-						currencyTrend: this.getTrend(r.ratePerUnit, previousDayrates.find(i => i.currencyId == r.currencyId)?.ratePerUnit)
+						currencyTrend: r.currencyTrend
 					} as CurrencyRate)
 				);
 
@@ -97,19 +109,19 @@ export class CurrencyRatesComponent implements OnInit, OnDestroy {
 			})
 	}
 
-	private getTrend(todayDayRate?: number, previousDayRate?: number): CurrencyTrend {
+	private getTrend(todayDayRate?: number, previousDayRate?: number): string {
 		if (_.isNil(todayDayRate) || _.isNil(previousDayRate)) {
-			return CurrencyTrend.NotChanged;
+			return CurrencyTrend.notChanged;
 		}
 
 		if (todayDayRate === previousDayRate) {
-			return CurrencyTrend.NotChanged;
+			return CurrencyTrend.notChanged;
 		}
 
 		if (todayDayRate > previousDayRate) {
-			return CurrencyTrend.Up;
+			return CurrencyTrend.up;
 		}
 
-		return CurrencyTrend.Down;
+		return CurrencyTrend.down;
 	}
 }

@@ -15,7 +15,7 @@ export class Edit {
 	constructor(public rate: CurrencyRate) {}
 }
 
-export class FetchAllTodos {
+export class FetchAllCurrencyRates {
 	static readonly type = '[CURR-RATES] Fetch All';
 }
 

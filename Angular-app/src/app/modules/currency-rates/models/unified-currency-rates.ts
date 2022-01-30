@@ -1,4 +1,5 @@
 import * as _ from 'lodash';
+import { CurrencyTrend } from '../../shared/Store/models/currency-trend';
 
 import { NationalBankCurrencyRate } from './national-bank-currency-rate';
 
@@ -14,6 +15,7 @@ export class UnifiedCurrencyRates {
 			rate.Cur_OfficialRate && rate.Cur_Scale
 				? _.round(rate.Cur_OfficialRate / rate.Cur_Scale, 4)
 				: undefined;
+		this.currencyTrend = CurrencyTrend.notChanged;
 	}
 
 	currencyId?: number;
@@ -23,4 +25,5 @@ export class UnifiedCurrencyRates {
 	officialRate?: number;
 	updateDate?: Date;
 	ratePerUnit?: number;
+	currencyTrend?: string;
 }

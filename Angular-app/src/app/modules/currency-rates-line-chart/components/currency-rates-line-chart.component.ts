@@ -9,11 +9,10 @@ import {
 	ChartComponent,
 } from 'ng-apexcharts';
 import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs';
-import { filter, take } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 
 import { UnifiedCurrencyRates } from '../../currency-rates/models/unified-currency-rates';
-import { NationalBankCurrencyProvider } from '../../currency-rates/providers/national-bank-currency.provider';
-import { AddRange } from '../../shared/store/actions/currency-rates.actions';
+import { FetchAllCurrencyRates } from '../../shared/store/actions/currency-rates.actions';
 import { CurrencyRate } from '../../shared/Store/models/currency-rate';
 import { CurrencyRatesState } from '../../shared/store/states/currency-rates.state';
 
@@ -36,7 +35,8 @@ export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
 	@Input() public currencyIsoCodeLabel = '';
 	@Input() public currencyIsoCode: number = 431;
 
-	@Input() public chartWidth = '550%';
+	@Input() public chartWidth = '500%';
+	@Input() public chartHeight = '360';
 	public chartOptions: ChartOptions = {} as ChartOptions;
 
 	public isChartInitialized: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -47,42 +47,21 @@ export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
 
 	private subs: Subscription[] = [];
 
-	constructor(
-		private currencyRateProvider: NationalBankCurrencyProvider,
-		private store: Store) { }
+	constructor(private store: Store) { }
 
 	ngOnDestroy(): void {
 		this.subs.forEach((s) => s.unsubscribe());
 	}
 
 	ngOnInit(): void {
-		const getCurreyncy$ = this.currencyRateProvider
-			.getCurrencies()
-			.subscribe((rates) => {
-				const currencyRates: CurrencyRate[] = _.map(
-					rates,
-					(r) =>
-					({
-						currencyId: r.currencyId,
-						updateDate: r.updateDate,
-						ratePerUnit: r.ratePerUnit,
-					} as CurrencyRate)
-				);
-
-				this.store.dispatch(new AddRange(currencyRates));
-				this.populateChartOptions();
-			});
-
-		if (getCurreyncy$) {
-			this.subs.push(getCurreyncy$);
-		}
+		this.store.dispatch(new FetchAllCurrencyRates());
+		this.populateChartOptions();
 	}
 
 	private populateChartOptions(): void {
-		this.rates$
+		this.subs.push(this.rates$
 			.pipe(
-				filter(getCurrencies => !_.isEmpty(getCurrencies(this.currencyIsoCode))),
-				take(1))
+				filter(getCurrencies => !_.isEmpty(getCurrencies(this.currencyIsoCode))))
 			.subscribe(data => {
 				const rates = data(this.currencyIsoCode)
 				this.chartOptions = {
@@ -96,7 +75,7 @@ export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
 						},
 					],
 					chart: {
-						height: '400',
+						height: this.chartHeight,
 						width: this.chartWidth,
 						type: 'area',
 					},
@@ -109,6 +88,6 @@ export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
 				};
 
 				this.isChartInitialized.next(true);
-			});
+			}));
 	}
 }
