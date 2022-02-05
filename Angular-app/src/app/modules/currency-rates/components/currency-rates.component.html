@@ -14,6 +14,21 @@
 	*ngIf="todayCurrencyRates$ | async as todayCurrencyRates"
 >
 	<table mat-table [dataSource]="todayCurrencyRates" class="mat-elevation-z8">
+		<ng-container matColumnDef="select">
+			<th mat-header-cell *matHeaderCellDef>
+				<mat-checkbox (change)="$event ? masterToggle() : null"
+							  [checked]="todayRatesTableSelection.hasValue() && isAllSelected()"
+							  [indeterminate]="todayRatesTableSelection.hasValue() && !isAllSelected()">
+				</mat-checkbox>
+			</th>
+			<td mat-cell *matCellDef="let row">
+				<mat-checkbox (click)="$event.stopPropagation()"
+							  (change)="$event ? todayRatesTableSelection.toggle(row) : null"
+							  [checked]="todayRatesTableSelection.isSelected(row)">
+				</mat-checkbox>
+			  </td>
+		</ng-container>
+
 		<ng-container matColumnDef="id">
 			<th mat-header-cell *matHeaderCellDef>#Currency id</th>
 			<td mat-cell *matCellDef="let element">{{ element.currencyId }}</td>
