@@ -16,17 +16,22 @@
 	<table mat-table [dataSource]="todayCurrencyRates" class="mat-elevation-z8">
 		<ng-container matColumnDef="select">
 			<th mat-header-cell *matHeaderCellDef>
-				<mat-checkbox (change)="$event ? masterToggle() : null"
-							  [checked]="todayRatesTableSelection.hasValue() && isAllSelected()"
-							  [indeterminate]="todayRatesTableSelection.hasValue() && !isAllSelected()">
+				<mat-checkbox
+					(change)="$event ? masterToggle() : null"
+					[checked]="todayRatesTableSelection.hasValue() && isAllSelected()"
+					[indeterminate]="todayRatesTableSelection.hasValue() && !isAllSelected()"
+					[disabled]="true"
+				>
 				</mat-checkbox>
 			</th>
 			<td mat-cell *matCellDef="let row">
-				<mat-checkbox (click)="$event.stopPropagation()"
-							  (change)="$event ? todayRatesTableSelection.toggle(row) : null"
-							  [checked]="todayRatesTableSelection.isSelected(row)">
+				<mat-checkbox
+					(click)="$event.stopPropagation()"
+					(change)="$event ? todayRatesTableSelection.toggle(row) : null"
+					[checked]="todayRatesTableSelection.isSelected(row)"
+				>
 				</mat-checkbox>
-			  </td>
+			</td>
 		</ng-container>
 
 		<ng-container matColumnDef="id">
@@ -41,28 +46,23 @@
 			</td>
 		</ng-container>
 
-		<ng-container matColumnDef="scale">
-			<th mat-header-cell *matHeaderCellDef>Scale</th>
-			<td mat-cell *matCellDef="let element">{{ element.scale }}</td>
-		</ng-container>
-
 		<ng-container matColumnDef="name">
 			<th mat-header-cell *matHeaderCellDef>Name</th>
 			<td mat-cell *matCellDef="let element">{{ element.name }}</td>
 		</ng-container>
 
-		<ng-container matColumnDef="officialRate">
-			<th mat-header-cell *matHeaderCellDef>Official rate</th>
+		<ng-container matColumnDef="ratePerUnit">
+			<th mat-header-cell *matHeaderCellDef>Rate per an unit</th>
 			<td [style.color]="trendRateLookup[element.currencyTrend]" mat-cell *matCellDef="let element">
-				{{ element.officialRate }}
-				<span class="material-icons md-18">{{ element.currencyTrend }}</span>
+				{{ element.ratePerUnit }}
 			</td>
 		</ng-container>
 
-		<ng-container matColumnDef="ratePerUnit">
-			<th mat-header-cell *matHeaderCellDef>Rate per unit</th>
-			<td mat-cell *matCellDef="let element">
-				{{ element.ratePerUnit }}
+		<ng-container matColumnDef="percentageDiff">
+			<th mat-header-cell *matHeaderCellDef>Diffrence</th>
+			<td [style.color]="trendRateLookup[element.currencyTrend]" mat-cell *matCellDef="let element">
+				{{ element.rateDiff }} %
+				<span class="material-icons md-18">{{ element.currencyTrend }}</span>
 			</td>
 		</ng-container>
 

@@ -26,4 +26,5 @@ export class UnifiedCurrencyRates {
 	updateDate?: Date;
 	ratePerUnit?: number;
 	currencyTrend?: string;
+	rateDiff?: string;
 }
