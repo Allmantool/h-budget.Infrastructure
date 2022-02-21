@@ -1,26 +1,36 @@
 import { Injectable } from '@angular/core';
 import { State, Action, StateContext, Selector } from '@ngxs/store';
-import { differenceInDays } from 'date-fns';
 import * as _ from 'lodash';
 import { tap } from 'rxjs/operators';
 
 import { NationalBankCurrencyProvider } from 'src/app/modules/currency-rates/providers/national-bank-currency.provider';
+import { RatesCodes } from '../../constants/rates-codes';
 import {
 	Add,
 	Delete,
 	AddRange,
 	FetchAllCurrencyRates,
+	SetActive,
 } from '../actions/currency-rates.actions';
 import { CurrencyRate } from '../models/currency-rate';
+import { CurrencyTableItem } from '../models/currency-table-item';
+import { CurrencyTableOptions } from '../models/currency-table-options';
 
 export interface ICurrencyRatesStateModel {
 	rates: CurrencyRate[];
+	tableOptions: CurrencyTableOptions;
 }
 
 @State<ICurrencyRatesStateModel>({
 	name: 'currencyRates',
 	defaults: {
 		rates: [],
+		tableOptions: {
+			selectedItem: {
+				currencyId: RatesCodes.USA,
+				abbreviation: "USA"
+			} as CurrencyTableItem
+		} as CurrencyTableOptions
 	},
 })
 @Injectable()
@@ -44,10 +54,18 @@ export class CurrencyRatesState {
 	static getCurrencyRatesFromPreviousDay(
 		state: ICurrencyRatesStateModel
 	): CurrencyRate[] {
+		const dates = _.chain(state.rates).map(i => i.updateDate).uniqBy(i => i).value();
+		const previousDayDate = dates[dates.length - 2];
+
 		return _.filter(
 			state.rates,
-			(r) => differenceInDays(new Date(_.now()), new Date(r.updateDate)) === 1
+			(r) => r.updateDate === previousDayDate
 		);
+	}
+
+	@Selector([CurrencyRatesState])
+	static getCurrencyTableOptions(state: ICurrencyRatesStateModel) {
+		return state.tableOptions;
 	}
 
 	@Action(FetchAllCurrencyRates)
@@ -103,6 +121,21 @@ export class CurrencyRatesState {
 			rates: getState().rates.filter(
 				(r) => r.currencyId != currencyId && r.updateDate != updateDate
 			),
+		});
+	}
+
+	@Action(SetActive)
+	setActive(
+		{ patchState }: StateContext<ICurrencyRatesStateModel>,
+		{ id, label }: SetActive
+	): void {
+		patchState({
+			tableOptions: {
+				selectedItem: {
+					currencyId: id,
+					abbreviation: label
+				} as CurrencyTableItem
+			} as CurrencyTableOptions
 		});
 	}
 }

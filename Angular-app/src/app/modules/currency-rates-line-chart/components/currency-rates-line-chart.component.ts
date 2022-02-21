@@ -9,12 +9,13 @@ import {
 	ApexTitleSubtitle,
 	ChartComponent,
 } from 'ng-apexcharts';
-import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subject, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
 import { UnifiedCurrencyRates } from '../../currency-rates/models/unified-currency-rates';
 import { FetchAllCurrencyRates } from '../../shared/store/actions/currency-rates.actions';
 import { CurrencyRate } from '../../shared/Store/models/currency-rate';
+import { CurrencyTableOptions } from '../../shared/store/models/currency-table-options';
 import { CurrencyRatesState } from '../../shared/store/states/currency-rates.state';
 
 export type ChartOptions = {
@@ -33,9 +34,10 @@ export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
 	@Select(CurrencyRatesState.getCurrencyRatesByCurrencyId)
 	rates$!: Observable<(id: number) => CurrencyRate[]>;
 
+	@Select(CurrencyRatesState.getCurrencyTableOptions)
+	currencyTableOptions$!: Observable<CurrencyTableOptions>;
+
 	@ViewChild('chart') chart!: ChartComponent;
-	@Input() public currencyIsoCodeLabel = '';
-	@Input() public currencyIsoCode = 431;
 
 	@Input() public chartWidth = '500%';
 	@Input() public chartHeight = '360';
@@ -50,7 +52,7 @@ export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
 
 	private subs: Subscription[] = [];
 
-	constructor(private store: Store) {}
+	constructor(private store: Store) { }
 
 	ngOnDestroy(): void {
 		this.subs.forEach((s) => s.unsubscribe());
@@ -63,19 +65,18 @@ export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
 
 	private populateChartOptions(): void {
 		this.subs.push(
-			this.rates$
-				.pipe(
-					filter(
-						(getCurrencies) =>
-							!_.isEmpty(getCurrencies(this.currencyIsoCode))
-					)
-				)
-				.subscribe((data) => {
-					const rates = data(this.currencyIsoCode);
+			combineLatest([
+				this.rates$,
+				this.currencyTableOptions$
+			]).pipe(
+				filter(([getCurrencies, tableOptions]) => !_.isEmpty(getCurrencies(tableOptions.selectedItem.currencyId)))
+			)
+				.subscribe(([data, tableOptions]) => {
+					const rates = data(tableOptions.selectedItem.currencyId);
 					this.chartOptions = {
 						series: [
 							{
-								name: this.currencyIsoCodeLabel,
+								name: tableOptions.selectedItem.abbreviation,
 								data: _.map(rates, (r) => r.ratePerUnit ?? 0),
 							},
 						],
@@ -85,7 +86,7 @@ export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
 							type: 'area',
 						},
 						title: {
-							text: this.currencyIsoCodeLabel,
+							text: tableOptions.selectedItem.abbreviation,
 						},
 						xaxis: {
 							categories: _.map(rates, (r) =>

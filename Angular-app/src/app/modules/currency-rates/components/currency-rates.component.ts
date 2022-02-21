@@ -14,9 +14,10 @@ import * as _ from 'lodash';
 import { UnifiedCurrencyRates } from '../models/unified-currency-rates';
 import { NationalBankCurrencyProvider } from '../providers/national-bank-currency.provider';
 import { CurrencyRate } from '../../shared/Store/models/currency-rate';
-import { AddRange } from '../../shared/store/actions/currency-rates.actions';
+import { AddRange, SetActive } from '../../shared/store/actions/currency-rates.actions';
 import { CurrencyRatesState } from '../../shared/store/states/currency-rates.state';
 import { CurrencyTrend } from '../../shared/Store/models/currency-trend';
+import { RatesCodes } from '../../shared/constants/rates-codes';
 
 @Component({
 	selector: 'app-currency-rates',
@@ -58,7 +59,7 @@ export class CurrencyRatesComponent implements OnInit, OnDestroy {
 	constructor(
 		private currencyRateProvider: NationalBankCurrencyProvider,
 		private store: Store
-	) {}
+	) { }
 	ngOnDestroy(): void {
 		this.subs.forEach((s) => s.unsubscribe());
 	}
@@ -71,17 +72,17 @@ export class CurrencyRatesComponent implements OnInit, OnDestroy {
 					this.todayRatesTableSelection =
 						new SelectionModel<UnifiedCurrencyRates>(
 							false,
-							rates.filter((i) => i.currencyId == 431)
+							rates.filter((i) => i.currencyId == RatesCodes.USA)
 						);
 
 					const currencyRates: CurrencyRate[] = _.map(
 						rates,
 						(r) =>
-							({
-								currencyId: r.currencyId,
-								updateDate: r.updateDate,
-								ratePerUnit: r.ratePerUnit,
-							} as CurrencyRate)
+						({
+							currencyId: r.currencyId,
+							updateDate: r.updateDate,
+							ratePerUnit: r.ratePerUnit,
+						} as CurrencyRate)
 					);
 
 					this.store.dispatch(new AddRange(currencyRates));
@@ -97,10 +98,14 @@ export class CurrencyRatesComponent implements OnInit, OnDestroy {
 	}
 
 	public isAllSelected() {
-		const numSelected = this.todayRatesTableSelection.selected.length;
-		const numRows = this.todayRatesTableDataSource.data.length;
+		const selectedTableItem = this.todayRatesTableSelection.selected;
+		const selectedRate = _.first(selectedTableItem);
 
-		return numSelected === numRows;
+		this.store.dispatch(new SetActive(
+			selectedRate?.currencyId ?? RatesCodes.USA,
+			selectedRate?.abbreviation ?? "USA"))
+
+		return selectedTableItem.length === this.todayRatesTableDataSource.data.length;
 	}
 
 	public masterToggle() {
@@ -115,7 +120,7 @@ export class CurrencyRatesComponent implements OnInit, OnDestroy {
 		if (isAllSelected) {
 			this.todayRatesTableSelection.clear();
 			this.todayRatesTableSelection.select(currencyRatesForselectByDefault)
-		} 
+		}
 		else {
 			this.todayRatesTableSelection.select(...this.todayRatesTableDataSource.data);
 		}
@@ -133,7 +138,7 @@ export class CurrencyRatesComponent implements OnInit, OnDestroy {
 						(i) => i.currencyId == tr.currencyId
 					);
 
-					if (_.isNil(previousDateRate) || _.isNil(tr.ratePerUnit)){
+					if (_.isNil(previousDateRate) || _.isNil(tr.ratePerUnit)) {
 						return;
 					}
 
@@ -156,11 +161,11 @@ export class CurrencyRatesComponent implements OnInit, OnDestroy {
 		const currencyRates: CurrencyRate[] = _.map(
 			todayRates,
 			(r) =>
-				({
-					currencyId: r.currencyId,
-					updateDate: r.updateDate,
-					ratePerUnit: r.ratePerUnit,
-				} as CurrencyRate)
+			({
+				currencyId: r.currencyId,
+				updateDate: r.updateDate,
+				ratePerUnit: r.ratePerUnit,
+			} as CurrencyRate)
 		);
 
 		this.store.dispatch(new AddRange(currencyRates));
