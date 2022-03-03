@@ -5,15 +5,14 @@ import { NationalBankCurrencyRate } from './national-bank-currency-rate';
 
 export class UnifiedCurrencyRates {
 	constructor(private rate: Partial<NationalBankCurrencyRate>) {
-		this.currencyId = rate.Cur_ID;
-		this.abbreviation = rate.Cur_Abbreviation;
-		this.scale = rate.Cur_Scale;
-		this.name = rate.Cur_Name;
-		this.officialRate = rate.Cur_OfficialRate;
-		this.updateDate = rate.Date;
-		this.ratePerUnit =
-			rate.Cur_OfficialRate && rate.Cur_Scale
-				? _.round(rate.Cur_OfficialRate / rate.Cur_Scale, 4)
+		this.currencyId = rate.currencyId;
+		this.abbreviation = rate.abbreviation;
+		this.scale = rate.scale;
+		this.name = rate.name;
+		this.officialRate = rate.officialRate;
+		this.updateDate = rate.updateDate;
+		this.ratePerUnit = rate.officialRate && rate.scale
+				? _.round(rate.officialRate / rate.scale, 4)
 				: undefined;
 		this.currencyTrend = CurrencyTrend.notChanged;
 	}

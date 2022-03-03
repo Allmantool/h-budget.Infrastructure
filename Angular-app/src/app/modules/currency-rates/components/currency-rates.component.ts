@@ -67,13 +67,11 @@ export class CurrencyRatesComponent implements OnInit, OnDestroy {
 		const getRatesSub$ = this.todayCurrencyRates$
 			.pipe(
 				switchMap((rates) => {
-					this.todayRatesTableDataSource =
-						new MatTableDataSource<UnifiedCurrencyRates>(rates);
-					this.todayRatesTableSelection =
-						new SelectionModel<UnifiedCurrencyRates>(
-							false,
-							rates.filter((i) => i.currencyId == RatesCodes.USA)
-						);
+					this.todayRatesTableDataSource = new MatTableDataSource<UnifiedCurrencyRates>(rates);
+					this.todayRatesTableSelection = new SelectionModel<UnifiedCurrencyRates>(
+						false,
+						rates.filter((i) => i.currencyId == RatesCodes.USA)
+					);
 
 					const currencyRates: CurrencyRate[] = _.map(
 						rates,
@@ -132,9 +130,9 @@ export class CurrencyRatesComponent implements OnInit, OnDestroy {
 			this.currencyRateProvider.getTodayCurrencies(),
 		])
 			.pipe(take(1))
-			.subscribe(([previousDayrates, todayRates]) => {
+			.subscribe(([previousDayRates, todayRates]) => {
 				todayRates.forEach((tr) => {
-					const previousDateRate = previousDayrates.find(
+					const previousDateRate = previousDayRates.find(
 						(i) => i.currencyId == tr.currencyId
 					);
 

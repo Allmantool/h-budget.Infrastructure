@@ -8,25 +8,25 @@ import { UnifiedCurrencyRates } from '../models/unified-currency-rates';
 import { BankCurrencyProvider } from './bank-currency.provider';
 import { NationalBankCurrencyRate } from '../models/national-bank-currency-rate';
 import { RoutesSegments } from '../../shared/constants/routes-segments';
+import { Result } from '../../shared/models/result';
+import * as _ from 'lodash';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class NationalBankCurrencyProvider implements BankCurrencyProvider {
-	private acceptableCurrencies: Array<string> = ['USD', 'RUB', 'EUR'];
-
-	constructor(private http: HttpClient) {}
-	public saveCurrencies(rates: UnifiedCurrencyRates[]): Observable<number> {
+	constructor(private http: HttpClient) { }
+	public saveCurrencies(rates: UnifiedCurrencyRates[]): Observable<Result<number>> {
 		return this.http
-			.post<number>(
-				`${RoutesSegments.HOME_BUDGET_APP_HOST}/CurrencyRates`,
+			.post<Result<number>>(
+				`${RoutesSegments.HOME_BUDGET_APP_HOST}/currencyRates`,
 				{
 					CurrencyRates: rates,
 				}
 			)
 			.pipe(
-				tap((affectedRows: number) =>
-					console.log(`Affected rows count: ${affectedRows}`)
+				tap((result: Result<number>) =>
+					console.log(`Affected rows count: ${result.payload}`)
 				),
 				take(1)
 			);
@@ -34,28 +34,19 @@ export class NationalBankCurrencyProvider implements BankCurrencyProvider {
 
 	public getCurrencies(): Observable<UnifiedCurrencyRates[]> {
 		return this.http
-			.get<UnifiedCurrencyRates[]>(
-				`${RoutesSegments.HOME_BUDGET_APP_HOST}/CurrencyRates`
+			.get<Result<UnifiedCurrencyRates[]>>(
+				`${RoutesSegments.HOME_BUDGET_APP_HOST}/currencyRates`
 			)
-			.pipe(retry(3), take(1));
+			.pipe(map(r => r.payload),retry(3), take(1));
 	}
 
 	public getTodayCurrencies(): Observable<UnifiedCurrencyRates[]> {
 		return this.http
-			.get<NationalBankCurrencyRate[]>(
-				'https://www.nbrb.by/api/exrates/rates?periodicity=0'
+			.get<Result<NationalBankCurrencyRate[]>>(
+				`${RoutesSegments.HOME_BUDGET_APP_HOST}/currencyRates/today`
 			)
 			.pipe(
-				map((rates) =>
-					rates
-						.filter(
-							(r) =>
-								r.Cur_Abbreviation &&
-								this.acceptableCurrencies.includes(
-									r.Cur_Abbreviation
-								)
-						)
-						.map((r) => new UnifiedCurrencyRates(r))
+					map((result) => result.payload.map((r) => new UnifiedCurrencyRates(r))
 				),
 				retry(3),
 				take(1)
