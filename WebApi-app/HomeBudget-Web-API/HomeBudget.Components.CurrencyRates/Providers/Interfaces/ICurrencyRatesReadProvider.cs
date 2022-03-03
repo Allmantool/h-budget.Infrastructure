@@ -6,8 +6,8 @@ namespace HomeBudget.Components.CurrencyRates.Providers.Interfaces
 {
     public interface ICurrencyRatesReadProvider
     {
-        Task<IEnumerable<CurrencyRate>> GetTodayRatesAsync();
+        Task<IReadOnlyCollection<CurrencyRate>> GetTodayRatesAsync();
 
-        Task<IEnumerable<CurrencyRate>> GetRatesAsync();
+        Task<IReadOnlyCollection<CurrencyRate>> GetRatesAsync();
     }
 }
