@@ -59,7 +59,10 @@ namespace HomeBudget.Components.CurrencyRates.Extensions
         {
             var serializerSettings = new JsonSerializerSettings
             {
-                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                ContractResolver = new CamelCasePropertyNamesContractResolver
+                {
+                    NamingStrategy = new SnakeCaseNamingStrategy()
+                },
                 Formatting = Formatting.Indented,
             };
 

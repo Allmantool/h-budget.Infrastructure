@@ -14,7 +14,7 @@ namespace HomeBudget.DataAccess.Dapper.SqlClients.MsSql
 
         public DapperWriteRepository(IOptions<DatabaseOptions> options) => _databaseOptions = options.Value;
 
-        public async Task<int> SaveAsync(string sqlQuery, object parameters)
+        public async Task<int> SaveAsync<T>(string sqlQuery, T parameters)
         {
             using IDbConnection db = new SqlConnection(_databaseOptions.ConnectionString);
 
