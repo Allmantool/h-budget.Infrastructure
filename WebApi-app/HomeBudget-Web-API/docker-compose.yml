@@ -10,6 +10,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
+      - SONAR_TOKEN=${SONAR_TOKEN}
     ports:
       - "5001:80"
     volumes:

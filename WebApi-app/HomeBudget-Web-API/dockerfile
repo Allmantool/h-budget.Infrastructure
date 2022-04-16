@@ -1,4 +1,5 @@
-#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
+ARG SONAR_TOKEN
+
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /app
@@ -15,7 +16,35 @@ COPY ["HomeBudget.Components.CurrencyRates/HomeBudget.Components.CurrencyRates.c
 RUN dotnet restore "HomeBudget-Web-API/HomeBudget-Web-API.csproj"
 COPY . .
 WORKDIR "/src/HomeBudget-Web-API"
+
+RUN dotnet new tool-manifest
+RUN dotnet tool install --local dotnet-sonarscanner --version 5.5.3
+
+RUN wget https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb -O packages-microsoft-prod.deb 
+RUN dpkg -i packages-microsoft-prod.deb 
+RUN rm packages-microsoft-prod.deb 
+
+RUN apt-get install -y apt-transport-https && \
+    apt-get update && \
+    apt-get install -y openjdk-11-jdk ant dos2unix ca-certificates-java dotnet-sdk-6.0 && \
+    apt-get clean
+
+ENV JAVA_HOME /usr/lib/jvm/java-11-openjdk-amd64/
+RUN export JAVA_HOME
+RUN export PATH=$PATH:$JAVA_HOME/bin
+
+ENV SONAR_TOKEN=${SONAR_TOKEN}
+
+RUN dotnet sonarscanner begin \
+  /o:"allmantool" \
+  /k:"Allmantool_h-budget" \
+  /d:sonar.login="${SONAR_TOKEN}" \
+  /d:sonar.host.url="https://sonarcloud.io"
+
 RUN dotnet build "HomeBudget-Web-API.csproj" -c Release -o /app/build
+
+RUN dotnet sonarscanner end \
+  /d:sonar.login="${SONAR_TOKEN}"
 
 FROM build AS publish
 RUN dotnet publish "HomeBudget-Web-API.csproj" -c Release -o /app/publish --no-restore
