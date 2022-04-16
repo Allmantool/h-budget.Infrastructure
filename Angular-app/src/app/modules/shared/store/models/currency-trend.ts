@@ -1,5 +1,5 @@
-export enum CurrencyTrend {
-    NotChanged = 0,
-    Up = 1,
-    Down = 2,
+export class CurrencyTrend {
+	static readonly notChanged: string = '';
+	static readonly up = 'trending_up';
+	static readonly down = 'trending_down';
 }

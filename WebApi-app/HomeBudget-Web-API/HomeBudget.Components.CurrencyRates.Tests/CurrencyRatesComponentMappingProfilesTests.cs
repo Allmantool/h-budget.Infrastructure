@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using HomeBudget_Web_API.MapperProfileConfigurations;
 using NUnit.Framework;
+using HomeBudget_Web_API.MapperProfileConfigurations;
 
 namespace HomeBudget.Components.CurrencyRates.Tests
 {

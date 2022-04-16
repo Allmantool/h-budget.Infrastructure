@@ -5,6 +5,8 @@ import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { MatTableModule } from '@angular/material/table';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { NgApexchartsModule } from 'ng-apexcharts';
@@ -26,12 +28,13 @@ import { CurrencyRatesState } from '../shared/store/states/currency-rates.state'
 		HttpClientModule,
 		BrowserAnimationsModule,
 		MatTableModule,
+		MatCheckboxModule,
 		NgApexchartsModule,
 		NgxsModule.forRoot([CurrencyRatesState], {
 			developmentMode: !environment.production,
 		}),
 		NgxsLoggerPluginModule.forRoot(),
-		NgxsReduxDevtoolsPluginModule.forRoot()
+		NgxsReduxDevtoolsPluginModule.forRoot(),
 	],
 	providers: [],
 	bootstrap: [DashboardComponent],

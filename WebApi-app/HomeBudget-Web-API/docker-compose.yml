@@ -42,3 +42,23 @@ services:
       - ${FLYWAY_SCRIPTS_PATH}:/flyway/sql
     depends_on:
       - homebudget-sql-server
+    
+  sonarCube:
+    image: sonarqube:latest
+    depends_on:
+      - homebudget-sql-server
+    container_name: sonar-cube
+    environment:
+      SONAR_JDBC_USERNAME: sa
+      SONAR_JDBC_PASSWORD: ${SQL_PASSWORD}
+    ports:
+      - "9000:9000"
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
+
+volumes:
+  sonarqube_data: 
+  sonarqube_extensions: 
+  sonarqube_logs: 

@@ -1,6 +1,6 @@
-﻿using HomeBudget.DataAccess.Dapper.SqlClients.MsSql;
+﻿using Microsoft.Extensions.DependencyInjection;
+using HomeBudget.DataAccess.Dapper.SqlClients.MsSql;
 using HomeBudget.DataAccess.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace HomeBudget.DataAccess.Dapper.Extensions
 {
