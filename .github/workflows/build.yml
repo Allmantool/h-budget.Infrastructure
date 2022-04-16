@@ -2,7 +2,8 @@ name: Build
 on:
   push:
     branches:
-      - master
+      - "master"
+      - "feature/*"
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
@@ -36,6 +37,7 @@ jobs:
         run: |
           New-Item -Path .\.sonar\scanner -ItemType Directory
           dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
+      - template: docker-compose.yml
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
