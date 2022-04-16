@@ -1,6 +1,3 @@
-ARG SONAR_TOKEN
-
-
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /app
 EXPOSE 80
@@ -17,6 +14,9 @@ RUN dotnet restore "HomeBudget-Web-API/HomeBudget-Web-API.csproj"
 COPY . .
 WORKDIR "/src/HomeBudget-Web-API"
 
+ARG SONAR_TOKEN
+ENV SONAR_TOKEN=${SONAR_TOKEN}
+
 RUN dotnet new tool-manifest
 RUN dotnet tool install --local dotnet-sonarscanner --version 5.5.3
 
@@ -32,8 +32,6 @@ RUN apt-get install -y apt-transport-https && \
 ENV JAVA_HOME /usr/lib/jvm/java-11-openjdk-amd64/
 RUN export JAVA_HOME
 RUN export PATH=$PATH:$JAVA_HOME/bin
-
-ENV SONAR_TOKEN=${SONAR_TOKEN}
 
 RUN dotnet sonarscanner begin \
   /o:"allmantool" \

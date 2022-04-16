@@ -6,8 +6,7 @@ namespace HomeBudget.Components.CurrencyRates.Tests
 {
     public class Tests
     {
-        private readonly MapperConfiguration _mapperConfiguration = new (x
-            => x.AddMaps(ApiCallMappingProfiles.GetExecutingAssembly()));
+        private readonly MapperConfiguration _mapperConfiguration = new (x => x.AddMaps(ApiCallMappingProfiles.GetExecutingAssembly()));
 
         private IMapper _mapper;
 
@@ -18,13 +17,9 @@ namespace HomeBudget.Components.CurrencyRates.Tests
         }
 
         [Test]
-        public void Test1()
+        public void AssertConfigurationIsValid_WithValidMappingConfiguration_DoesNotThrow()
         {
-            // Arrange.
-
-            // Act.
-            // Assert.
-            Assert.Pass();
+            Assert.DoesNotThrow(() => _mapperConfiguration.AssertConfigurationIsValid());
         }
     }
 }
