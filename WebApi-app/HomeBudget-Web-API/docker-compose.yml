@@ -7,9 +7,12 @@ services:
     build:
       context: .
       dockerfile: dockerfile
+      args:
+        - SONAR_TOKEN=${SONAR_TOKEN}
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
+      - SONAR_TOKEN=${SONAR_TOKEN}
     ports:
       - "5001:80"
     volumes:
@@ -17,6 +20,7 @@ services:
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
     depends_on:
       - homebudget-sql-server
+      - sonarCube
 
   homebudget-sql-server:
     image: "mcr.microsoft.com/mssql/server:2019-latest"

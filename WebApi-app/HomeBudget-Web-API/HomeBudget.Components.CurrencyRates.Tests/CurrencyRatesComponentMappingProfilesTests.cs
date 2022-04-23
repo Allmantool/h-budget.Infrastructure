@@ -6,25 +6,18 @@ namespace HomeBudget.Components.CurrencyRates.Tests
 {
     public class Tests
     {
-        private readonly MapperConfiguration _mapperConfiguration = new (x
-            => x.AddMaps(ApiCallMappingProfiles.GetExecutingAssembly()));
-
-        private IMapper _mapper;
+        private readonly MapperConfiguration _mapperConfiguration = new (x => x.AddMaps(ApiCallMappingProfiles.GetExecutingAssembly()));
 
         [SetUp]
         public void Setup()
         {
-            _mapper = _mapperConfiguration.CreateMapper();
+            _mapperConfiguration.CreateMapper();
         }
 
         [Test]
-        public void Test1()
+        public void AssertConfigurationIsValid_WithValidMappingConfiguration_DoesNotThrow()
         {
-            // Arrange.
-
-            // Act.
-            // Assert.
-            Assert.Pass();
+            Assert.DoesNotThrow(() => _mapperConfiguration.AssertConfigurationIsValid());
         }
     }
 }
