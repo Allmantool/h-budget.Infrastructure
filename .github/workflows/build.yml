@@ -5,6 +5,8 @@ on:
       - master
       - feature/*
       - test/*
+    tags:
+      - 'v*'
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
@@ -32,8 +34,7 @@ jobs:
         with:
           path: .\.sonar\scanner
           key: ${{ runner.os }}-sonar-scanner
-          restore-keys: ${{ runner.os }}-sonar-scanner
-          
+          restore-keys: ${{ runner.os }}-sonar-scanner        
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
