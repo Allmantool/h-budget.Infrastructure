@@ -52,7 +52,7 @@ RUN /tools/dotnet-sonarscanner begin \
     /d:sonar.host.url="https://sonarcloud.io" \
     /d:sonar.coverage.exclusions="**/Test[s]/**/*" \
     /d:sonar.coverageReportPaths="/app/testresults/coverage/reports/SonarQube.xml" \
-    /d:sonar.cs.opencover.reportsPaths="/app/testresults/coverage/coverage.opencover.xml"
+    /d:sonar.cs.opencover.reportsPaths="/app/testresults/coverage/reports/currencyRates.coverage.xml"
 
 RUN dotnet build HomeBudget-Web-API.sln --no-restore -c Release -o /app/build
 
@@ -63,13 +63,12 @@ RUN dotnet test HomeBudget-Web-API.sln \
     --logger "trx" \
     --results-directory "/app/testresults/coverage" \
     --collect:"XPlat Code Coverage" \
-    /p:MergeWith="/app/testresults/coverage.json" \
     /p:CollectCoverage=true \
-    /p:CoverletOutputFormat="opencover" \
-    /p:CoverletOutput="/app/testresults/coverage/" 
+    /p:CoverletOutputFormat=opencover \
+    /p:CoverletOutput="/app/testresults/coverage/currencyRates.coverage.xml" 
 
 RUN /tools/reportgenerator \
-    -reports:'/app/testresults/coverage/**/coverage.cobertura.xml' \
+    -reports:'/app/testresults/coverage/**/coverage.cobertura.xml;app/testresults/coverage/currencyRates.coverage.xml' \
     -targetdir:'/app/testresults/coverage/reports' \
     -reporttypes:'SonarQube;Cobertura'
 
