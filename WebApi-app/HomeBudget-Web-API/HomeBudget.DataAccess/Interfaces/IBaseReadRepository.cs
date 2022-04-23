@@ -5,6 +5,8 @@ namespace HomeBudget.DataAccess.Interfaces
 {
     public interface IBaseReadRepository
     {
-        Task<IEnumerable<T>> GetAsync<T>(string sqlQuery, object parameters);
+        Task<IReadOnlyCollection<T>> GetAsync<T>(string sqlQuery, object parameters);
+
+        Task<T> SingleAsync<T>(string sqlQuery, object parameters);
     }
 }

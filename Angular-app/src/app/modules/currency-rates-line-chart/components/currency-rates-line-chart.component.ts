@@ -1,5 +1,6 @@
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
+import { format } from 'date-fns';
 import * as _ from 'lodash';
 import {
 	ApexAxisChartSeries,
@@ -8,13 +9,13 @@ import {
 	ApexTitleSubtitle,
 	ChartComponent,
 } from 'ng-apexcharts';
-import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs';
-import { filter, take } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable, Subject, Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 import { UnifiedCurrencyRates } from '../../currency-rates/models/unified-currency-rates';
-import { NationalBankCurrencyProvider } from '../../currency-rates/providers/national-bank-currency.provider';
-import { AddRange } from '../../shared/store/actions/currency-rates.actions';
+import { FetchAllCurrencyRates } from '../../shared/store/actions/currency-rates.actions';
 import { CurrencyRate } from '../../shared/Store/models/currency-rate';
+import { CurrencyTableOptions } from '../../shared/store/models/currency-table-options';
 import { CurrencyRatesState } from '../../shared/store/states/currency-rates.state';
 
 export type ChartOptions = {
@@ -30,16 +31,20 @@ export type ChartOptions = {
 	styleUrls: ['./currency-rates-line-chart.component.css'],
 })
 export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
-	@Select(CurrencyRatesState.getCurrencyRatesByCurrencyId) rates$!: Observable<(id: number) => CurrencyRate[]>;
+	@Select(CurrencyRatesState.getCurrencyRatesByCurrencyId)
+	rates$!: Observable<(id: number) => CurrencyRate[]>;
+
+	@Select(CurrencyRatesState.getCurrencyTableOptions)
+	currencyTableOptions$!: Observable<CurrencyTableOptions>;
 
 	@ViewChild('chart') chart!: ChartComponent;
-	@Input() public currencyIsoCodeLabel = '';
-	@Input() public currencyIsoCode: number = 431;
 
-	@Input() public chartWidth = '550%';
+	@Input() public chartWidth = '500%';
+	@Input() public chartHeight = '360';
 	public chartOptions: ChartOptions = {} as ChartOptions;
 
-	public isChartInitialized: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+	public isChartInitialized: BehaviorSubject<boolean> =
+		new BehaviorSubject<boolean>(false);
 
 	public currencyRates$: Subject<UnifiedCurrencyRates[]> = new Subject<
 		UnifiedCurrencyRates[]
@@ -47,68 +52,51 @@ export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
 
 	private subs: Subscription[] = [];
 
-	constructor(
-		private currencyRateProvider: NationalBankCurrencyProvider,
-		private store: Store) { }
+	constructor(private store: Store) { }
 
 	ngOnDestroy(): void {
 		this.subs.forEach((s) => s.unsubscribe());
 	}
 
 	ngOnInit(): void {
-		const getCurreyncy$ = this.currencyRateProvider
-			.getCurrencies()
-			.subscribe((rates) => {
-				const currencyRates: CurrencyRate[] = _.map(
-					rates,
-					(r) =>
-					({
-						currencyId: r.currencyId,
-						updateDate: r.updateDate,
-						ratePerUnit: r.ratePerUnit,
-					} as CurrencyRate)
-				);
-
-				this.store.dispatch(new AddRange(currencyRates));
-				this.populateChartOptions();
-			});
-
-		if (getCurreyncy$) {
-			this.subs.push(getCurreyncy$);
-		}
+		this.store.dispatch(new FetchAllCurrencyRates());
+		this.populateChartOptions();
 	}
 
 	private populateChartOptions(): void {
-		this.rates$
-			.pipe(
-				filter(getCurrencies => !_.isEmpty(getCurrencies(this.currencyIsoCode))),
-				take(1))
-			.subscribe(data => {
-				const rates = data(this.currencyIsoCode)
-				this.chartOptions = {
-					series: [
-						{
-							name: this.currencyIsoCodeLabel,
-							data: _.map(
-								rates,
-								(r) => r.ratePerUnit ?? 0
+		this.subs.push(
+			combineLatest([
+				this.rates$,
+				this.currencyTableOptions$
+			]).pipe(
+				filter(([getCurrencies, tableOptions]) => !_.isEmpty(getCurrencies(tableOptions.selectedItem.currencyId)))
+			)
+				.subscribe(([data, tableOptions]) => {
+					const rates = data(tableOptions.selectedItem.currencyId);
+					this.chartOptions = {
+						series: [
+							{
+								name: tableOptions.selectedItem.abbreviation,
+								data: _.map(rates, (r) => r.ratePerUnit ?? 0),
+							},
+						],
+						chart: {
+							height: this.chartHeight,
+							width: this.chartWidth,
+							type: 'area',
+						},
+						title: {
+							text: tableOptions.selectedItem.abbreviation,
+						},
+						xaxis: {
+							categories: _.map(rates, (r) =>
+								format(new Date(r.updateDate), "dd MMM yy")
 							),
 						},
-					],
-					chart: {
-						height: '400',
-						width: this.chartWidth,
-						type: 'area',
-					},
-					title: {
-						text: this.currencyIsoCodeLabel,
-					},
-					xaxis: {
-						categories: _.map(rates, r => new Date(r.updateDate ?? Date.now()).toLocaleDateString()),
-					},
-				};
+					};
 
-				this.isChartInitialized.next(true);
-			});
+					this.isChartInitialized.next(true);
+				})
+		);
 	}
 }

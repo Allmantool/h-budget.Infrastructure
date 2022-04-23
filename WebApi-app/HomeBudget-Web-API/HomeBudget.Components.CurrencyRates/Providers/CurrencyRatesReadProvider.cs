@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using HomeBudget.Components.CurrencyRates.Models;
 using HomeBudget.Components.CurrencyRates.Providers.Interfaces;
@@ -9,13 +10,24 @@ namespace HomeBudget.Components.CurrencyRates.Providers
 {
     public class CurrencyRatesReadProvider : ICurrencyRatesReadProvider
     {
+        private readonly string _ratesAbbreviationPredicate;
         private readonly IBaseReadRepository _readRepository;
 
-        public CurrencyRatesReadProvider(IBaseReadRepository readRepository) => _readRepository = readRepository;
-
-        public Task<IEnumerable<CurrencyRate>> GetRatesAsync()
+        public CurrencyRatesReadProvider(
+            ConfigSettings configSettings,
+            IBaseReadRepository readRepository)
         {
-            const string query = "SELECT * FROM [CurrencyRates]";
+            var abbreviations = string.Join(',', configSettings.ActiveCurrencies.Select(abbr => $"'{abbr}'"));
+
+            _readRepository = readRepository;
+            _ratesAbbreviationPredicate = $"[Abbreviation] IN ({abbreviations})";
+        }
+
+        public Task<IReadOnlyCollection<CurrencyRate>> GetRatesAsync()
+        {
+            var query = "SELECT * " +
+                        "FROM [CurrencyRates] " +
+                        $"WHERE {_ratesAbbreviationPredicate};";
 
             return _readRepository.GetAsync<CurrencyRate>(
                 query,
@@ -25,9 +37,12 @@ namespace HomeBudget.Components.CurrencyRates.Providers
                 });
         }
 
-        public Task<IEnumerable<CurrencyRate>> GetTodayRatesAsync()
+        public Task<IReadOnlyCollection<CurrencyRate>> GetTodayRatesAsync()
         {
-            const string query = "SELECT * FROM [CurrencyRates] WHERE [UpdateDate] = @Today;";
+            var query = "SELECT * " +
+                        "FROM [CurrencyRates] " +
+                        "WHERE [UpdateDate] = @Today " +
+                        $"AND {_ratesAbbreviationPredicate};";
 
             return _readRepository.GetAsync<CurrencyRate>(
                 query,

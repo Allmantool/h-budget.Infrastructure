@@ -15,11 +15,16 @@ export class Edit {
 	constructor(public rate: CurrencyRate) {}
 }
 
-export class FetchAllTodos {
+export class FetchAllCurrencyRates {
 	static readonly type = '[CURR-RATES] Fetch All';
 }
 
 export class Delete {
 	static readonly type = '[CURR-RATES] Delete';
 	constructor(public currencyId: number, public updateDate: Date) {}
+}
+
+export class SetActive {
+	static readonly type = '[CURR-TABLE-OPTIONS] Set active';
+	constructor(public id: number, public label: string) {}
 }
