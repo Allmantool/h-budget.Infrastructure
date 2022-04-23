@@ -51,7 +51,7 @@ RUN /tools/dotnet-sonarscanner begin \
     /d:sonar.login="${SONAR_TOKEN}" \
     /d:sonar.host.url="https://sonarcloud.io" \
     /d:sonar.coverage.exclusions="**/Test[s]/**/*" \
-    /d:sonar.cs.opencover.reportsPaths="/app/testresults/coverage/reports/currencyRates.coverage.xml"
+    /d:sonar.cs.opencover.reportsPaths="/app/testresults/coverage/currencyRates.coverage.xml"
 
 RUN dotnet build HomeBudget-Web-API.sln --no-restore -c Release -o /app/build
 
