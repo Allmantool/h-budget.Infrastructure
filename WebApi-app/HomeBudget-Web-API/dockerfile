@@ -87,4 +87,4 @@ RUN dotnet publish "HomeBudget-Web-API.sln" \
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "HomeBudget-Web-API/HomeBudget-Web-API.dll"]
+ENTRYPOINT ["dotnet", "HomeBudget-Web-API.dll"]
