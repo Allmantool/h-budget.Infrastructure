@@ -3,10 +3,10 @@ on:
   push:
     branches:
       - master
-      - feature/*
-      - test/*
   pull_request:
     types: [opened, synchronize, reopened]
+      - feature/*
+      - test/*
 jobs:
   build:
     name: Build

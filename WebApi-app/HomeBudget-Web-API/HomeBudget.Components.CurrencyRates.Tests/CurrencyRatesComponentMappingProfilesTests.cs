@@ -8,12 +8,10 @@ namespace HomeBudget.Components.CurrencyRates.Tests
     {
         private readonly MapperConfiguration _mapperConfiguration = new (x => x.AddMaps(ApiCallMappingProfiles.GetExecutingAssembly()));
 
-        private IMapper _mapper;
-
         [SetUp]
         public void Setup()
         {
-            _mapper = _mapperConfiguration.CreateMapper();
+            _mapperConfiguration.CreateMapper();
         }
 
         [Test]
