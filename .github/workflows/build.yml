@@ -10,8 +10,8 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
-  build:
-    name: Build
+  build-currency-rates-api:
+    name: Carrency Rates Api Quality Gate
     runs-on: ubuntu-latest
     steps:
       - name: Set up JDK 11
@@ -46,3 +46,24 @@ jobs:
         run: |
           cd WebApi-app/HomeBudget-Web-API/
           docker build --target 'publish' -t 'h-budget-${{ github.run_id }}-${{ github.run_number }}-${{ github.run_attempt }}' --build-arg SONAR_TOKEN='${{ secrets.SONAR_TOKEN }}' .
+  build-ui:
+    name: Angular UI
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x, 16.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      - name: Build and analyze
+        shell: bash
+      - run: |
+          npm ci
+          npm run build --if-present
+          npm test
