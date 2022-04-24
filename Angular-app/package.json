@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve --watch --open",
     "build": "ng build",
+    "build-prod": "ng build --prod --build-optimizer",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "test-headless-ci-only": "ng test --browsers ChromiumNoSandbox",

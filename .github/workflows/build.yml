@@ -67,7 +67,7 @@ jobs:
       - name: Build UI project
         run: |
           cd ./Angular-app
-          npm run build --if-present
+          npm run build-prod --if-present
       - name: Run UI tests
         run: |
           cd ./Angular-app
