@@ -51,19 +51,32 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [12.x, 14.x, 16.x]
+        node-version: '14'
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
     steps:
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-      - name: Build and analyze
-        shell: bash
-      - run: |
+          cache-dependency-path: ./Angular-app/package-lock.json
+      - name: Update UI dependencies
+        run: |
+          cd ./Angular-app
           npm ci
+      - name: Build UI project
+        run: |
+          cd ./Angular-app
           npm run build --if-present
-          npm test
+      - name: Run UI tests
+        run: |
+          cd ./Angular-app
+          npm run test:headless
+      - name: Run sonnarqube
+        run: |
+          cd ./Angular-app
+          npm run sonar-scanner -Dsonar.login=${{ secrets.SONAR_TOKEN }}
