@@ -63,7 +63,7 @@ jobs:
       - name: Update UI dependencies
         run: |
           cd ./Angular-app
-          npm ci
+          npm i
       - name: Build UI project
         run: |
           cd ./Angular-app
