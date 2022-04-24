@@ -1,5 +1,5 @@
 {
-  "name": "dispatcher-app",
+  "name": "h-budget",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -15,7 +15,7 @@
     "eslint": "eslint --cache --fix --ext .js,.jsx,.ts,.tsx src",
     "eslint:dump": "eslint --print-config ./.eslintrc.json",
     "sonar-scanner": "sonar-scanner",
-    "test:headless": "ng test --watch=false --code-coverage --source-map=false"
+    "test-headless": "ng test --watch=false --code-coverage --source-map=false --browsers ChromiumNoSandbox"
   },
   "husky": {
     "hooks": {

@@ -13,10 +13,10 @@ import * as _ from 'lodash';
 
 import { UnifiedCurrencyRates } from '../models/unified-currency-rates';
 import { NationalBankCurrencyProvider } from '../providers/national-bank-currency.provider';
-import { CurrencyRate } from '../../shared/Store/models/currency-rate';
+import { CurrencyRate } from '../../shared/store/models/currency-rate';
 import { AddRange, SetActive } from '../../shared/store/actions/currency-rates.actions';
 import { CurrencyRatesState } from '../../shared/store/states/currency-rates.state';
-import { CurrencyTrend } from '../../shared/Store/models/currency-trend';
+import { CurrencyTrend } from '../../shared/store/models/currency-trend';
 import { RatesCodes } from '../../shared/constants/rates-codes';
 
 @Component({

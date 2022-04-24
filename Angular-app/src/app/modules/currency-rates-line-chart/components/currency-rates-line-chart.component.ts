@@ -14,7 +14,7 @@ import { filter } from 'rxjs/operators';
 
 import { UnifiedCurrencyRates } from '../../currency-rates/models/unified-currency-rates';
 import { FetchAllCurrencyRates } from '../../shared/store/actions/currency-rates.actions';
-import { CurrencyRate } from '../../shared/Store/models/currency-rate';
+import { CurrencyRate } from '../../shared/store/models/currency-rate';
 import { CurrencyTableOptions } from '../../shared/store/models/currency-table-options';
 import { CurrencyRatesState } from '../../shared/store/states/currency-rates.state';
 

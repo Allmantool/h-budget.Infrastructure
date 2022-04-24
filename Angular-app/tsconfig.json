@@ -2,7 +2,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
+    "baseUrl": "src",
     "watch": true,
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": false,
@@ -23,8 +23,9 @@
     ]
   },
   "include": [
-    "./src"
+    "src/**/*"
   ],
+  "exclude": ["node_modules"],
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,

@@ -13,6 +13,17 @@ module.exports = function (config) {
       require('@angular-devkit/build-angular/plugins/karma'),
       require('karma-sonarqube-reporter')
     ],
+    browser: 'Chrome_without_security',
+    customLaunchers: {
+      Chrome_without_security: {
+        base: 'ChromeHeadless',
+        flags: ['--no-sandbox']
+      },
+      ChromiumNoSandbox: {
+        base: 'ChromeHeadless',
+        flags: ['--no-sandbox']
+      }
+    },
     client: {
       jasmine: {
         // you can add configuration options for Jasmine here
