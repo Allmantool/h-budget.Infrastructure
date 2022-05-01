@@ -73,10 +73,9 @@ jobs:
           npm run build-prod --if-present
       - name: Run UI tests
         run: |
-          export CHROME_BIN=/usr/bin/google-chrome
           npm run test-headless
       - name: Run sonnarqube
         env:
-            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           npm run sonar-scanner -Dsonar.login=${{ secrets.SONAR_TOKEN }}
