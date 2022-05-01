@@ -16,7 +16,7 @@ describe('AppComponent', () => {
 		expect(app).toBeTruthy();
 	});
 
-	it(`should have as title 'dispatcher-app'`, () => {
+	it(`should have as title 'h-budget'`, () => {
 		const fixture = TestBed.createComponent(DashboardComponent);
 		const app = fixture.componentInstance;
 		expect(app.browserTitle).toEqual('default-title');

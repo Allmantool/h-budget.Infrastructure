@@ -99,3 +99,6 @@ baseline.json
 # Husky
 .husky/_
 
+# sonnarqube
+reports/*
+.scannerwork/*

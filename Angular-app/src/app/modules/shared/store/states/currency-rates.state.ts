@@ -3,7 +3,6 @@ import { State, Action, StateContext, Selector } from '@ngxs/store';
 import * as _ from 'lodash';
 import { tap } from 'rxjs/operators';
 
-import { NationalBankCurrencyProvider } from 'src/app/modules/currency-rates/providers/national-bank-currency.provider';
 import { RatesCodes } from '../../constants/rates-codes';
 import {
 	Add,
@@ -15,6 +14,7 @@ import {
 import { CurrencyRate } from '../models/currency-rate';
 import { CurrencyTableItem } from '../models/currency-table-item';
 import { CurrencyTableOptions } from '../models/currency-table-options';
+import { NationalBankCurrencyProvider } from './../../../currency-rates/providers/national-bank-currency.provider';
 
 export interface ICurrencyRatesStateModel {
 	rates: CurrencyRate[];

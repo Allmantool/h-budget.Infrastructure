@@ -46,7 +46,8 @@ RUN export PATH="$PATH:/root/.dotnet/tools"
 
 RUN /tools/dotnet-sonarscanner begin \
     /o:"allmantool" \
-    /k:"Allmantool_h-budget" \
+    /k:"Allmantool_h-budget-currency-rates" \
+    /n:"h-budget-currency-rates" \
     /v:"${BUILD_VERSION}" \
     /d:sonar.login="${SONAR_TOKEN}" \
     /d:sonar.host.url="https://sonarcloud.io" \
