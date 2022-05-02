@@ -1,0 +1,28 @@
+.dahsboard-card-item {
+    display: grid;
+
+    grid-template-columns: 1fr;
+    grid-template-rows: 0.5fr 3fr 0.5fr;
+    width: 300px;
+    height: 500px;
+}
+
+.dahsboard-card-item_image {
+    background-image: url('/assets/currency-logo.png');
+    background-size: cover;
+}
+
+.dahsboard-card-item_navigate-buttom {
+    display: flex;
+    justify-content: center;
+    height: inherit;
+    align-items: self-end;
+    margin-bottom: 0;
+    padding: 0;
+}
+
+.dahsboard-card-item_content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}

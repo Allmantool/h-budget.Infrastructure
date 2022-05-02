@@ -3,12 +3,12 @@ import { Meta, Title } from '@angular/platform-browser';
 import { Location } from '@angular/common';
 
 @Component({
-	selector: 'app-dashboard-root',
-	templateUrl: './dashboard.component.html',
-	styleUrls: ['./dashboard.component.css'],
+	selector: 'main-dashboard',
+	templateUrl: './main-dashboard.component.html',
+	styleUrls: ['./main-dashboard.component.css'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DashboardComponent implements OnInit {
+export class MainDashboardComponent implements OnInit {
 	constructor(
 		private location: Location,
 		private meta: Meta,

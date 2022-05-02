@@ -1,12 +1,6 @@
-.currency-rates-grid {
-}
-
 .currency-rates-grid--width {
 	display: grid;
 	grid-template-columns: 85em;
-}
-
-.currency-rates-grid__show-button {
 }
 
 .currency-rates-grid__show-button--align-center {

@@ -12,11 +12,12 @@ import {
 import { BehaviorSubject, combineLatest, Observable, Subject, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
-import { UnifiedCurrencyRates } from '../../currency-rates/models/unified-currency-rates';
-import { FetchAllCurrencyRates } from '../../shared/store/actions/currency-rates.actions';
-import { CurrencyRate } from '../../shared/store/models/currency-rate';
-import { CurrencyTableOptions } from '../../shared/store/models/currency-table-options';
-import { CurrencyRatesState } from '../../shared/store/states/currency-rates.state';
+import { FetchAllCurrencyRates } from './../../../shared/store/actions/currency-rates.actions';
+import { CurrencyRate } from './../../../shared/store/models/currency-rate';
+import { CurrencyTableOptions } from './../../../shared/store/models/currency-table-options';
+import { CurrencyRatesState } from './../../../shared/store/states/currency-rates.state';
+import { UnifiedCurrencyRates } from './../../models/unified-currency-rates';
+
 
 export type ChartOptions = {
 	series: ApexAxisChartSeries;
@@ -26,7 +27,7 @@ export type ChartOptions = {
 };
 
 @Component({
-	selector: 'app-currency-rates-line-chart',
+	selector: 'currency-rates-line-chart',
 	templateUrl: './currency-rates-line-chart.component.html',
 	styleUrls: ['./currency-rates-line-chart.component.css'],
 })

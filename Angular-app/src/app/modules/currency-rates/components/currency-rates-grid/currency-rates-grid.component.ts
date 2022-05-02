@@ -11,21 +11,21 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { MatTableDataSource } from '@angular/material/table';
 import * as _ from 'lodash';
 
-import { UnifiedCurrencyRates } from '../models/unified-currency-rates';
-import { NationalBankCurrencyProvider } from '../providers/national-bank-currency.provider';
-import { CurrencyRate } from '../../shared/store/models/currency-rate';
-import { AddRange, SetActive } from '../../shared/store/actions/currency-rates.actions';
-import { CurrencyRatesState } from '../../shared/store/states/currency-rates.state';
-import { CurrencyTrend } from '../../shared/store/models/currency-trend';
-import { RatesCodes } from '../../shared/constants/rates-codes';
+import { UnifiedCurrencyRates } from '../../models/unified-currency-rates';
+import { NationalBankCurrencyProvider } from '../../providers/national-bank-currency.provider';
+import { CurrencyRate } from '../../../shared/store/models/currency-rate';
+import { AddRange, SetActive } from '../../../shared/store/actions/currency-rates.actions';
+import { CurrencyRatesState } from '../../../shared/store/states/currency-rates.state';
+import { CurrencyTrend } from '../../../shared/store/models/currency-trend';
+import { RatesCodes } from '../../../shared/constants/rates-codes';
 
 @Component({
-	selector: 'app-currency-rates',
-	templateUrl: './currency-rates.component.html',
-	styleUrls: ['./currency-rates.component.css'],
+	selector: 'app-currency-rates-grid',
+	templateUrl: './currency-rates-grid.component.html',
+	styleUrls: ['./currency-rates-grid.component.css'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CurrencyRatesComponent implements OnInit, OnDestroy {
+export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 	@Select(CurrencyRatesState.getRates) rates$!: Observable<CurrencyRate[]>;
 	@Select(CurrencyRatesState.getCurrencyRatesFromPreviousDay) previousDayRates$!: Observable<CurrencyRate[]>;
 
