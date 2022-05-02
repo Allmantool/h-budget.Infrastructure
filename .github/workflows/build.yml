@@ -76,6 +76,6 @@ jobs:
           npm run test-headless
       - name: Run sonnarqube
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+            GITHUB_TOKEN: ${{ github.token }}
         run: |
-          npm run sonar-scanner -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+          npm run sonar-scanner -Dsonar.login='${{ secrets.SONAR_TOKEN }}'
