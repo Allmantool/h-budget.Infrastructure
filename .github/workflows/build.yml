@@ -9,6 +9,10 @@ on:
       - 'v*'
   pull_request:
     types: [opened, synchronize, reopened]
+
+env:
+  GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
 jobs:
   build-currency-rates-api:
     name: Carrency Rates Api Quality Gate
@@ -76,6 +80,6 @@ jobs:
           npm run test-headless
       - name: Run sonnarqube
         env:
-            GITHUB_TOKEN: ${{ github.token }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           npm run sonar-scanner -Dsonar.login='${{ secrets.SONAR_TOKEN }}'
