@@ -5,4 +5,8 @@
     <span >Welcome to h-budget app</span>
 </div>
 
-<router-outlet></router-outlet>
+<router-outlet #rootAppOutlet="outlet"></router-outlet>
+
+<progress-spinner
+    [isLoaded]="rootAppOutlet.isActivated"
+></progress-spinner>

@@ -2,12 +2,12 @@ import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({
-    selector: 'app-bootsrap',
-    templateUrl: './app-boostrap.component.html',
-    styleUrls: ['./app-boostrap.component.css'],
+    selector: 'app-root',
+    templateUrl: './app-root.component.html',
+    styleUrls: ['./app-root.component.css'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppBootsrapCompenent { 
+export class AppRootCompenent { 
     constructor(
         private route: ActivatedRoute,
         private router: Router) { }

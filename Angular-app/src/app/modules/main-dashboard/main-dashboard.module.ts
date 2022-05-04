@@ -16,7 +16,7 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 import { environment } from '../../../environments/environment.prod';
 import { CurrencyRatesState } from '../shared/store/states/currency-rates.state';
 import { MainDashboardRoutingModule } from './main-dashboard-routing.module';
-import { AppBootsrapCompenent } from '../shared/components/appBoostrap/app-boostrap.component';
+
 import { CurrencyRatesGridComponent } from '../currency-rates/components/currency-rates-grid/currency-rates-grid.component';
 import { CurrencyRatesDashboardComponent } from '../currency-rates/components/currency-rates-dashboard/currency-rates-dashboard.component';
 import { CurrencyRatesLineChartComponent } from '../currency-rates/components/currency-rates-line-chart/currency-rates-line-chart.component';
@@ -25,12 +25,11 @@ import { MainDashboardCartComponent } from './components/dashboard-item/main-das
 
 @NgModule({
 	declarations: [
-		AppBootsrapCompenent,
-		MainDashboardComponent,
 		CurrencyRatesDashboardComponent,
 		CurrencyRatesGridComponent,
 		CurrencyRatesLineChartComponent,
-		MainDashboardCartComponent,
+		MainDashboardComponent,
+		MainDashboardCartComponent
 	],
 	imports: [
 		BrowserModule,
@@ -50,6 +49,6 @@ import { MainDashboardCartComponent } from './components/dashboard-item/main-das
 		NgxsReduxDevtoolsPluginModule.forRoot(),
 	],
 	providers: [],
-	bootstrap: [AppBootsrapCompenent],
+	bootstrap: [MainDashboardComponent],
 })
 export class MainDashboardModule { }
