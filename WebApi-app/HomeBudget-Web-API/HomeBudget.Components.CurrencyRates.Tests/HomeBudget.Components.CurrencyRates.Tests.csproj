@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="SonarAnalyzer.CSharp" Version="8.37.0.45539" />
+    <PackageReference Update="SonarAnalyzer.CSharp" Version="8.38.0.46746" />
   </ItemGroup>
 
 </Project>
