@@ -14,7 +14,7 @@
 **/azds.yaml
 **/bin
 **/charts
-**/Dockerfile*
+**/dockerfile*
 **/node_modules
 **/npm-debug.log
 **/obj

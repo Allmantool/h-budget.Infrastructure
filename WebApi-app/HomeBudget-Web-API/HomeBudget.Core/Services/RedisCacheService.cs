@@ -23,6 +23,8 @@ namespace HomeBudget.Core.Services
 
         public async Task<T> GetAsync<T>(string cacheKey)
         {
+            var type = await _redisDatabase.KeyTypeAsync(cacheKey);
+
             var cacheValue = await _redisDatabase.StringGetAsync(cacheKey);
 
             if (cacheValue.IsNullOrEmpty)
@@ -37,7 +39,7 @@ namespace HomeBudget.Core.Services
         {
             return Equals(cacheValue, default(T))
                 ? Task.FromResult(false)
-                : _redisDatabase.SetAddAsync(cacheKey, JsonSerializer.Serialize(cacheValue));
+                : _redisDatabase.StringSetAsync(cacheKey, JsonSerializer.Serialize(cacheValue));
         }
 
         public async Task<Result<T>> CacheWrappedMethodAsync<T>(string cacheKey, Func<Task<Result<T>>> wrappedMethod)

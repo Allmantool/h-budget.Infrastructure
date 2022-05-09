@@ -1,6 +1,6 @@
-﻿using HomeBudget.Core.Services;
+﻿using Microsoft.Extensions.DependencyInjection;
+using HomeBudget.Core.Services;
 using HomeBudget.Core.Services.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace HomeBudget.Core.Extensions
 {

@@ -1,13 +1,14 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using StackExchange.Redis;
 using HomeBudget.Components.CurrencyRates.Extensions;
 using HomeBudget.Components.CurrencyRates.Providers.Interfaces;
 using HomeBudget.Core.Constants;
 using HomeBudget.Core.Extensions;
 using HomeBudget.Core.Models;
 using HomeBudget.DataAccess.Dapper.Extensions;
-using StackExchange.Redis;
 
 namespace HomeBudget_Web_API.Extensions
 {
@@ -25,14 +26,15 @@ namespace HomeBudget_Web_API.Extensions
 
             var serviceProvider = services.BuildServiceProvider();
 
-            var databaseOptions = serviceProvider.GetRequiredService<DatabaseOptions>();
+            var databaseOptions = serviceProvider.GetRequiredService<IOptions<DatabaseOptions>>().Value;
             var configSettingsProvider = serviceProvider.GetRequiredService<IConfigSettingsProvider>();
             var configSetting = await configSettingsProvider.GetDefaultSettingsAsync();
-            var redis = await ConnectionMultiplexer.ConnectAsync(databaseOptions.RedisConnectionString);
+            var redisConnectionMultiplexer = await ConnectionMultiplexer.ConnectAsync(databaseOptions.RedisConnectionString);
 
             services
                 .AddSingleton(_ => configSetting)
-                .AddScoped(_ => redis.GetDatabase());
+                .AddSingleton(_ => redisConnectionMultiplexer)
+                .AddScoped(sp => sp.GetRequiredService<ConnectionMultiplexer>().GetDatabase());
 
             return services;
         }
