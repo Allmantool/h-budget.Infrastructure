@@ -20,6 +20,8 @@ namespace HomeBudget_Web_API.Extensions
         {
             services
                  .Configure<DatabaseOptions>(configuration.GetSection(ConfigurationSectionKeys.DatabaseOptions))
+                 .Configure<ExternalResourceUrls>(configuration.GetSection(ConfigurationSectionKeys.ExternalResourceUrls))
+                 .Configure<PollyRetryOptions>(configuration.GetSection(ConfigurationSectionKeys.PollyRetryOptions))
                  .RegisterCoreIoCDependency()
                  .RegisterCurrencyRatedIoCDependency()
                  .RegistryDapperIoCDependencies();
@@ -31,12 +33,10 @@ namespace HomeBudget_Web_API.Extensions
             var configSetting = await configSettingsProvider.GetDefaultSettingsAsync();
             var redisConnectionMultiplexer = await ConnectionMultiplexer.ConnectAsync(databaseOptions.RedisConnectionString);
 
-            services
+            return services
                 .AddSingleton(_ => configSetting)
                 .AddSingleton(_ => redisConnectionMultiplexer)
                 .AddScoped(sp => sp.GetRequiredService<ConnectionMultiplexer>().GetDatabase());
-
-            return services;
         }
     }
 }

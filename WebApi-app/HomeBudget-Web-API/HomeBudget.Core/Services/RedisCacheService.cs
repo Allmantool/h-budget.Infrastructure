@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Text.Json;
 using System.Threading.Tasks;
-using HomeBudget.Core.Models;
 using StackExchange.Redis;
+using HomeBudget.Core.Models;
 using HomeBudget.Core.Services.Interfaces;
 
 namespace HomeBudget.Core.Services
@@ -23,8 +23,6 @@ namespace HomeBudget.Core.Services
 
         public async Task<T> GetAsync<T>(string cacheKey)
         {
-            var type = await _redisDatabase.KeyTypeAsync(cacheKey);
-
             var cacheValue = await _redisDatabase.StringGetAsync(cacheKey);
 
             if (cacheValue.IsNullOrEmpty)

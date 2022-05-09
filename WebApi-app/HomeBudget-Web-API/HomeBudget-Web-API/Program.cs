@@ -15,7 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var configuration = builder.Configuration;
 var environment = builder.Environment;
-var host = builder.Host;
+_ = builder.Host;
 
 // This method gets called by the runtime. Use this method to add services to the container.
 services.AddControllers();
