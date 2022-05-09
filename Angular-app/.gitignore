@@ -102,3 +102,5 @@ baseline.json
 # sonnarqube
 reports/*
 .scannerwork/*
+
+.tools/*

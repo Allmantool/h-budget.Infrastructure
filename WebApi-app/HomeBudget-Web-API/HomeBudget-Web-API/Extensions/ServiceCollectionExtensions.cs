@@ -6,6 +6,7 @@ using HomeBudget.Components.CurrencyRates.Providers.Interfaces;
 using HomeBudget.Core.Constants;
 using HomeBudget.Core.Models;
 using HomeBudget.DataAccess.Dapper.Extensions;
+using StackExchange.Redis;
 
 namespace HomeBudget_Web_API.Extensions
 {
@@ -21,10 +22,15 @@ namespace HomeBudget_Web_API.Extensions
                  .RegistryDapperIoCDependencies();
 
             var serviceProvider = services.BuildServiceProvider();
+
+            var databaseOptions = serviceProvider.GetRequiredService<DatabaseOptions>();
             var configSettingsProvider = serviceProvider.GetRequiredService<IConfigSettingsProvider>();
             var configSetting = await configSettingsProvider.GetDefaultSettingsAsync();
+            var redis = await ConnectionMultiplexer.ConnectAsync(databaseOptions.RedisConnectionString);
 
-            services.AddSingleton(_ => configSetting);
+            services
+                .AddSingleton(_ => configSetting)
+                .AddScoped(_ => redis.GetDatabase());
 
             return services;
         }

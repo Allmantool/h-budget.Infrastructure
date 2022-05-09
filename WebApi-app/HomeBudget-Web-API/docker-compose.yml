@@ -34,7 +34,7 @@ services:
       - ${SQL_VOLUME_PATH}:/var/opt/mssql/data
 
   flyway:
-    image: flyway/flyway
+    image: flyway/flyway:latest
     container_name: flyway-migration
     command: -url=jdbc:sqlserver://homebudget-sql-server 
       -schemas=homebudget-schema
@@ -45,6 +45,14 @@ services:
       - ${FLYWAY_SCRIPTS_PATH}:/flyway/sql
     depends_on:
       - homebudget-sql-server
+
+  redis_server:
+    image: redis:latest
+    depends_on:
+      - homebudget-sql-server
+    container_name: homebudget-cache
+    ports:
+      - "6379:6379"
     
   sonarCube:
     image: sonarqube:latest
