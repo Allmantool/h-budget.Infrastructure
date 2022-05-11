@@ -20,6 +20,7 @@ services:
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
     depends_on:
       - homebudget-sql-server
+      - redis_server
       - sonarCube
 
   homebudget-sql-server:
@@ -35,16 +36,17 @@ services:
 
   flyway:
     image: flyway/flyway:latest
+    depends_on:
+      - homebudget-sql-server
     container_name: flyway-migration
-    command: -url=jdbc:sqlserver://homebudget-sql-server 
+    command: 
+      -url=jdbc:sqlserver://homebudget-sql-server 
       -schemas=homebudget-schema
       -user=sa
       -password=${SQL_PASSWORD} 
       -connectRetries=10 migrate
     volumes:
       - ${FLYWAY_SCRIPTS_PATH}:/flyway/sql
-    depends_on:
-      - homebudget-sql-server
 
   redis_server:
     image: redis:latest

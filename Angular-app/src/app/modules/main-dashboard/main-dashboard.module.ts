@@ -22,10 +22,12 @@ import { CurrencyRatesDashboardComponent } from '../currency-rates/components/cu
 import { CurrencyRatesLineChartComponent } from '../currency-rates/components/currency-rates-line-chart/currency-rates-line-chart.component';
 import { MainDashboardComponent } from './components/dashboard/main-dashboard.component';
 import { MainDashboardCartComponent } from './components/dashboard-item/main-dashboard-cart.component';
+import { AccountingGridComponent } from './../accounting/components/accounting-grid/accounting-grid.component';
 
 @NgModule({
 	declarations: [
 		CurrencyRatesDashboardComponent,
+		AccountingGridComponent,
 		CurrencyRatesGridComponent,
 		CurrencyRatesLineChartComponent,
 		MainDashboardComponent,
