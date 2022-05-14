@@ -1,26 +1,25 @@
-import { MainDashboardModule } from './../main-dashboard/main-dashboard.module';
-import { NgModule } from "@angular/core";
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClientModule } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
-import { RouterModule } from '@angular/router';
+import { NgModule } from "@angular/core";
 
-import { MainDashboardRoutingModule } from 'app/modules/main-dashboard/main-dashboard-routing.module';
-import { ProgressSpinner } from '../shared/components/progress-spinner/progress-spinner.component';
-import { AppRootCompenent } from "./components/app-root/app-root.component";
+import { AppBootsrapRoutingModule, AppRootComponent } from '../app-boostrap';
+import { AppSharedModule } from './../shared/shared.module';
 
 @NgModule({
     declarations: [
-        AppRootCompenent,
-        ProgressSpinner,
+        AppRootComponent
     ],
     imports: [
+        AppSharedModule,
+        CommonModule,
+        HttpClientModule,
         BrowserModule,
-        MainDashboardRoutingModule,
-        MainDashboardModule,
-        RouterModule,
-        MatProgressSpinnerModule,
+		BrowserAnimationsModule,
+        AppBootsrapRoutingModule,
     ],
     providers: [],
-    bootstrap: [AppRootCompenent],
+    bootstrap: [AppRootComponent],
 })
 export class AppBootsrapModule { }

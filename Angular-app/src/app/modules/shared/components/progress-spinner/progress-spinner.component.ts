@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
   selector: 'progress-spinner',
@@ -6,6 +6,6 @@ import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
   styleUrls: ['./progress-spinner.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProgressSpinner {
-    @Input() isLoaded = false;
+export class ProgressSpinnerComponent {
+  @Input() isLoaded: boolean = false;
 }

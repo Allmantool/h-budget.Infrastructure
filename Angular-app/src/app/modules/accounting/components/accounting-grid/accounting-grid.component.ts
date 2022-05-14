@@ -1,4 +1,6 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from "@angular/core";
+import { ActivatedRoute, Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
+
 import { AccountingGridRecord } from "../../models/accounting-grid-record";
 
 @Component({
@@ -7,7 +9,7 @@ import { AccountingGridRecord } from "../../models/accounting-grid-record";
     styleUrls: ['./accounting-grid.component.css'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AccountingGridComponent {
+export class AccountingGridComponent implements OnInit {
 
     public ELEMENT_DATA: AccountingGridRecord[] = [
         {
@@ -39,7 +41,7 @@ export class AccountingGridComponent {
         },
     ];
 
-    displayedColumns: string[] = [
+    public displayedColumns: string[] = [
         'date',
         'contractors',
         'category',
@@ -49,6 +51,15 @@ export class AccountingGridComponent {
         'comment'
     ];
 
-    dataSource = this.ELEMENT_DATA;
-    clickedRows = new Set<AccountingGridRecord>();
+    public dataSource = this.ELEMENT_DATA;
+    public clickedRows = new Set<AccountingGridRecord>();
+
+    constructor(private route: ActivatedRoute, private router: Router) { }
+    ngOnInit(): void {
+        this.openCrudSection();
+    }
+
+    public openCrudSection(): void {
+        //this.router.navigate([{ outlets: { 'right-sidebar': [ '/' ] }}]);
+    }
 }

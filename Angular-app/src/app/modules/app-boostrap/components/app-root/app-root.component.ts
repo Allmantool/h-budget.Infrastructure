@@ -7,7 +7,7 @@ import { ActivatedRoute, Router } from "@angular/router";
     styleUrls: ['./app-root.component.css'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppRootCompenent { 
+export class AppRootComponent { 
     constructor(
         private route: ActivatedRoute,
         private router: Router) { }

@@ -1,12 +1,12 @@
+table {
+    width: 100%;
+}
+
 .accounting-table {
     display: flex;
     justify-content: center;
+    width: 100%;
 }
-
-table {
-    width: 60%;
-}
-
 
 .mat-row .mat-cell {
     border-bottom: 1px solid transparent;

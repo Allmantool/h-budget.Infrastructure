@@ -12,7 +12,9 @@
             </p>
         </mat-card-content>
         <mat-card-actions class="dahsboard-card-item_navigate-buttom">
-            <button mat-button (click)="navigate()">Navigate</button>
+            <button mat-button routerLink='{{ navigateLink }}' routerLinkActive="active" (click)="navigate()">
+                Navigate
+            </button>
         </mat-card-actions>
     </div>
 </mat-card>

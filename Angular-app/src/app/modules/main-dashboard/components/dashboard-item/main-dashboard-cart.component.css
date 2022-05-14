@@ -1,6 +1,5 @@
 .dahsboard-card-item {
     display: grid;
-
     grid-template-columns: 1fr;
     grid-template-rows: 0.5fr 3fr 0.5fr;
     width: 300px;
