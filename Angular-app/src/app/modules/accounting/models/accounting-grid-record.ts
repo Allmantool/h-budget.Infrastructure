@@ -1,6 +1,6 @@
 export interface AccountingGridRecord {
     date: string;
-    contractors: string;
+    contractor: string;
     category: string;
     Income: number;
     expenditure: number;

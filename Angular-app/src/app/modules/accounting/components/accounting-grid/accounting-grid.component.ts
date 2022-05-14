@@ -14,7 +14,7 @@ export class AccountingGridComponent implements OnInit {
     public ELEMENT_DATA: AccountingGridRecord[] = [
         {
             date: '24.04.2022',
-            contractors: 'Перевозчик: Такси',
+            contractor: 'Перевозчик: Такси',
             category: 'Транспорт: Такси',
             Income: 0.1,
             expenditure: 0.35,
@@ -23,7 +23,7 @@ export class AccountingGridComponent implements OnInit {
         },
         {
             date: '28.04.2022',
-            contractors: 'Перевозчик: Такси',
+            contractor: 'Перевозчик: Такси',
             category: 'Транспорт: Общественный транспорт',
             Income: 0.156,
             expenditure: 0.35,
@@ -32,7 +32,7 @@ export class AccountingGridComponent implements OnInit {
         },
         {
             date: '30.04.2022',
-            contractors: 'Перевозчик: Такси',
+            contractor: 'Перевозчик: Такси',
             category: 'Транспорт: Общественный транспорт',
             Income: 216.156,
             expenditure: 11000.35,
@@ -43,7 +43,7 @@ export class AccountingGridComponent implements OnInit {
 
     public displayedColumns: string[] = [
         'date',
-        'contractors',
+        'contractor',
         'category',
         'Income',
         'expenditure',

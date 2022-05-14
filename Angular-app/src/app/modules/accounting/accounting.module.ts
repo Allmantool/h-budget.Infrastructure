@@ -1,6 +1,6 @@
-import { MatTableModule } from '@angular/material/table';
 import { NgModule } from '@angular/core';
 
+import { AppSharedModule } from './../shared/shared.module';
 import { AccountingRoutingModule, AccountingGridComponent, AccountingCrudComponent } from '../accounting';
 
 @NgModule({
@@ -9,7 +9,7 @@ import { AccountingRoutingModule, AccountingGridComponent, AccountingCrudCompone
         AccountingCrudComponent,
     ],
     imports: [
-        MatTableModule,
+        AppSharedModule,
         AccountingRoutingModule,
     ],
     providers: [],
