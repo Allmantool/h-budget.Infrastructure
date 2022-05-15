@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { InputTypes } from '../../models/input-types';
 
 @Component({
     selector: 'app-form-field',
@@ -6,5 +7,6 @@ import { Component, Input } from '@angular/core';
     styleUrls: ['./app-form-field.component.css'],
 })
 export class AppFormFieldComponent { 
-    @Input() fieldType: string = '';
+    @Input() public fieldType: string = InputTypes.INPUT;
+    @Input() public title: string = '';
 }

@@ -2,41 +2,41 @@
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
         <ng-container matColumnDef="date">
             <th mat-header-cell *matHeaderCellDef>Date</th>
-            <td mat-cell *matCellDef="let element">{{element.date}}</td>
+            <td mat-cell *matCellDef="let element">{{ element.date | date }}</td>
         </ng-container>
 
         <ng-container matColumnDef="contractor">
-            <th mat-header-cell *matHeaderCellDef>Сontractors</th>
-            <td mat-cell *matCellDef="let element">{{element.contractor}}</td>
+            <th mat-header-cell *matHeaderCellDef>Сontractor</th>
+            <td mat-cell *matCellDef="let element">{{ element.contractor }}</td>
         </ng-container>
 
         <ng-container matColumnDef="category">
             <th mat-header-cell *matHeaderCellDef>Category</th>
-            <td mat-cell *matCellDef="let element">{{element.category}}</td>
+            <td mat-cell *matCellDef="let element">{{ element.category }}</td>
         </ng-container>
 
         <ng-container matColumnDef="Income">
             <th mat-header-cell *matHeaderCellDef>Income</th>
-            <td mat-cell *matCellDef="let element">{{element.Income}}</td>
+            <td mat-cell *matCellDef="let element">{{ element.Income | accountingCurrencyFormat | currency:' ' }}</td>
         </ng-container>
 
         <ng-container matColumnDef="expenditure">
             <th mat-header-cell *matHeaderCellDef>Expenditure</th>
-            <td mat-cell *matCellDef="let element">{{element.expenditure}}</td>
+            <td mat-cell *matCellDef="let element">{{ element.expenditure | accountingCurrencyFormat | currency:' ' }}</td>
         </ng-container>
 
         <ng-container matColumnDef="balance">
             <th mat-header-cell *matHeaderCellDef>Balance</th>
-            <td mat-cell *matCellDef="let element">{{element.balance}}</td>
+            <td mat-cell *matCellDef="let element">{{ element.balance | accountingCurrencyFormat | currency:' ' }}</td>
         </ng-container>
 
         <ng-container matColumnDef="comment">
             <th mat-header-cell *matHeaderCellDef>Comment</th>
-            <td mat-cell *matCellDef="let element">{{element.comment}}</td>
+            <td mat-cell *matCellDef="let element">{{ element.comment }}</td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row (click)="clickedRows.add(row)" [class.demo-row-is-clicked]="clickedRows.has(row)"
+        <tr mat-row (click)="selectRow(row)" [class.row-is-clicked]="clickedRows.has(row)"
             *matRowDef="let row; columns: displayedColumns;">
         </tr>
     </table>

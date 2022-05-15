@@ -1,17 +1,41 @@
-<mat-form-field appearance="fill">
-    <mat-label>Input</mat-label>
-    <input matInput>
-</mat-form-field>
+<ng-container [ngSwitch]="fieldType">
 
-<mat-form-field appearance="fill">
-    <mat-label>Select</mat-label>
-    <mat-select>
-        <mat-option value="one">First option</mat-option>
-        <mat-option value="two">Second option</mat-option>
-    </mat-select>
-</mat-form-field>
+    <ng-container *ngSwitchCase="'INPUT'">
+        <ng-container *ngTemplateOutlet="inputNumbers"></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="'SELECT'">
+        <ng-container *ngTemplateOutlet="select"></ng-container>
+    </ng-container>
 
-<mat-form-field appearance="fill">
-    <mat-label>Textarea</mat-label>
-    <textarea matInput></textarea>
-</mat-form-field>
+    <ng-container *ngSwitchCase="'TEXT_AREA'">
+        <ng-container *ngTemplateOutlet="textarea"></ng-container>
+    </ng-container>
+
+    <ng-container *ngSwitchDefault>Default Template</ng-container>
+
+    <ng-template #inputNumbers>
+        <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label>{{ title }}</mat-label>
+            <input class="input-value" matInput type="number" min="0" step="1" placeholder="0.00">
+            <span matPrefix>$&nbsp;</span>
+        </mat-form-field>
+    </ng-template>
+
+    <ng-template #select>
+        <mat-form-field appearance="outline">
+            <mat-label>{{ title }}</mat-label>
+            <mat-select>
+                <mat-option value="one">First option</mat-option>
+                <mat-option value="two">Second option</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </ng-template>
+
+    <ng-template #textarea>
+        <mat-form-field appearance="outline">
+            <mat-label>{{ title }}</mat-label>
+            <textarea matInput></textarea>
+        </mat-form-field>
+    </ng-template>
+
+</ng-container>

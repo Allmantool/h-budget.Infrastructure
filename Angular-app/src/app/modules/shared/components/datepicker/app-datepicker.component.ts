@@ -1,4 +1,5 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter } from '@angular/core';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 
 @Component({
   selector: 'app-datepicker',
@@ -6,4 +7,10 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
   styleUrls: ['./app-datepicker.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DatepickerComponent {}
+export class DatepickerComponent {
+  @Input() currentDay: Date | undefined;
+
+  onChange(event: MatDatepickerInputEvent<Date, string>) {
+
+  }
+}

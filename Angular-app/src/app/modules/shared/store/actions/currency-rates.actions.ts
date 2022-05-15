@@ -1,4 +1,4 @@
-import { CurrencyRate } from '../models/currency-rate';
+import { CurrencyRate } from '../models/currency-rates/currency-rate';
 
 export class Add {
 	static readonly type = '[CURR-RATES] Add';

@@ -13,8 +13,8 @@ import { BehaviorSubject, combineLatest, Observable, Subject, Subscription } fro
 import { filter } from 'rxjs/operators';
 
 import { FetchAllCurrencyRates } from './../../../shared/store/actions/currency-rates.actions';
-import { CurrencyRate } from './../../../shared/store/models/currency-rate';
-import { CurrencyTableOptions } from './../../../shared/store/models/currency-table-options';
+import { CurrencyRate } from '../../../shared/store/models/currency-rates/currency-rate';
+import { CurrencyTableOptions } from './../../../shared/store/models/currency-rates/currency-table-options';
 import { CurrencyRatesState } from './../../../shared/store/states/currency-rates.state';
 import { UnifiedCurrencyRates } from './../../models/unified-currency-rates';
 

@@ -1,13 +1,36 @@
 <div class="crud-content">
-    <div>New record:</div>
+    <div class="record-crud-section-title">New record:</div>
     <div class="date-section">
-        <app-datepicker></app-datepicker>
+        <app-datepicker
+        [currentDay]="activeAccountingRecord?.date">
+    </app-datepicker>
     </div>
     <div class="contractor-section">
-        <app-form-field></app-form-field>
+        <app-form-field
+        [fieldType]="'SELECT'"
+        [title]="'Сontractor:'"></app-form-field>
     </div>
-    <div class="category-section"></div>
-    <div class="Income-section"></div>
-    <div class="balance-section"></div>
-    <div class="comment-section"></div>
+    <div class="category-section">
+        <app-form-field
+        [fieldType]="'SELECT'"
+        [title]="'Category:'"></app-form-field>
+    </div>
+    <div class="Income-section">
+        <app-form-field
+        [fieldType]="'INPUT'"
+        [title]="'Income:'"></app-form-field>
+    </div>
+    <div class="balance-section">
+        <app-form-field
+        [fieldType]="'INPUT'"
+        [title]="'Expenditure:'"></app-form-field>
+    </div>
+    <div class="comment-section">
+        <app-form-field
+        [title]="'Comments:'"
+        [fieldType]="'TEXT_AREA'"></app-form-field>
+    </div>
+    <div class="save-button">
+        <app-button></app-button>
+    </div>
 </div>

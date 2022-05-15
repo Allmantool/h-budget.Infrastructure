@@ -13,10 +13,10 @@ import * as _ from 'lodash';
 
 import { UnifiedCurrencyRates } from '../../models/unified-currency-rates';
 import { NationalBankCurrencyProvider } from '../../providers/national-bank-currency.provider';
-import { CurrencyRate } from '../../../shared/store/models/currency-rate';
+import { CurrencyRate } from '../../../shared/store/models/currency-rates/currency-rate';
 import { AddRange, SetActive } from '../../../shared/store/actions/currency-rates.actions';
 import { CurrencyRatesState } from '../../../shared/store/states/currency-rates.state';
-import { CurrencyTrend } from '../../../shared/store/models/currency-trend';
+import { CurrencyTrend } from './../../../shared/store/models/currency-rates/currency-trend';
 import { RatesCodes } from '../../../shared/constants/rates-codes';
 
 @Component({
@@ -60,9 +60,11 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 		private currencyRateProvider: NationalBankCurrencyProvider,
 		private store: Store
 	) { }
+	
 	ngOnDestroy(): void {
 		this.subs.forEach((s) => s.unsubscribe());
 	}
+
 	ngOnInit(): void {
 		const getRatesSub$ = this.todayCurrencyRates$
 			.pipe(
@@ -129,28 +131,28 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 			this.previousDayRates$,
 			this.currencyRateProvider.getTodayCurrencies(),
 		])
-			.pipe(take(1))
-			.subscribe(([previousDayRates, todayRates]) => {
-				todayRates.forEach((tr) => {
-					const previousDateRate = previousDayRates.find(
-						(i) => i.currencyId == tr.currencyId
-					);
+		.pipe(take(1))
+		.subscribe(([previousDayRates, todayRates]) => {
+			todayRates.forEach((tr) => {
+				const previousDateRate = previousDayRates.find(
+					(i) => i.currencyId == tr.currencyId
+				);
 
-					if (_.isNil(previousDateRate) || _.isNil(tr.ratePerUnit)) {
-						return;
-					}
+				if (_.isNil(previousDateRate) || _.isNil(tr.ratePerUnit)) {
+					return;
+				}
 
-					tr.currencyTrend = this.getTrend(
-						tr.ratePerUnit,
-						previousDateRate.ratePerUnit
-					);
+				tr.currencyTrend = this.getTrend(
+					tr.ratePerUnit,
+					previousDateRate.ratePerUnit
+				);
 
-					tr.rateDiff = _.round(((tr.ratePerUnit - previousDateRate.ratePerUnit) / previousDateRate.ratePerUnit * 100), 2).toFixed(2);
-				});
-				this.todayCurrencyRates$.next(todayRates);
-
-				this.upddateCurrencyStateStore(todayRates);
+				tr.rateDiff = _.round(((tr.ratePerUnit - previousDateRate.ratePerUnit) / previousDateRate.ratePerUnit * 100), 2).toFixed(2);
 			});
+			this.todayCurrencyRates$.next(todayRates);
+
+			this.upddateCurrencyStateStore(todayRates);
+		});
 	}
 
 	private upddateCurrencyStateStore(

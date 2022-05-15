@@ -19,6 +19,8 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 import { AppDividerComponent, ProgressSpinnerComponent, PageNotFoundComponent } from '../shared';
 import { DatepickerComponent } from './components/datepicker/app-datepicker.component';
 import { AppFormFieldComponent } from './components/form-field/app-form-field.component';
+import { AppButtonComponent } from './components/button/app-button.component';
+import { AccountingCurrencyFormatPipe } from './pipes/accouting-currency-pipe';
 
 @NgModule({
     declarations: [
@@ -27,13 +29,19 @@ import { AppFormFieldComponent } from './components/form-field/app-form-field.co
         PageNotFoundComponent,
         DatepickerComponent,
         AppFormFieldComponent,
+        AppButtonComponent,
+
+        AccountingCurrencyFormatPipe
     ],
     exports: [
+        CommonModule,
+
         AppDividerComponent,
         ProgressSpinnerComponent,
         PageNotFoundComponent,
         DatepickerComponent,
         AppFormFieldComponent,
+        AppButtonComponent,
 
         MatDividerModule,
         MatSidenavModule,
@@ -43,6 +51,8 @@ import { AppFormFieldComponent } from './components/form-field/app-form-field.co
         MatCardModule,
         MatButtonModule,
         NgApexchartsModule,
+
+        AccountingCurrencyFormatPipe
     ],
     imports: [
         CommonModule,
@@ -53,7 +63,8 @@ import { AppFormFieldComponent } from './components/form-field/app-form-field.co
         MatNativeDateModule,
         MatFormFieldModule,
         MatInputModule,
-        MatSelectModule
+        MatSelectModule,
+        MatButtonModule
     ],
     providers: [],
     bootstrap: [],

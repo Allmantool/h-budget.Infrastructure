@@ -1,5 +1,8 @@
+import { Guid } from "typescript-guid";
+
 export interface AccountingGridRecord {
-    date: string;
+    id: Guid;
+    date: Date;
     contractor: string;
     category: string;
     Income: number;

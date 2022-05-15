@@ -18,6 +18,6 @@ table {
     border-color: currentColor;
 }
 
-.demo-row-is-clicked {
+.row-is-clicked {
     font-weight: bold;
 }

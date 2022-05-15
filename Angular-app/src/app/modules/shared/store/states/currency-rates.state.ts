@@ -11,10 +11,10 @@ import {
 	FetchAllCurrencyRates,
 	SetActive,
 } from '../actions/currency-rates.actions';
-import { CurrencyRate } from '../models/currency-rate';
-import { CurrencyTableItem } from '../models/currency-table-item';
-import { CurrencyTableOptions } from '../models/currency-table-options';
+import { CurrencyRate } from '../models/currency-rates/currency-rate';
 import { NationalBankCurrencyProvider } from './../../../currency-rates/providers/national-bank-currency.provider';
+import { CurrencyTableItem } from './../models/currency-rates/currency-table-item';
+import { CurrencyTableOptions } from './../models/currency-rates/currency-table-options';
 
 export interface ICurrencyRatesStateModel {
 	rates: CurrencyRate[];
