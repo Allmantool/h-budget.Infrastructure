@@ -14,6 +14,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 import { NgApexchartsModule } from 'ng-apexcharts';
 
 import { AppDividerComponent, ProgressSpinnerComponent, PageNotFoundComponent } from '../shared';
@@ -51,6 +53,9 @@ import { AccountingCurrencyFormatPipe } from './pipes/accouting-currency-pipe';
         MatCardModule,
         MatButtonModule,
         NgApexchartsModule,
+
+        FormsModule,
+        ReactiveFormsModule,
 
         AccountingCurrencyFormatPipe
     ],

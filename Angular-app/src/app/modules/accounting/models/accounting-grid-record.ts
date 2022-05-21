@@ -5,8 +5,8 @@ export interface AccountingGridRecord {
     date: Date;
     contractor: string;
     category: string;
-    Income: number;
-    expenditure: number;
+    income: number;
+    expense: number;
     balance: number;
     comment: string;
 }

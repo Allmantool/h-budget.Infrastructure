@@ -1,8 +1,9 @@
+import { MatTableDataSource } from '@angular/material/table';
+import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
+
 import { Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { Guid } from 'typescript-guid';
-import { MatTableDataSource } from '@angular/material/table';
-import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 
 import { AccountingGridRecord } from "../../models/accounting-grid-record";
 import { AddRange, SetActive } from 'app/modules/shared/store/actions/accounting.actions';
@@ -24,8 +25,8 @@ export class AccountingGridComponent implements OnInit {
             date: new Date(2022, 24, 4),
             contractor: 'Перевозчик: Такси',
             category: 'Транспорт: Такси',
-            Income: 0,
-            expenditure: 0.35,
+            income: 0,
+            expense: 0.35,
             balance: 0.35,
             comment: 'comment'
         },
@@ -34,8 +35,8 @@ export class AccountingGridComponent implements OnInit {
             date: new Date(2022, 28, 4),
             contractor: 'Перевозчик: Такси',
             category: 'Транспорт: Общественный транспорт',
-            Income: 0,
-            expenditure: 0.35,
+            income: 0,
+            expense: 0.35,
             balance: 0.35,
             comment: 'long long comment very long long long'
         },
@@ -44,8 +45,8 @@ export class AccountingGridComponent implements OnInit {
             date: new Date(2022, 29, 4),
             contractor: 'Перевозчик: Такси',
             category: 'Транспорт: Общественный транспорт',
-            Income: 0,
-            expenditure: 11000.35,
+            income: 0,
+            expense: 11000.35,
             balance: 1201030.35,
             comment: 'long long comment very long long long'
         },
@@ -54,8 +55,8 @@ export class AccountingGridComponent implements OnInit {
             date: new Date(2022, 5, 5),
             contractor: 'Работа: GodelTech',
             category: 'Доход: Аванс',
-            Income: 15864,
-            expenditure: 0,
+            income: 15864,
+            expense: 0,
             balance: 1201030.35,
             comment: 'long long comment very long long long'
         },
@@ -65,8 +66,8 @@ export class AccountingGridComponent implements OnInit {
         'date',
         'contractor',
         'category',
-        'Income',
-        'expenditure',
+        'income',
+        'expense',
         'balance',
         'comment'
     ];

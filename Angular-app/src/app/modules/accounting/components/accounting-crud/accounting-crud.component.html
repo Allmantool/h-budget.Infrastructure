@@ -1,36 +1,43 @@
 <div class="crud-content">
-    <div class="record-crud-section-title">New record:</div>
-    <div class="date-section">
-        <app-datepicker
-        [currentDay]="activeAccountingRecord?.date">
-    </app-datepicker>
-    </div>
-    <div class="contractor-section">
-        <app-form-field
-        [fieldType]="'SELECT'"
-        [title]="'Сontractor:'"></app-form-field>
-    </div>
-    <div class="category-section">
-        <app-form-field
-        [fieldType]="'SELECT'"
-        [title]="'Category:'"></app-form-field>
-    </div>
-    <div class="Income-section">
-        <app-form-field
-        [fieldType]="'INPUT'"
-        [title]="'Income:'"></app-form-field>
-    </div>
-    <div class="balance-section">
-        <app-form-field
-        [fieldType]="'INPUT'"
-        [title]="'Expenditure:'"></app-form-field>
-    </div>
-    <div class="comment-section">
-        <app-form-field
-        [title]="'Comments:'"
-        [fieldType]="'TEXT_AREA'"></app-form-field>
-    </div>
-    <div class="save-button">
-        <app-button></app-button>
-    </div>
+    <form [formGroup]="crudRecordFg" (ngSubmit)="submit()">
+        <div class="record-crud-section-title">New record:</div>
+        <div class="date-section">
+            <app-datepicker placeholder="Choose a opeation date" formControlName="operationDate">
+            </app-datepicker>
+        </div>
+        <div class="contractor-section">
+            <app-form-field formControlName="contractor" [fieldType]="'SELECT'" [title]="'Сontractor:'"
+                [selectOptions]="contractors">
+            </app-form-field>
+        </div>
+
+        <div class="category-section">
+            <app-form-field formControlName="category" [fieldType]="'SELECT'" [title]="'Category:'"
+                [selectOptions]="getCategoryLabels()">
+            </app-form-field>
+        </div>
+
+        <ng-container #expense *ngIf="isExpenseOperation(); else income">
+            <div class="expense-section">
+                <app-form-field formControlName="expense" [fieldType]="'INPUT'" [title]="'Expense:'">
+                </app-form-field>
+            </div>
+        </ng-container>
+
+        <ng-template #income>
+            <div class="income-section">
+                <app-form-field formControlName="income" [fieldType]="'INPUT'" [title]="'Income:'">
+                </app-form-field>
+            </div>
+        </ng-template>
+
+        <div class="comment-section">
+            <app-form-field formControlName="comment" [fieldType]="'TEXT_AREA'" [title]="'Comments:'">
+            </app-form-field>
+        </div>
+        <div class="command-buttons">
+            <app-button title="Save"></app-button>
+            <app-button title="New"></app-button>
+        </div>
+    </form>
 </div>

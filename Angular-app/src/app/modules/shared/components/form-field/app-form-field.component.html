@@ -16,7 +16,8 @@
     <ng-template #inputNumbers>
         <mat-form-field appearance="outline" floatLabel="always">
             <mat-label>{{ title }}</mat-label>
-            <input class="input-value" matInput type="number" min="0" step="1" placeholder="0.00">
+            <input class="input-value" matInput type="number" min="0" step="1" placeholder="0.00"
+                (input)="updateValue($event.target)" [value]="data$ | async">
             <span matPrefix>$&nbsp;</span>
         </mat-form-field>
     </ng-template>
@@ -24,9 +25,10 @@
     <ng-template #select>
         <mat-form-field appearance="outline">
             <mat-label>{{ title }}</mat-label>
-            <mat-select>
-                <mat-option value="one">First option</mat-option>
-                <mat-option value="two">Second option</mat-option>
+            <mat-select [value]="data$ | async" (selectionChange)="updateValue($event)">
+                <ng-container *ngFor="let selectOption of selectOptions">
+                    <mat-option [value]="selectOption">{{ selectOption }}</mat-option>
+                </ng-container>
             </mat-select>
         </mat-form-field>
     </ng-template>
@@ -34,7 +36,7 @@
     <ng-template #textarea>
         <mat-form-field appearance="outline">
             <mat-label>{{ title }}</mat-label>
-            <textarea matInput></textarea>
+            <textarea matInput [value]="data$ | async" (input)="updateValue($event.target)"></textarea>
         </mat-form-field>
     </ng-template>
 

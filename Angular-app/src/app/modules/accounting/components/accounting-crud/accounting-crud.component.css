@@ -11,3 +11,17 @@
 .record-crud-section-title {
     padding-bottom: 2em;
 }
+
+.command-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.expense-section {
+    color: red;
+}
+
+.income-section {
+    color: green;
+}

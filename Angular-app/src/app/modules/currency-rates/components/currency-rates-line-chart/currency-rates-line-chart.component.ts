@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { format } from 'date-fns';
 import * as _ from 'lodash';
@@ -30,6 +30,7 @@ export type ChartOptions = {
 	selector: 'currency-rates-line-chart',
 	templateUrl: './currency-rates-line-chart.component.html',
 	styleUrls: ['./currency-rates-line-chart.component.css'],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
 	@Select(CurrencyRatesState.getCurrencyRatesByCurrencyId)
