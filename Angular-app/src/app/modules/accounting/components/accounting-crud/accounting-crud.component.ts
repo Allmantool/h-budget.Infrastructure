@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ChangeDetectorRef } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
-import { Select } from '@ngxs/store';
-import { combineLatest, Observable, Subscription } from 'rxjs';
+import { Select, Store } from '@ngxs/store';
+import { combineLatest, Observable, Subscription, BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import * as _ from 'lodash';
 
@@ -11,6 +11,7 @@ import { AccountingState } from './../../../shared/store/states/accounting.state
 import { AccountingTableOptions } from './../../../shared/store/models/accounting/accounting-table-options';
 import { OperationType } from '../../models/operation-type';
 import { OperationCategory } from './../../models/operation-category';
+import { Edit } from "app/modules/shared/store/actions/accounting.actions";
 
 @Component({
   selector: 'accounting-crud',
@@ -42,15 +43,16 @@ export class AccountingCrudComponent implements OnInit, OnDestroy {
     },
   ];
 
-  public selectedRecord: AccountingGridRecord | undefined = {} as AccountingGridRecord;
+  public selectedRecord = new BehaviorSubject<AccountingGridRecord | undefined>(undefined);
 
   public crudRecordFg: FormGroup;
 
   @Select(AccountingState.getAccountingTableOptions) accountingTableOptions$!: Observable<AccountingTableOptions>;
   @Select(AccountingState.getAccountingRecords) accountingRecords$!: Observable<AccountingGridRecord[]>;
 
-  constructor(fb: FormBuilder, private ref: ChangeDetectorRef) {
+  constructor(fb: FormBuilder, private store: Store) {
     this.crudRecordFg = fb.group({
+      "id": new FormControl(),
       "operationDate": new FormControl(),
       "contractor": new FormControl(),
       "category": new FormControl(),
@@ -72,22 +74,26 @@ export class AccountingCrudComponent implements OnInit, OnDestroy {
     ]).pipe(
       filter(([tableOptions, records]) => !_.isNil(tableOptions?.selectedRecordGuid) && !_.isNil(records))
     ).subscribe(([tableOptions, records]) => {
-      this.selectedRecord = records.find(r => tableOptions.selectedRecordGuid === r.id);
 
-      if (!_.isNil(this.crudRecordFg) && !_.isNil(this.selectedRecord)) {
+      this.selectedRecord.next(records.find(r => tableOptions.selectedRecordGuid === r.id));
+
+      if (!_.isNil(this.crudRecordFg) && !_.isNil(this.selectedRecord.value)) {
+        const recordData = this.selectedRecord.value;
+
         this.crudRecordFg.patchValue({
-          "operationDate": this.selectedRecord.date,
-          "contractor": this.selectedRecord.contractor,
-          "category": this.selectedRecord.category,
-          "income": this.selectedRecord.income,
-          "expense": this.selectedRecord.expense,
-          "comment": this.selectedRecord.comment,
+          "id": recordData.id,
+          "operationDate": recordData.operationDate,
+          "contractor": recordData.contractor,
+          "category": recordData.category,
+          "income": recordData.income,
+          "expense": recordData.expense,
+          "comment": recordData.comment,
         });
       }
     });
 
     const formChangeSubscription$ = this.crudRecordFg.valueChanges.subscribe(formData => {
-
+      this.selectedRecord.next(formData as AccountingGridRecord);
     });
 
     this.subs.push(
@@ -97,7 +103,7 @@ export class AccountingCrudComponent implements OnInit, OnDestroy {
   }
 
   public isExpenseOperation(): boolean {
-    const selectedCategoryValue = this.crudRecordFg.controls['category']?.value || this.selectedRecord?.category;
+    const selectedCategoryValue = this.crudRecordFg.controls['category']?.value || this.selectedRecord?.value?.category;
     const selectedCategory = _.find(this.categories, c => c.value === selectedCategoryValue);
 
     return selectedCategory?.type === OperationType.Expense;
@@ -107,5 +113,9 @@ export class AccountingCrudComponent implements OnInit, OnDestroy {
     return this.categories.map(c => c.value);
   }
 
-  public submit(): void { }
+  public save(): void {
+    if (!_.isNil(this.selectedRecord.value)) {
+      this.store.dispatch(new Edit(this.selectedRecord.value));
+    }
+  }
 }

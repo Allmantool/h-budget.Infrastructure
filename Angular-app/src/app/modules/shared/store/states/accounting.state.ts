@@ -1,11 +1,11 @@
-import { Guid } from 'typescript-guid';
 import { Injectable } from '@angular/core';
+
 import { Action, Selector, State, StateContext } from '@ngxs/store';
 import * as _ from 'lodash';
 
 import { AccountingTableOptions } from './../models/accounting/accounting-table-options';
 import { AccountingGridRecord } from './../../../accounting/models/accounting-grid-record';
-import { Add, AddRange, SetActive } from '../actions/accounting.actions';
+import { Add, AddRange, Edit, SetActive } from '../actions/accounting.actions';
 
 export interface IAccountingStateModel {
 	operationRecords: AccountingGridRecord[];
@@ -39,24 +39,25 @@ export class AccountingState {
 	@Action(Add)
 	add(
 		{ getState, patchState }: StateContext<IAccountingStateModel>,
-		{ rate }: Add
+		{ accountingRecord }: Add
 	): void {
 		const state = getState();
+
 		patchState({
-			operationRecords: [...state.operationRecords, rate],
+			operationRecords: [...state.operationRecords, accountingRecord],
 		});
 	}
 
 	@Action(AddRange)
 	addRange(
 		{ getState, patchState }: StateContext<IAccountingStateModel>,
-		{ rates }: AddRange
+		{ accountingRecord }: AddRange
 	): void {
 		const state = getState();
 		patchState({
 			operationRecords: _.concat(
 				state.operationRecords,
-				_.differenceWith(rates, state.operationRecords, _.isEqual)
+				_.differenceWith(accountingRecord, state.operationRecords, _.isEqual)
 			),
 		});
 	}
@@ -68,6 +69,21 @@ export class AccountingState {
 	): void {
 		patchState({
 			tableOptions: { selectedRecordGuid: id } as AccountingTableOptions
+		});
+	}
+
+	@Action(Edit)
+	edit(
+		{ getState, patchState }: StateContext<IAccountingStateModel>,
+		{ accountingRecord }: Edit
+	): void {
+		const records = [...getState().operationRecords] ;
+
+		const updatedItemIndex = _.findIndex(records, r => r.id === accountingRecord.id);
+		records.splice(updatedItemIndex, 1, accountingRecord);
+
+		patchState({
+			operationRecords: [...records],
 		});
 	}
 }

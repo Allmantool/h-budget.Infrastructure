@@ -1,5 +1,5 @@
 <div class="crud-content">
-    <form [formGroup]="crudRecordFg" (ngSubmit)="submit()">
+    <form [formGroup]="crudRecordFg" (ngSubmit)="save()">
         <div class="record-crud-section-title">New record:</div>
         <div class="date-section">
             <app-datepicker placeholder="Choose a opeation date" formControlName="operationDate">
@@ -36,7 +36,7 @@
             </app-form-field>
         </div>
         <div class="command-buttons">
-            <app-button title="Save"></app-button>
+            <app-button (click)="save" title="Save"></app-button>
             <app-button title="New"></app-button>
         </div>
     </form>

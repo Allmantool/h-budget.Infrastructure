@@ -6,6 +6,6 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class AccountingCurrencyFormatPipe implements PipeTransform {
   public transform(value: number, args?: any): string {
 
-    return value == 0 ? '' : value.toString();
+    return value == 0 ? '' : value?.toString();
   }
 }

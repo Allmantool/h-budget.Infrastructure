@@ -1,13 +1,14 @@
-import { MatTableDataSource } from '@angular/material/table';
-import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
+import { MatTable, MatTableDataSource } from '@angular/material/table';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 
 import { Select, Store } from '@ngxs/store';
-import { Observable } from 'rxjs';
+import { Observable, Subscription, BehaviorSubject } from 'rxjs';
 import { Guid } from 'typescript-guid';
 
 import { AccountingGridRecord } from "../../models/accounting-grid-record";
 import { AddRange, SetActive } from 'app/modules/shared/store/actions/accounting.actions';
 import { AccountingState } from 'app/modules/shared/store/states/accounting.state';
+import { CdkTableDataSourceInput } from '@angular/cdk/table/public-api';
 
 @Component({
     selector: 'accounting-grid',
@@ -15,14 +16,16 @@ import { AccountingState } from 'app/modules/shared/store/states/accounting.stat
     styleUrls: ['./accounting-grid.component.css'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AccountingGridComponent implements OnInit {
+export class AccountingGridComponent implements OnInit, OnDestroy {
+
+    private subs: Subscription[] = [];
 
     @Select(AccountingState.getAccountingRecords) accountingRecords$!: Observable<AccountingGridRecord[]>;
 
     public ELEMENT_DATA: AccountingGridRecord[] = [
         {
             id: Guid.create(),
-            date: new Date(2022, 24, 4),
+            operationDate: new Date(2022, 24, 4),
             contractor: 'Перевозчик: Такси',
             category: 'Транспорт: Такси',
             income: 0,
@@ -32,7 +35,7 @@ export class AccountingGridComponent implements OnInit {
         },
         {
             id: Guid.create(),
-            date: new Date(2022, 28, 4),
+            operationDate: new Date(2022, 28, 4),
             contractor: 'Перевозчик: Такси',
             category: 'Транспорт: Общественный транспорт',
             income: 0,
@@ -42,7 +45,7 @@ export class AccountingGridComponent implements OnInit {
         },
         {
             id: Guid.create(),
-            date: new Date(2022, 29, 4),
+            operationDate: new Date(2022, 29, 4),
             contractor: 'Перевозчик: Такси',
             category: 'Транспорт: Общественный транспорт',
             income: 0,
@@ -52,7 +55,7 @@ export class AccountingGridComponent implements OnInit {
         },
         {
             id: Guid.create(),
-            date: new Date(2022, 5, 5),
+            operationDate: new Date(2022, 5, 5),
             contractor: 'Работа: GodelTech',
             category: 'Доход: Аванс',
             income: 15864,
@@ -63,7 +66,7 @@ export class AccountingGridComponent implements OnInit {
     ];
 
     public displayedColumns: string[] = [
-        'date',
+        'operationDate',
         'contractor',
         'category',
         'income',
@@ -72,12 +75,23 @@ export class AccountingGridComponent implements OnInit {
         'comment'
     ];
 
-    public dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+    public dataSource$: BehaviorSubject<AccountingGridRecord[]>
+        = new BehaviorSubject<AccountingGridRecord[]>(this.ELEMENT_DATA);
     public clickedRows = new Set<AccountingGridRecord>();
 
     constructor(private store: Store) { }
     ngOnInit(): void {
         this.populateStore();
+
+        const tableDataSource$ = this.accountingRecords$.subscribe(records => {
+            this.dataSource$.next(records);
+        });
+
+        this.subs.push(tableDataSource$);
+    }
+
+    ngOnDestroy(): void {
+        this.subs.forEach((s) => s.unsubscribe());
     }
 
     public populateStore(): void {

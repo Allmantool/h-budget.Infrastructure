@@ -1,8 +1,8 @@
 <div class="accounting-table">
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-        <ng-container matColumnDef="date">
+    <table mat-table [dataSource]="dataSource$" class="mat-elevation-z8">
+        <ng-container matColumnDef="operationDate">
             <th mat-header-cell *matHeaderCellDef>Date</th>
-            <td mat-cell *matCellDef="let element">{{ element.date | date }}</td>
+            <td mat-cell *matCellDef="let element">{{ element.operationDate | date }}</td>
         </ng-container>
 
         <ng-container matColumnDef="contractor">
