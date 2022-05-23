@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ChangeDetectorRef } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
 import { Select, Store } from '@ngxs/store';
@@ -11,7 +11,7 @@ import { AccountingState } from './../../../shared/store/states/accounting.state
 import { AccountingTableOptions } from './../../../shared/store/models/accounting/accounting-table-options';
 import { OperationType } from '../../models/operation-type';
 import { OperationCategory } from './../../models/operation-category';
-import { Edit } from "app/modules/shared/store/actions/accounting.actions";
+import { Edit } from './../../../shared/store/actions/accounting.actions';
 
 @Component({
   selector: 'accounting-crud',

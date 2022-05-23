@@ -7,5 +7,5 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProgressSpinnerComponent {
-  @Input() isLoaded: boolean = false;
+  @Input() isLoaded: boolean | null = false;
 }

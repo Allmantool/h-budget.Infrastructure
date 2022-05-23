@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
+
 import { format } from 'date-fns';
 import * as _ from 'lodash';
 import {
@@ -45,7 +46,7 @@ export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
 	@Input() public chartHeight = '360';
 	public chartOptions: ChartOptions = {} as ChartOptions;
 
-	public isChartInitialized: BehaviorSubject<boolean> =
+	public isChartInitialized$: BehaviorSubject<boolean> =
 		new BehaviorSubject<boolean>(false);
 
 	public currencyRates$: Subject<UnifiedCurrencyRates[]> = new Subject<
@@ -97,7 +98,7 @@ export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
 						},
 					};
 
-					this.isChartInitialized.next(true);
+					this.isChartInitialized$.next(true);
 				})
 		);
 	}

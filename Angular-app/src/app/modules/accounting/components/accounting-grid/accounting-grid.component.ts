@@ -1,14 +1,12 @@
-import { MatTable, MatTableDataSource } from '@angular/material/table';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from "@angular/core";
 
 import { Select, Store } from '@ngxs/store';
 import { Observable, Subscription, BehaviorSubject } from 'rxjs';
 import { Guid } from 'typescript-guid';
 
 import { AccountingGridRecord } from "../../models/accounting-grid-record";
-import { AddRange, SetActive } from 'app/modules/shared/store/actions/accounting.actions';
-import { AccountingState } from 'app/modules/shared/store/states/accounting.state';
-import { CdkTableDataSourceInput } from '@angular/cdk/table/public-api';
+import { AddRange, SetActive } from './../../../shared/store/actions/accounting.actions';
+import { AccountingState } from './../../../shared/store/states/accounting.state';
 
 @Component({
     selector: 'accounting-grid',
@@ -76,26 +74,21 @@ export class AccountingGridComponent implements OnInit, OnDestroy {
     ];
 
     public dataSource$: BehaviorSubject<AccountingGridRecord[]>
-        = new BehaviorSubject<AccountingGridRecord[]>(this.ELEMENT_DATA);
+        = new BehaviorSubject<AccountingGridRecord[]>([]);
     public clickedRows = new Set<AccountingGridRecord>();
 
     constructor(private store: Store) { }
     ngOnInit(): void {
-        this.populateStore();
-
-        const tableDataSource$ = this.accountingRecords$.subscribe(records => {
-            this.dataSource$.next(records);
-        });
+        const tableDataSource$ = this.accountingRecords$
+            .subscribe(records => this.dataSource$.next(records));
 
         this.subs.push(tableDataSource$);
+
+        this.store.dispatch(new AddRange(this.ELEMENT_DATA));
     }
 
     ngOnDestroy(): void {
         this.subs.forEach((s) => s.unsubscribe());
-    }
-
-    public populateStore(): void {
-        this.store.dispatch(new AddRange(this.ELEMENT_DATA));
     }
 
     public selectRow(record: AccountingGridRecord): void {

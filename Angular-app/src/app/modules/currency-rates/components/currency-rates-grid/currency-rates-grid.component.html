@@ -1,17 +1,12 @@
-<div
-	class="
-		currency-rates-grid__show-button
-		currency-rates-grid__show-button--align-center
-	"
->
+<div class="currency-rates-grid__show-button
+			currency-rates-grid__show-button--align-center">
 	<button (click)="showUpTodayCurrencyRates()">
 		Get today currency rates
 	</button>
 </div>
 
-<div
-	class="currency-rates-grid currency-rates-grid--width"
-	*ngIf="todayCurrencyRates$ | async as todayCurrencyRates"
+<div class="currency-rates-grid currency-rates-grid--width"
+	 *ngIf="todayCurrencyRates$ | async as todayCurrencyRates"
 >
 	<table mat-table [dataSource]="todayCurrencyRates" class="mat-elevation-z8">
 		<ng-container matColumnDef="select">
