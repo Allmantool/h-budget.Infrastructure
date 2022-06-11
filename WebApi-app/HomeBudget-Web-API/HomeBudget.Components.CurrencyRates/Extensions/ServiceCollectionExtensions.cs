@@ -26,6 +26,7 @@ namespace HomeBudget.Components.CurrencyRates.Extensions
 
             return services
                 .AddScoped<IConfigSettingsProvider, ConfigSettingsProvider>()
+                .AddScoped<IConfigSettingsServices, ConfigSettingsServices>()
                 .AddScoped<ICurrencyRatesWriteProvider, CurrencyRatesWriteProvider>()
                 .AddScoped<ICurrencyRatesReadProvider, CurrencyRatesReadProvider>()
                 .AddScoped<ICurrencyRatesService, CurrencyRatesService>()
