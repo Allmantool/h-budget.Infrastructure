@@ -38,8 +38,8 @@ RUN export JAVA_HOME
 RUN export PATH=$PATH:$JAVA_HOME/bin
 
 RUN dotnet new tool-manifest
-RUN dotnet tool install dotnet-sonarscanner --tool-path /tools --version 5.5.3
-RUN dotnet tool install dotnet-reportgenerator-globaltool --tool-path /tools --version 5.1.4
+RUN dotnet tool install dotnet-sonarscanner --tool-path /tools --version 5.6.0
+RUN dotnet tool install dotnet-reportgenerator-globaltool --tool-path /tools --version 5.1.9
 
 RUN echo "##vso[task.prependpath]$HOME/.dotnet/tools"
 RUN export PATH="$PATH:/root/.dotnet/tools"
@@ -81,7 +81,6 @@ RUN dotnet publish "HomeBudget-Web-API.sln" \
           --no-restore \
           --framework net6.0 \
           -c Release \
-          -v Diagnostic \
           -o /app/publish
 
 FROM base AS final
