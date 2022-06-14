@@ -51,6 +51,10 @@ RUN dotnet tool install dotnet-reportgenerator-globaltool --tool-path /tools --v
 RUN echo "##vso[task.prependpath]$HOME/.dotnet/tools"
 RUN export PATH="$PATH:/root/.dotnet/tools"
 
+RUN echo 'PULL_REQUEST_ID': ${PULL_REQUEST_ID} \
+         'PULL_REQUEST_SOURCE_BRANCH':${PULL_REQUEST_SOURCE_BRANCH} \
+         'PULL_REQUEST_TARGET_BRANCH':${PULL_REQUEST_TARGET_BRANCH}
+
 RUN /tools/dotnet-sonarscanner begin \
     /o:"allmantool" \
     /k:"Allmantool_h-budget-currency-rates" \
