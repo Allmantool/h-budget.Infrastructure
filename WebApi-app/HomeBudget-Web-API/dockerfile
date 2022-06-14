@@ -20,15 +20,15 @@ RUN dotnet restore ./HomeBudget-Web-API.sln
 
 ARG SONAR_TOKEN
 ARG PULL_REQUEST_ID
-ARG PR_NUMBER
 ARG PULL_REQUEST_SOURCE_BRANCH
 ARG PULL_REQUEST_TARGET_BRANCH
+ARG GITHUB_RUN_ID
 
 ENV SONAR_TOKEN=${SONAR_TOKEN}
 ENV PULL_REQUEST_ID=${PULL_REQUEST_ID}
-ENV PR_NUMBER=${PR_NUMBER}
 ENV PULL_REQUEST_SOURCE_BRANCH=${PULL_REQUEST_SOURCE_BRANCH}
 ENV PULL_REQUEST_TARGET_BRANCH=${PULL_REQUEST_TARGET_BRANCH}
+ENV GITHUB_RUN_ID=${GITHUB_RUN_ID}
 
 RUN wget https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb -O packages-microsoft-prod.deb 
 RUN dpkg -i packages-microsoft-prod.deb 
@@ -53,26 +53,11 @@ RUN dotnet tool install dotnet-reportgenerator-globaltool --tool-path /tools --v
 RUN echo "##vso[task.prependpath]$HOME/.dotnet/tools"
 RUN export PATH="$PATH:/root/.dotnet/tools"
 
-RUN echo 'PULL_REQUEST_ID': ${PULL_REQUEST_ID} \
-         'PULL_REQUEST_SOURCE_BRANCH':${PULL_REQUEST_SOURCE_BRANCH} \
-         'PULL_REQUEST_TARGET_BRANCH':${PULL_REQUEST_TARGET_BRANCH}
+RUN echo '--->PULL_REQUEST_ID:' ${PULL_REQUEST_ID}
+RUN echo '--->PULL_REQUEST_SOURCE_BRANCH:' ${PULL_REQUEST_SOURCE_BRANCH}
+RUN echo '--->PULL_REQUEST_TARGET_BRANCH:' ${PULL_REQUEST_TARGET_BRANCH}
 
-RUN /tools/dotnet-sonarscanner begin \
-    /o:"allmantool" \
-    /k:"Allmantool_h-budget-currency-rates" \
-    /n:"h-budget-currency-rates" \
-    /v:"${BUILD_VERSION}" \
-    /d:sonar.login="${SONAR_TOKEN}" \
-    /d:sonar.host.url="https://sonarcloud.io" \
-    /d:sonar.pullrequest.key="${PULL_REQUEST_ID}" \
-    /d:sonar.pullrequest.branch="${PULL_REQUEST_SOURCE_BRANCH}" \
-    /d:sonar.pullrequest.base="${PULL_REQUEST_TARGET_BRANCH}" \
-    /d:sonar.coverage.exclusions="**/Test[s]/**/*" \
-    /d:sonar.coverageReportPaths="/app/testresults/coverage/reports/SonarQube.xml" \
-    /d:sonar.cs.opencover.reportsPaths="/app/testresults/coverage/currencyRates.coverage.xml" \
-    /d:sonar.pullrequest.provider="github" \
-    /d:sonar.pullrequest.github.repository="Allmantool/h-budget" \
-    /d:sonar.pullrequest.github.endpoint="https://api.github.com/";
+RUN ./startsonar.sh
 
 RUN dotnet build HomeBudget-Web-API.sln --no-restore -c Release -o /app/build
 

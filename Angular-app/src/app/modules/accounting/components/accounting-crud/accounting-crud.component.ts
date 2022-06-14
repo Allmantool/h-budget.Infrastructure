@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from "@angular/core";
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 
 import { Select, Store } from '@ngxs/store';
 import { combineLatest, Observable, Subscription, BehaviorSubject } from 'rxjs';
@@ -45,20 +45,20 @@ export class AccountingCrudComponent implements OnInit, OnDestroy {
 
   public selectedRecord = new BehaviorSubject<AccountingGridRecord | undefined>(undefined);
 
-  public crudRecordFg: FormGroup;
+  public crudRecordFg: UntypedFormGroup;
 
   @Select(AccountingState.getAccountingTableOptions) accountingTableOptions$!: Observable<AccountingTableOptions>;
   @Select(AccountingState.getAccountingRecords) accountingRecords$!: Observable<AccountingGridRecord[]>;
 
-  constructor(fb: FormBuilder, private store: Store) {
+  constructor(fb: UntypedFormBuilder, private store: Store) {
     this.crudRecordFg = fb.group({
-      "id": new FormControl(),
-      "operationDate": new FormControl(),
-      "contractor": new FormControl(),
-      "category": new FormControl(),
-      "income": new FormControl(),
-      "expense": new FormControl(),
-      "comment": new FormControl(),
+      "id": new UntypedFormControl(),
+      "operationDate": new UntypedFormControl(),
+      "contractor": new UntypedFormControl(),
+      "category": new UntypedFormControl(),
+      "income": new UntypedFormControl(),
+      "expense": new UntypedFormControl(),
+      "comment": new UntypedFormControl(),
     });
   }
 

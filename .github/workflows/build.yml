@@ -42,19 +42,28 @@ jobs:
           path: .\.sonar\scanner
           key: ${{ runner.os }}-sonar-scanner
           restore-keys: ${{ runner.os }}-sonar-scanner
-      - name: Build and analyze
+      - name: Build and analyze docker
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
           RUN_NUMBER: ${{ github.run_number }}
           RUN_ATTEMPT: ${{ github.run_attempt }}
-          PULL_REQUEST_ID: ${{ github.run_id }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          PULL_REQUEST_SOURCE_BRANCH: ${{ github.base_ref }}
-          PULL_REQUEST_TARGET_BRANCH: ${{ github.head_ref }}
+          PULL_REQUEST_ID: ${{ github.event.pull_request.number }}
+          PULL_REQUEST_SOURCE_BRANCH: ${{ github.ref }}
+          PULL_REQUEST_TARGET_BRANCH: refs/heads/master
+          ACTION: ${{ github.action }}
+          EVENT_NAME: ${{ github.event_name }}
         shell: bash
         run: |
-          docker build --target 'publish' -t 'h-budget-${{ github.run_id }}-${{ github.run_number }}-${{ github.run_attempt }}' --build-arg SONAR_TOKEN='${{ secrets.SONAR_TOKEN }}' .
+          docker build \
+          --target 'publish' -t 'h-budget-${{ github.run_id }}-${{ github.run_number }}-${{ github.run_attempt }}' \
+          --build-arg PULL_REQUEST_ID='${{ github.event.pull_request.number }}' \
+          --build-arg PULL_REQUEST_SOURCE_BRANCH='${{ github.ref }}' \
+          --build-arg PULL_REQUEST_TARGET_BRANCH=refs/heads/master \
+          --build-arg GITHUB_RUN_ID='${{ github.run_id }}' \
+          --build-arg SONAR_TOKEN='${{ secrets.SONAR_TOKEN }}' \
+          .
   build-ui:
     name: Angular UI
     runs-on: ubuntu-latest
