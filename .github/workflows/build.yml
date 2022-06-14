@@ -6,7 +6,7 @@ on:
       - feature/*
       - test/*
     tags:
-      - 'v*'
+      - "v*"
   pull_request:
     types: [opened, synchronize, reopened]
 
@@ -17,7 +17,7 @@ jobs:
   build-currency-rates-api:
     name: Carrency Rates Api Quality Gate
     runs-on: ubuntu-latest
-    defaults: 
+    defaults:
       run:
         working-directory: ./WebApi-app/HomeBudget-Web-API
     steps:
@@ -28,7 +28,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
       - name: Cache SonarCloud packages
         uses: actions/cache@v1
         with:
@@ -41,33 +41,36 @@ jobs:
         with:
           path: .\.sonar\scanner
           key: ${{ runner.os }}-sonar-scanner
-          restore-keys: ${{ runner.os }}-sonar-scanner        
+          restore-keys: ${{ runner.os }}-sonar-scanner
       - name: Build and analyze
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           RUN_ID: ${{ github.run_id }}
           RUN_NUMBER: ${{ github.run_number }}
           RUN_ATTEMPT: ${{ github.run_attempt }}
+          PULL_REQUEST_ID: ${{ GITHUB_RUN_ID }}
+          PULL_REQUEST_SOURCE_BRANCH: ${{ GITHUB_HEAD_REF }}
+          PULL_REQUEST_TARGET_BRANCH: ${{ GITHUB_BASE_REF }}
         shell: bash
         run: |
           docker build --target 'publish' -t 'h-budget-${{ github.run_id }}-${{ github.run_number }}-${{ github.run_attempt }}' --build-arg SONAR_TOKEN='${{ secrets.SONAR_TOKEN }}' .
   build-ui:
     name: Angular UI
     runs-on: ubuntu-latest
-    defaults: 
+    defaults:
       run:
         working-directory: ./Angular-app
     steps:
       - name: Check out code
         uses: actions/checkout@v2
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
       - name: Use Node.js 16.x
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
-          cache: 'npm'
+          node-version: "16"
+          cache: "npm"
           cache-dependency-path: ./Angular-app/package-lock.json
       - name: Upload & Update UI dependencies
         run: |
