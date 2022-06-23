@@ -1,4 +1,6 @@
-if [ ! -n "$GITHUB_RUN_ID" ];
+#!/bin/bash
+
+if [ ${PULL_REQUEST_ID} ];
     then
         /tools/dotnet-sonarscanner begin \
         /o:"allmantool" \
@@ -7,9 +9,9 @@ if [ ! -n "$GITHUB_RUN_ID" ];
         /v:"${GITHUB_RUN_ID}" \
         /d:sonar.login="${SONAR_TOKEN}" \
         /d:sonar.host.url="https://sonarcloud.io" \
-        /d:sonar.pullrequest.key="${GITHUB_RUN_ID}" \
-        /d:sonar.pullrequest.branch="${PULL_REQUEST_SOURCE_BRANCH}" \
-        /d:sonar.pullrequest.base="${PULL_REQUEST_TARGET_BRANCH}" \
+        /d:sonar.pullrequest.key="${PULL_REQUEST_ID}" \
+        /d:sonar.pullrequest.branch="${PULL_REQUEST_SOURCE_BRANCH:11}" \
+        /d:sonar.pullrequest.base="${PULL_REQUEST_TARGET_BRANCH:11}" \
         /d:sonar.coverage.exclusions="**/Test[s]/**/*" \
         /d:sonar.coverageReportPaths="/app/testresults/coverage/reports/SonarQube.xml" \
         /d:sonar.cs.opencover.reportsPaths="/app/testresults/coverage/currencyRates.coverage.xml" \
@@ -27,7 +29,7 @@ if [ ! -n "$GITHUB_RUN_ID" ];
         /o:"allmantool" \
         /n:"h-budget-currency-rates" \
         /v:"${GITHUB_RUN_ID}" \
-        /d:sonar.branch.name="${PULL_REQUEST_SOURCE_BRANCH}" \
+        /d:sonar.branch.name="${PULL_REQUEST_SOURCE_BRANCH:11}" \
         /d:sonar.login="${SONAR_TOKEN}" \
         /d:sonar.host.url="https://sonarcloud.io" \
         /d:sonar.coverageReportPaths="/app/testresults/coverage/reports/SonarQube.xml" \

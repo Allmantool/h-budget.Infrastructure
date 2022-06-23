@@ -42,6 +42,18 @@ jobs:
           path: .\.sonar\scanner
           key: ${{ runner.os }}-sonar-scanner
           restore-keys: ${{ runner.os }}-sonar-scanner
+      - uses: actions/checkout@v1
+      # Find the PR associated with this push, if there is one.
+      - uses: jwalton/gh-find-current-pr@v1
+        id: findPr
+        with:
+          # Can be "open", "closed", or "all".  Defaults to "open".
+          state: open
+      # This will echo "Your PR is 7", or be skipped if there is no current PR.
+      - run: echo "Your PR is ${PR}"
+        if: success() && steps.findPr.outputs.number
+        env:
+          PR: ${{ steps.findPr.outputs.pr }}
       - name: Build and analyze docker
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
@@ -49,7 +61,7 @@ jobs:
           GITHUB_RUN_ID: ${{ github.run_id }}
           RUN_NUMBER: ${{ github.run_number }}
           RUN_ATTEMPT: ${{ github.run_attempt }}
-          PULL_REQUEST_ID: ${{ github.event.pull_request.number }}
+          PULL_REQUEST_ID: ${{ steps.findPr.outputs.pr }}
           PULL_REQUEST_SOURCE_BRANCH: ${{ github.ref }}
           PULL_REQUEST_TARGET_BRANCH: refs/heads/master
           ACTION: ${{ github.action }}
@@ -58,7 +70,7 @@ jobs:
         run: |
           docker build \
           --target 'publish' -t 'h-budget-${{ github.run_id }}-${{ github.run_number }}-${{ github.run_attempt }}' \
-          --build-arg PULL_REQUEST_ID='${{ github.event.pull_request.number }}' \
+          --build-arg PULL_REQUEST_ID='${{ steps.findPr.outputs.pr }}' \
           --build-arg PULL_REQUEST_SOURCE_BRANCH='${{ github.ref }}' \
           --build-arg PULL_REQUEST_TARGET_BRANCH=refs/heads/master \
           --build-arg GITHUB_RUN_ID='${{ github.run_id }}' \

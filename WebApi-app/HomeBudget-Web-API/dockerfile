@@ -54,9 +54,12 @@ RUN echo "##vso[task.prependpath]$HOME/.dotnet/tools"
 RUN export PATH="$PATH:/root/.dotnet/tools"
 
 RUN echo '--->PULL_REQUEST_ID:' ${PULL_REQUEST_ID}
+RUN echo '--->GITHUB_RUN_ID:' ${GITHUB_RUN_ID}
 RUN echo '--->PULL_REQUEST_SOURCE_BRANCH:' ${PULL_REQUEST_SOURCE_BRANCH}
 RUN echo '--->PULL_REQUEST_TARGET_BRANCH:' ${PULL_REQUEST_TARGET_BRANCH}
 
+RUN dos2unix ./startsonar.sh
+RUN chmod +x ./startsonar.sh
 RUN ./startsonar.sh
 
 RUN dotnet build HomeBudget-Web-API.sln --no-restore -c Release -o /app/build
