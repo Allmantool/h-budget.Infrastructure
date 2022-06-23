@@ -1,4 +1,4 @@
-if [ ${GITHUB_RUN_ID} ];
+if [ ! -n "$GITHUB_RUN_ID" ];
     then
         /tools/dotnet-sonarscanner begin \
         /o:"allmantool" \
