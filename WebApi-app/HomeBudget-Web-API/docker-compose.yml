@@ -39,16 +39,18 @@ services:
       - ${SQL_VOLUME_PATH}:/var/opt/mssql/data
 
   flyway:
-    image: flyway/flyway:latest
+    image: flyway/flyway:8.5.2
     depends_on:
       - homebudget-sql-server
     container_name: flyway-migration
     command: 
-      -url=jdbc:sqlserver://homebudget-sql-server 
+      -url=jdbc:sqlserver://homebudget-sql-server
       -schemas=homebudget-schema
+      -mixed=true
+      -baselineOnMigrate=true
       -user=sa
-      -password=${SQL_PASSWORD} 
-      -connectRetries=10 migrate
+      -password=${SQL_PASSWORD}
+      -connectRetries=5 migrate
     volumes:
       - ${FLYWAY_SCRIPTS_PATH}:/flyway/sql
 
@@ -78,4 +80,4 @@ services:
 volumes:
   sonarqube_data: 
   sonarqube_extensions: 
-  sonarqube_logs: 
+  sonarqube_logs:
