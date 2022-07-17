@@ -50,7 +50,7 @@ jobs:
           # Can be "open", "closed", or "all".  Defaults to "open".
           state: open
       # This will echo "Your PR is 7", or be skipped if there is no current PR.
-      - run: Get Pull request ID
+      - name: Get pull request ID
         if: success() && steps.findPr.outputs.number
         env:
           PR: ${{ steps.findPr.outputs.pr }}
