@@ -6,6 +6,7 @@ import {
 } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatDialogConfig } from '@angular/material/dialog';
 
 import { Select, Store } from '@ngxs/store';
 import { switchMap, take } from 'rxjs/operators';
@@ -19,6 +20,8 @@ import { AddRange, SetActive } from '../../../shared/store/actions/currency-rate
 import { CurrencyRatesState } from '../../../shared/store/states/currency-rates.state';
 import { CurrencyTrend } from './../../../shared/store/models/currency-rates/currency-trend';
 import { CurrencyTableOptions } from './../../../shared/store/models/currency-rates/currency-table-options';
+import { DialogProvider } from './../../../shared/providers/dialog-provider';
+import { DateRangeDialogComponent } from './../../../shared/components/dialog/dates-rage/dates-range-dialog.component';
 
 @Component({
 	selector: 'app-currency-rates-grid',
@@ -59,6 +62,7 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 	private subs: Subscription[] = [];
 
 	constructor(
+		private dialogProvider: DialogProvider,
 		private currencyRateProvider: NationalBankCurrencyProvider,
 		private store: Store
 	) { }
@@ -82,20 +86,20 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 			this.currencyTableOptions$,
 			this.todayCurrencyRates$
 		])
-		.pipe()
-		.subscribe(([tableOptions, todayRates]) => {
-			this.todayRatesTableSelection = new SelectionModel<UnifiedCurrencyRates>(
-				false,
-				todayRates.filter((i) => i.currencyId == tableOptions.selectedItem.currencyId)
-			)
-		});
+			.pipe()
+			.subscribe(([tableOptions, todayRates]) => {
+				this.todayRatesTableSelection = new SelectionModel<UnifiedCurrencyRates>(
+					false,
+					todayRates.filter((i) => i.currencyId == tableOptions.selectedItem.currencyId)
+				)
+			});
 
 		if (getRatesSub$) {
 			this.subs.push(getRatesSub$);
 			this.subs.push(getTableOptions$);
 		}
 
-		this.showUpTodayCurrencyRates();
+		this.getTodayCurrencyRates();
 	}
 
 	public isAllSelected(): boolean {
@@ -117,7 +121,7 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 		return selectedTableItem.length === this.todayRatesTableDataSource.data.length;
 	}
 
-	public masterToggle() : void {
+	public masterToggle(): void {
 		const isAllSelected: boolean = this.isAllSelected();
 
 		if (isAllSelected && this.todayRatesTableSelection.selected.length === 1) {
@@ -135,7 +139,7 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 		}
 	}
 
-	public showUpTodayCurrencyRates(): void {
+	public getTodayCurrencyRates(): void {
 		this.currencyRateProvider.getTodayCurrencies()
 			.pipe(take(1))
 			.subscribe((todayRates) => {
@@ -168,6 +172,13 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 						.toFixed(2);
 				});
 			});
+	}
+
+	public openGetCurrencyRatesDialog(): void {
+		const dialogConfig = new MatDialogConfig();
+		dialogConfig.autoFocus = true;
+
+		this.dialogProvider.openDialog(DateRangeDialogComponent, dialogConfig);
 	}
 
 	private upddateCurrencyStateStore(

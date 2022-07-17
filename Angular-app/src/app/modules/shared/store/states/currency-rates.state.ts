@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { State, Action, StateContext, Selector } from '@ngxs/store';
 
-import * as _ from 'lodash';
+import { State, Action, StateContext, Selector } from '@ngxs/store';
 import { tap } from 'rxjs/operators';
+import * as _ from 'lodash';
 
 import { RatesCodes } from '../../constants/rates-codes';
 import {

@@ -1,4 +1,3 @@
-import { AppCoreModule } from './../core/core.module';
 import { NgModule } from "@angular/core";
 
 import {
@@ -8,6 +7,7 @@ import {
     CurrencyRatesLineChartComponent
 } from "../currency-rates";
 import { AppSharedModule } from '../shared';
+import { AppCoreModule } from './../core/core.module';
 
 @NgModule({
     declarations: [

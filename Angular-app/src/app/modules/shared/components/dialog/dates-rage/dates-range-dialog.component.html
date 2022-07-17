@@ -1,0 +1,20 @@
+<div class="dialog-content">
+    <h1 mat-dialog-title>Update rates for specify period:</h1>
+
+    <form [formGroup]="dialogFg" (ngSubmit)="save()">
+        <div class="dialog-body">
+            <div class="date-section">
+                <app-datepicker placeholder="Choose a start date" formControlName="startDate">
+                </app-datepicker>
+            </div>
+            <div class="date-section">
+                <app-datepicker placeholder="Choose an end date" formControlName="endDate">
+                </app-datepicker>
+            </div>
+        </div>
+        <div mat-dialog-actions>
+            <button mat-button mat-dialog-close>Close</button>
+            <button mat-button>Save</button>
+        </div>
+    </form>
+</div>
