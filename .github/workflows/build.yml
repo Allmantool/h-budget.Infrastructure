@@ -43,14 +43,13 @@ jobs:
           key: ${{ runner.os }}-sonar-scanner
           restore-keys: ${{ runner.os }}-sonar-scanner
       - uses: actions/checkout@v1
-      # Find the PR associated with this push, if there is one.
-      - uses: jwalton/gh-find-current-pr@v1
+      - uses: jwalton/gh-find-current-pr@v1.3.0
         id: findPr
         with:
           # Can be "open", "closed", or "all".  Defaults to "open".
           state: all
       # This will echo "Your PR is 7", or be skipped if there is no current PR.
-      - run: Get Pull request ID
+      - run: Get pull request ID
         if: success() && steps.findPr.outputs.number
         env:
           PR: ${{ steps.findPr.outputs.pr }}
