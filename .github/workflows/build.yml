@@ -50,7 +50,7 @@ jobs:
           state: all
       # This will echo "Your PR is 7", or be skipped if there is no current PR.
       - run: Get pull request ID
-        if: success() && steps.findPr.outputs.number
+        if: success()
         env:
           PR: ${{ steps.findPr.outputs.pr }}
       - name: Build and analyze docker script
