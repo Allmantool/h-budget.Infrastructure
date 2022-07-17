@@ -51,7 +51,7 @@ jobs:
       - run: Get pull request ID
         if: success()
         env:
-          PR: ${{ steps.findPr.outputs.pr }}
+          PR: 9
       - name: Build and analyze docker script
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
