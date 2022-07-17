@@ -4,7 +4,7 @@ import { CurrencyTrend } from './../../shared/store/models/currency-rates/curren
 import { NationalBankCurrencyRate } from './national-bank-currency-rate';
 
 export class UnifiedCurrencyRates {
-	constructor(private rate: Partial<NationalBankCurrencyRate>) {
+	constructor(rate: Partial<NationalBankCurrencyRate>) {
 		this.currencyId = rate.currencyId;
 		this.abbreviation = rate.abbreviation;
 		this.scale = rate.scale;

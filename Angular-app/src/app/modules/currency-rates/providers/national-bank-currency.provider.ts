@@ -9,7 +9,6 @@ import { BankCurrencyProvider } from './bank-currency.provider';
 import { NationalBankCurrencyRate } from '../models/national-bank-currency-rate';
 import { RoutesSegments } from '../../shared/constants/routes-segments';
 import { Result } from '../../shared/models/result';
-import * as _ from 'lodash';
 
 @Injectable({
 	providedIn: 'root',

@@ -4,11 +4,12 @@ import {
 	OnDestroy,
 	OnInit,
 } from '@angular/core';
-import { combineLatest, Observable, Subject, Subscription } from 'rxjs';
-import { switchMap, take } from 'rxjs/operators';
-import { Select, Store } from '@ngxs/store';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatTableDataSource } from '@angular/material/table';
+
+import { Select, Store } from '@ngxs/store';
+import { switchMap, take } from 'rxjs/operators';
+import { combineLatest, Observable, Subject, Subscription } from 'rxjs';
 import * as _ from 'lodash';
 
 import { UnifiedCurrencyRates } from '../../models/unified-currency-rates';
@@ -17,7 +18,7 @@ import { CurrencyRate } from '../../../shared/store/models/currency-rates/curren
 import { AddRange, SetActive } from '../../../shared/store/actions/currency-rates.actions';
 import { CurrencyRatesState } from '../../../shared/store/states/currency-rates.state';
 import { CurrencyTrend } from './../../../shared/store/models/currency-rates/currency-trend';
-import { RatesCodes } from '../../../shared/constants/rates-codes';
+import { CurrencyTableOptions } from './../../../shared/store/models/currency-rates/currency-table-options';
 
 @Component({
 	selector: 'app-currency-rates-grid',
@@ -27,6 +28,7 @@ import { RatesCodes } from '../../../shared/constants/rates-codes';
 })
 export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 	@Select(CurrencyRatesState.getRates) rates$!: Observable<CurrencyRate[]>;
+	@Select(CurrencyRatesState.getCurrencyTableOptions) currencyTableOptions$!: Observable<CurrencyTableOptions>;
 	@Select(CurrencyRatesState.getCurrencyRatesFromPreviousDay) previousDayRates$!: Observable<CurrencyRate[]>;
 
 	public trendRateLookup: { [trendDirection: string]: string } = {
@@ -60,7 +62,7 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 		private currencyRateProvider: NationalBankCurrencyProvider,
 		private store: Store
 	) { }
-	
+
 	ngOnDestroy(): void {
 		this.subs.forEach((s) => s.unsubscribe());
 	}
@@ -70,45 +72,52 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 			.pipe(
 				switchMap((rates) => {
 					this.todayRatesTableDataSource = new MatTableDataSource<UnifiedCurrencyRates>(rates);
-					this.todayRatesTableSelection = new SelectionModel<UnifiedCurrencyRates>(
-						false,
-						rates.filter((i) => i.currencyId == RatesCodes.USA)
-					);
-
-					const currencyRates: CurrencyRate[] = _.map(
-						rates,
-						(r) =>
-						({
-							currencyId: r.currencyId,
-							updateDate: r.updateDate,
-							ratePerUnit: r.ratePerUnit,
-						} as CurrencyRate)
-					);
-
-					this.store.dispatch(new AddRange(currencyRates));
 
 					return this.currencyRateProvider.saveCurrencies(rates);
 				})
 			)
 			.subscribe((affectedRowCount) => console.log(affectedRowCount));
 
+		const getTableOptions$ = combineLatest([
+			this.currencyTableOptions$,
+			this.todayCurrencyRates$
+		])
+		.pipe()
+		.subscribe(([tableOptions, todayRates]) => {
+			this.todayRatesTableSelection = new SelectionModel<UnifiedCurrencyRates>(
+				false,
+				todayRates.filter((i) => i.currencyId == tableOptions.selectedItem.currencyId)
+			)
+		});
+
 		if (getRatesSub$) {
 			this.subs.push(getRatesSub$);
+			this.subs.push(getTableOptions$);
 		}
+
+		this.showUpTodayCurrencyRates();
 	}
 
-	public isAllSelected() {
+	public isAllSelected(): boolean {
 		const selectedTableItem = this.todayRatesTableSelection.selected;
 		const selectedRate = _.first(selectedTableItem);
 
-		this.store.dispatch(new SetActive(
-			selectedRate?.currencyId ?? RatesCodes.USA,
-			selectedRate?.abbreviation ?? "USA"))
+		if (_.isNil(selectedRate) || _.isNil(selectedRate?.currencyId)) {
+			return false;
+		}
+
+		console.log("Current currencyId: " + selectedRate?.currencyId);
+
+		if (!_.isNil(selectedRate.currencyId) && !_.isNil(selectedRate.abbreviation)) {
+			this.store.dispatch(new SetActive(
+				selectedRate.currencyId,
+				selectedRate.abbreviation))
+		}
 
 		return selectedTableItem.length === this.todayRatesTableDataSource.data.length;
 	}
 
-	public masterToggle() {
+	public masterToggle() : void {
 		const isAllSelected: boolean = this.isAllSelected();
 
 		if (isAllSelected && this.todayRatesTableSelection.selected.length === 1) {
@@ -127,32 +136,38 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 	}
 
 	public showUpTodayCurrencyRates(): void {
+		this.currencyRateProvider.getTodayCurrencies()
+			.pipe(take(1))
+			.subscribe((todayRates) => {
+				this.upddateCurrencyStateStore(todayRates);
+				this.todayCurrencyRates$.next(todayRates);
+			});
+
 		combineLatest([
 			this.previousDayRates$,
-			this.currencyRateProvider.getTodayCurrencies(),
+			this.todayCurrencyRates$,
 		])
-		.pipe(take(1))
-		.subscribe(([previousDayRates, todayRates]) => {
-			todayRates.forEach((tr) => {
-				const previousDateRate = previousDayRates.find(
-					(i) => i.currencyId == tr.currencyId
-				);
+			.pipe(take(1))
+			.subscribe(([previousDayRates, todayRates]) => {
+				todayRates.forEach((tr) => {
+					const previousDateRate = previousDayRates
+						.find((i) => i.currencyId == tr.currencyId);
 
-				if (_.isNil(previousDateRate) || _.isNil(tr.ratePerUnit)) {
-					return;
-				}
+					if (_.isNil(previousDateRate) || _.isNil(tr.ratePerUnit)) {
+						return;
+					}
 
-				tr.currencyTrend = this.getTrend(
-					tr.ratePerUnit,
-					previousDateRate.ratePerUnit
-				);
+					tr.currencyTrend = this.getTrend(
+						tr.ratePerUnit,
+						previousDateRate.ratePerUnit
+					);
 
-				tr.rateDiff = _.round(((tr.ratePerUnit - previousDateRate.ratePerUnit) / previousDateRate.ratePerUnit * 100), 2).toFixed(2);
+					tr.rateDiff = _.round(
+						(tr.ratePerUnit - previousDateRate.ratePerUnit) / previousDateRate.ratePerUnit * 100,
+						2)
+						.toFixed(2);
+				});
 			});
-			this.todayCurrencyRates$.next(todayRates);
-
-			this.upddateCurrencyStateStore(todayRates);
-		});
 	}
 
 	private upddateCurrencyStateStore(

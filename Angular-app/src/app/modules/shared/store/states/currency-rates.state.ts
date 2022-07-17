@@ -53,14 +53,14 @@ export class CurrencyRatesState {
 
 	@Selector([CurrencyRatesState.getRates])
 	static getCurrencyRatesFromPreviousDay(
-		state: ICurrencyRatesStateModel
+		rates: CurrencyRate[]
 	): CurrencyRate[] {
-		const dates = _.chain(state.rates).map(i => i.updateDate).uniqBy(i => i).value();
-		const previousDayDate = dates[dates.length - 2];
+		const dates = _.chain(rates).map(i => i.updateDate).uniqBy(i => i).value();
+		const penultimateDate = dates[dates.length - 2];
 
 		return _.filter(
-			state.rates,
-			(r) => r.updateDate === previousDayDate
+			rates,
+			(r) => r.updateDate === penultimateDate
 		);
 	}
 
@@ -83,7 +83,7 @@ export class CurrencyRatesState {
 					} as CurrencyRate)
 				);
 
-				ctx.patchState({ rates });
+				ctx.patchState({ rates: rates });
 			})
 		);
 	}
