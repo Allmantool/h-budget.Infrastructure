@@ -6,8 +6,10 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
     styleUrls: ['./app-button.component.css'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppButtonComponent { 
+export class AppButtonComponent {
     @Input() public title: string = '';
 
-    constructor() { }
+    constructor() {
+        // This is intentional
+    }
 }

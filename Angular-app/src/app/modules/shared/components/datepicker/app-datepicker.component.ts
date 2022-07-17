@@ -3,7 +3,6 @@ import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { BehaviorSubject } from 'rxjs';
-import * as _ from 'lodash';
 
 @Component({
   selector: 'app-datepicker',
@@ -20,7 +19,7 @@ import * as _ from 'lodash';
 })
 export class DatepickerComponent implements ControlValueAccessor {
   private onTouched!: Function;
-  private onChanged!: (value: Date | null) => { };
+  private onChanged!: (value: Date | null) => {};
 
   private disabled = false;
 
@@ -28,12 +27,14 @@ export class DatepickerComponent implements ControlValueAccessor {
 
   @Input() public dateFormat: string = 'MM/DD/YYYY';
 
-  @Output() public onDateChanged = new EventEmitter<Date | null>();;
+  @Output() public onDateChanged = new EventEmitter<Date | null>();
 
   public data$: BehaviorSubject<Date | null>
     = new BehaviorSubject<Date | null>(null);
 
-  constructor() { }
+  constructor() {
+    // This is intentional
+  }
 
   writeValue(value: Date | null): void {
     this.data$.next(value);
