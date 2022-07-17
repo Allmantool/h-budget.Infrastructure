@@ -26,7 +26,7 @@ jobs:
         with:
           java-version: 1.11
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v1
         with:
           fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
       - name: Cache SonarCloud packages
@@ -42,16 +42,17 @@ jobs:
           path: .\.sonar\scanner
           key: ${{ runner.os }}-sonar-scanner
           restore-keys: ${{ runner.os }}-sonar-scanner
-      - uses: jwalton/gh-find-current-pr@v1.3.0
+      - name: Set up 'Find Current Pull Request'
+        uses: jwalton/gh-find-current-pr@v1
         id: findPr
         with:
           # Can be "open", "closed", or "all".  Defaults to "open".
-          state: all
-      # This will echo "Your PR is 7", or be skipped if there is no current PR.
-      - run: Get pull request ID
-        if: success()
+          state: open
+      - name: Get pull request ID
+        run: echo "Your PR is ${PR}"
+        if: success() && steps.findPr.outputs.number
         env:
-          PR: 9
+          PR: ${{ steps.findPr.outputs.pr }}
       - name: Build and analyze docker script
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
