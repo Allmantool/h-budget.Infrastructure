@@ -9,18 +9,31 @@ import { BankCurrencyProvider } from './bank-currency.provider';
 import { NationalBankCurrencyRate } from '../models/national-bank-currency-rate';
 import { RoutesSegments } from '../../shared/constants/routes-segments';
 import { Result } from '../../shared/models/result';
+import { DialogDaysRangePayload } from '../../shared/models/dialog-dates-range-payload';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class NationalBankCurrencyProvider implements BankCurrencyProvider {
 	constructor(private http: HttpClient) { }
+	public getCurrenciesForSpecifiedPeriod(payload: DialogDaysRangePayload): Observable<UnifiedCurrencyRates[]> {
+		return this.http
+			.post<Result<UnifiedCurrencyRates[]>>(
+				`${RoutesSegments.HOME_BUDGET_APP_HOST}/currencyRates/period`,
+				{
+					startDate: payload.startDate,
+					endDate: payload.endDate
+				}
+			)
+			.pipe(map(r => r.payload),retry(3), take(1));
+	}
+
 	public saveCurrencies(rates: UnifiedCurrencyRates[]): Observable<Result<number>> {
 		return this.http
 			.post<Result<number>>(
 				`${RoutesSegments.HOME_BUDGET_APP_HOST}/currencyRates`,
 				{
-					CurrencyRates: rates,
+					currencyRates: rates,
 				}
 			)
 			.pipe(

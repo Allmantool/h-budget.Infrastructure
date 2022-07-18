@@ -1,5 +1,8 @@
-import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Inject } from "@angular/core";
 import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from "@angular/forms";
+import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+
+import { DialogContainer } from "app/modules/shared/models/dialog-container";
 
 @Component({
     selector: 'dates-range-dialog',
@@ -10,14 +13,26 @@ import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from "@angul
 export class DateRangeDialogComponent {
     public dialogFg: UntypedFormGroup;
 
-    constructor(fb: UntypedFormBuilder) {
+    public title: string;
+
+    constructor(
+        private dialogRef: MatDialogRef<DateRangeDialogComponent>,
+        fb: UntypedFormBuilder,
+        @Inject(MAT_DIALOG_DATA) data: DialogContainer) {
+
         this.dialogFg = fb.group({
             "startDate": new UntypedFormControl(new Date()),
             "endDate": new UntypedFormControl(new Date())
         });
+
+        this.title = data.title;
     }
 
-    public save(): void {
-        let formState = this.dialogFg.value;
+    public close() {
+        this.dialogRef.close();
+    }
+
+    public getRates(): void {
+        this.dialogRef.close(this.dialogFg.value);
     }
 }

@@ -22,6 +22,8 @@ import { CurrencyTrend } from './../../../shared/store/models/currency-rates/cur
 import { CurrencyTableOptions } from './../../../shared/store/models/currency-rates/currency-table-options';
 import { DialogProvider } from './../../../shared/providers/dialog-provider';
 import { DateRangeDialogComponent } from './../../../shared/components/dialog/dates-rage/dates-range-dialog.component';
+import { DialogContainer } from './../../../shared/models/dialog-container';
+import { DialogDaysRangePayload } from './../../..//shared/models/dialog-dates-range-payload';
 
 @Component({
 	selector: 'app-currency-rates-grid',
@@ -175,10 +177,34 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 	}
 
 	public openGetCurrencyRatesDialog(): void {
-		const dialogConfig = new MatDialogConfig();
-		dialogConfig.autoFocus = true;
+		const config = new MatDialogConfig<DialogContainer>();
 
-		this.dialogProvider.openDialog(DateRangeDialogComponent, dialogConfig);
+		const onGetRatesForPeriod = (payload: DialogDaysRangePayload) => {
+			this.currencyRateProvider
+				.getCurrenciesForSpecifiedPeriod(payload)
+				.pipe(take(1))
+				.subscribe((unifiedRates => {
+					const rates: CurrencyRate[] = _.map(
+						unifiedRates,
+						(r) =>
+						({
+							currencyId: r.currencyId,
+							updateDate: r.updateDate,
+							ratePerUnit: r.ratePerUnit,
+						} as CurrencyRate)
+					);
+
+					this.store.dispatch(new AddRange(rates))
+				}));
+
+			console.log(payload);
+		};
+
+		config.data = {
+			title: 'Update rates for specify period:'
+		} as DialogContainer;
+
+		this.dialogProvider.openDialog(DateRangeDialogComponent, onGetRatesForPeriod, config);
 	}
 
 	private upddateCurrencyStateStore(

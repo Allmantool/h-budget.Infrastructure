@@ -77,5 +77,6 @@ import { DateRangeDialogComponent } from './components/dialog/dates-rage/dates-r
     ],
     providers: [],
     bootstrap: [],
+    entryComponents: [DateRangeDialogComponent]
 })
 export class AppSharedModule { }
