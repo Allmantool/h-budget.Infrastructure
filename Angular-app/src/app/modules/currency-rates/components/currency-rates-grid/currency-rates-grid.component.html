@@ -1,10 +1,10 @@
 <div class="currency-rates-grid__show-button
 			currency-rates-grid__show-button--align-center"
-	*ngIf="rates$ | async as rates">
-	<button (click)="getTodayCurrencyRates()">
+	*ngIf="todayCurrencyRates$ | async as todayCurrencyRates">
+	<button mat-raised-button (click)="getTodayCurrencyRates()">
 		Get today currency rates
 	</button>
-	<button (click)="openGetCurrencyRatesDialog()">
+	<button mat-raised-button (click)="openGetCurrencyRatesDialog()">
 		Get currency rates for date range
 	</button>
 </div>

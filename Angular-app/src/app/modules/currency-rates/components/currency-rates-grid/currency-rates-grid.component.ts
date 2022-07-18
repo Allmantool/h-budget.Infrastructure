@@ -184,20 +184,8 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 				.getCurrenciesForSpecifiedPeriod(payload)
 				.pipe(take(1))
 				.subscribe((unifiedRates => {
-					const rates: CurrencyRate[] = _.map(
-						unifiedRates,
-						(r) =>
-						({
-							currencyId: r.currencyId,
-							updateDate: r.updateDate,
-							ratePerUnit: r.ratePerUnit,
-						} as CurrencyRate)
-					);
-
-					this.store.dispatch(new AddRange(rates))
+					this.store.dispatch(new AddRange(this.mapToCurrencyRate(unifiedRates)))
 				}));
-
-			console.log(payload);
 		};
 
 		config.data = {
@@ -210,17 +198,7 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 	private upddateCurrencyStateStore(
 		todayRates: UnifiedCurrencyRates[]
 	): void {
-		const currencyRates: CurrencyRate[] = _.map(
-			todayRates,
-			(r) =>
-			({
-				currencyId: r.currencyId,
-				updateDate: r.updateDate,
-				ratePerUnit: r.ratePerUnit,
-			} as CurrencyRate)
-		);
-
-		this.store.dispatch(new AddRange(currencyRates));
+		this.store.dispatch(new AddRange(this.mapToCurrencyRate(todayRates)));
 	}
 
 	private getTrend(todayDayRate?: number, previousDayRate?: number): string {
@@ -237,5 +215,16 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 		}
 
 		return CurrencyTrend.down;
+	}
+
+	private mapToCurrencyRate(todayRates: UnifiedCurrencyRates[]): CurrencyRate[] {
+		return _.map(
+			todayRates,
+			(r) =>
+			({
+				currencyId: r.currencyId,
+				updateDate: r.updateDate,
+				ratePerUnit: r.ratePerUnit,
+			} as CurrencyRate));
 	}
 }
