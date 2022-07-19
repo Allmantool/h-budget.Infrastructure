@@ -32,12 +32,24 @@ namespace HomeBudget_Web_API.Controllers
         }
 
         [HttpPost]
-        public async Task<Result<int>> SaveRatesAsync([FromBody] CurrencySaveRatesRequest saveRatesRequest)
+        public async Task<Result<int>> SaveRatesAsync([FromBody] CurrencySaveRatesRequest request)
         {
             var unifiedCurrencyRates = _mapper
-                .Map<IReadOnlyCollection<CurrencyRate>>(saveRatesRequest.CurrencyRates);
+                .Map<IReadOnlyCollection<CurrencyRate>>(request.CurrencyRates);
 
             return await _currencyRatesService.SaveTodayRatesIfNotExistAsync(unifiedCurrencyRates);
+        }
+
+        [HttpPost("/currencyRates/period")]
+        public async Task<Result<IReadOnlyCollection<CurrencyRate>>> GetTodayRatesForPeriodAsync([FromBody] GetCurrencyRatesForPeriodRequest request)
+        {
+            var redisCacheKey = $"{CacheKeyPrefix}" +
+                                $"|{nameof(GetTodayRatesForPeriodAsync)}" +
+                                $"|{request.StartDate.ToShortDateString()}-{request.EndDate.ToShortDateString()}";
+
+            return await _redisCacheService.CacheWrappedMethodAsync(
+                redisCacheKey,
+                () => _currencyRatesService.GetTodayRatesForPeriodAsync(request.StartDate, request.EndDate));
         }
 
         [HttpGet]

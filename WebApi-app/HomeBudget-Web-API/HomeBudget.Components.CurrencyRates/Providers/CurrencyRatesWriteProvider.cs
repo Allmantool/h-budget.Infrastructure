@@ -12,7 +12,7 @@ namespace HomeBudget.Components.CurrencyRates.Providers
 
         public CurrencyRatesWriteProvider(IBaseWriteRepository writeRepository) => _writeRepository = writeRepository;
 
-        public Task<int> SaveRatesAsync(IEnumerable<CurrencyRate> rates)
+        public Task<int> SaveRatesAsync(IReadOnlyCollection<CurrencyRate> rates)
         {
             const string query = "INSERT INTO dbo.[CurrencyRates] " +
                                         "([CurrencyId], [Name], [Abbreviation], [Scale], [OfficialRate], [RatePerUnit], [UpdateDate]) " +

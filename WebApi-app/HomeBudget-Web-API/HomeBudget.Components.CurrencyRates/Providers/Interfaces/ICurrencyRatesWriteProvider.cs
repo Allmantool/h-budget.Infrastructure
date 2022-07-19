@@ -6,6 +6,6 @@ namespace HomeBudget.Components.CurrencyRates.Providers.Interfaces
 {
     public interface ICurrencyRatesWriteProvider
     {
-        Task<int> SaveRatesAsync(IEnumerable<CurrencyRate> rates);
+        Task<int> SaveRatesAsync(IReadOnlyCollection<CurrencyRate> rates);
     }
 }

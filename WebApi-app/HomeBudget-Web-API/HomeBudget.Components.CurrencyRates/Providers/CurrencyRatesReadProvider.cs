@@ -17,17 +17,33 @@ namespace HomeBudget.Components.CurrencyRates.Providers
             ConfigSettings configSettings,
             IBaseReadRepository readRepository)
         {
-            var abbreviations = string.Join(',', configSettings.ActiveCurrencies.Select(abbr => $"'{abbr}'"));
+            var abbreviations = string.Join(',', configSettings.ActiveNationalBankCurrencies.Select(i => $"'{i.Abbreviation}'"));
 
             _readRepository = readRepository;
             _ratesAbbreviationPredicate = $"[Abbreviation] IN ({abbreviations})";
         }
 
+        public Task<IReadOnlyCollection<CurrencyRate>> GetRatesForPeriodAsync(DateTime startDate, DateTime endDate)
+        {
+            var query = "SELECT * " +
+                                "FROM [CurrencyRates] " +
+                               "WHERE [UpdateDate] BETWEEN @StartDate AND @EndDate " +
+                                $"AND {_ratesAbbreviationPredicate};";
+
+            return _readRepository.GetAsync<CurrencyRate>(
+                query,
+                new
+                {
+                    StartDate = startDate.ToShortDateString(),
+                    EndDate = endDate.ToShortDateString()
+                });
+        }
+
         public Task<IReadOnlyCollection<CurrencyRate>> GetRatesAsync()
         {
             var query = "SELECT * " +
-                        "FROM [CurrencyRates] " +
-                        $"WHERE {_ratesAbbreviationPredicate};";
+                                "FROM [CurrencyRates] " +
+                              $"WHERE {_ratesAbbreviationPredicate};";
 
             return _readRepository.GetAsync<CurrencyRate>(
                 query,
@@ -40,9 +56,9 @@ namespace HomeBudget.Components.CurrencyRates.Providers
         public Task<IReadOnlyCollection<CurrencyRate>> GetTodayRatesAsync()
         {
             var query = "SELECT * " +
-                        "FROM [CurrencyRates] " +
-                        "WHERE [UpdateDate] = @Today " +
-                        $"AND {_ratesAbbreviationPredicate};";
+                                "FROM [CurrencyRates] " +
+                               "WHERE [UpdateDate] = @Today " +
+                                $"AND {_ratesAbbreviationPredicate};";
 
             return _readRepository.GetAsync<CurrencyRate>(
                 query,
