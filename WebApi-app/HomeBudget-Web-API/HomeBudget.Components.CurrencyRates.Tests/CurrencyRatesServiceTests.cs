@@ -1,63 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+
 using AutoMapper;
 using Moq;
 using NUnit.Framework;
 
-using HomeBudget.Components.CurrencyRates.Constants;
+using HomeBudget.Components.CurrencyRates.Extensions;
 using HomeBudget.Components.CurrencyRates.MapperProfileConfigurations;
 using HomeBudget.Components.CurrencyRates.Models;
 using HomeBudget.Components.CurrencyRates.Models.Api;
 using HomeBudget.Components.CurrencyRates.Providers.Interfaces;
 using HomeBudget.Components.CurrencyRates.Services;
 using HomeBudget.Components.CurrencyRates.Services.Interfaces;
+using HomeBudget.Core.Constants;
 
 namespace HomeBudget.Components.CurrencyRates.Tests
 {
     [TestFixture]
     public class CurrencyRatesServiceTests
     {
-        private readonly Mock<INationalBankApiClient> _nationalBankApiClientMock = new ();
-        private readonly Mock<ICurrencyRatesReadProvider> _currencyRatesReadProviderMock = new ();
-        private readonly Mock<ICurrencyRatesWriteProvider> _currencyRatesWriteProviderMock = new ();
+        private readonly Mock<INationalBankApiClient> _nationalBankApiClientMock = new();
+        private readonly Mock<ICurrencyRatesReadProvider> _currencyRatesReadProviderMock = new();
+        private readonly Mock<ICurrencyRatesWriteProvider> _currencyRatesWriteProviderMock = new();
 
         private CurrencyRatesService _sut;
 
         [SetUp]
         public void Setup()
         {
-            _sut = new CurrencyRatesService(
-                GetDefaultMapper(),
-                null,
-                _nationalBankApiClientMock.Object,
-                _currencyRatesReadProviderMock.Object,
-                _currencyRatesWriteProviderMock.Object);
-        }
-
-        [Test]
-        public async Task GetTodayRatesForPeriodAsync_When_Result()
-        {
-            const int expectedRatesCount = 4;
-
-            var testStartDate = new DateTime(2021, 3, 2);
-            var testEndDate = new DateTime(2021, 8, 2);
-
-            var config = new ConfigSettings
-            {
-                ActiveNationalBankCurrencies = new[]
-                {
-                    new ConfigCurrency
-                    {
-                        Abbreviation = "Abb-A",
-                    },
-                    new ConfigCurrency
-                    {
-                        Abbreviation = "Abb-B",
-                    }
-                }
-            };
-
             _nationalBankApiClientMock
                 .Setup(i => i.GetTodayRatesAsync())
                 .ReturnsAsync(new[]
@@ -79,6 +51,37 @@ namespace HomeBudget.Components.CurrencyRates.Tests
                         Scale = 1
                     },
                 });
+
+            _sut = new CurrencyRatesService(
+                GetDefaultMapper(),
+                null,
+                _nationalBankApiClientMock.Object,
+                _currencyRatesReadProviderMock.Object,
+                _currencyRatesWriteProviderMock.Object);
+        }
+
+        [Test]
+        public async Task GetTodayRatesForPeriodAsync_WhenPerformSeveralApiCallsForCurrencies_ResultExpectedRatesCount()
+        {
+            const int expectedRatesCount = 4;
+
+            var testStartDate = new DateTime(2021, 3, 2);
+            var testEndDate = new DateTime(2021, 8, 2);
+
+            var config = new ConfigSettings
+            {
+                ActiveNationalBankCurrencies = new[]
+                {
+                    new ConfigCurrency
+                    {
+                        Abbreviation = "Abb-A",
+                    },
+                    new ConfigCurrency
+                    {
+                        Abbreviation = "Abb-B",
+                    }
+                }
+            };
 
             _nationalBankApiClientMock
                 .Setup(i => i.GetRatesForPeriodAsync(
@@ -127,7 +130,61 @@ namespace HomeBudget.Components.CurrencyRates.Tests
 
             var rates = await _sut.GetTodayRatesForPeriodAsync(testStartDate, testEndDate);
 
-            Assert.AreEqual(expectedRatesCount, rates.Payload.Count);
+            Assert.AreEqual(expectedRatesCount, rates.Payload.SelectMany(i => i.RateValues).Count());
+        }
+
+        [Test]
+        public void CurrencyRatesGroup_WhenMapToCurrencyRateGroupedFromCurrencyRates_ReturnsExpectedRatesGroupCount()
+        {
+            var rates = new[]
+            {
+                new CurrencyRate
+                {
+                    CurrencyId = 1,
+                    Scale = 1,
+                    Name = "Name_A",
+                    Abbreviation = "Currency_Code_A",
+                    OfficialRate = 1.1m,
+                    RatePerUnit = 1.1m,
+                    UpdateDate = new DateTime(2022, 7, 1)
+                },
+                new CurrencyRate
+                {
+                    CurrencyId = 1,
+                    Scale = 1,
+                    Name = "Name_A",
+                    Abbreviation = "Currency_Code_A",
+                    OfficialRate = 1.3m,
+                    RatePerUnit = 1.3m,
+                    UpdateDate = new DateTime(2022, 7, 2)
+                },
+                new CurrencyRate
+                {
+                    CurrencyId = 2,
+                    Scale = 1,
+                    Name = "Name_B",
+                    Abbreviation = "Currency_Code_B",
+                    OfficialRate = 2.1m,
+                    RatePerUnit = 2.1m,
+                    UpdateDate = new DateTime(2022, 7, 1)
+                },
+                new CurrencyRate
+                {
+                    CurrencyId = 2,
+                    Scale = 1,
+                    Name = "Name_B",
+                    Abbreviation = "Currency_Code_B",
+                    OfficialRate = 2.2m,
+                    RatePerUnit = 3.1m,
+                    UpdateDate = new DateTime(2022, 7, 2)
+                },
+            };
+
+            var mapper = GetDefaultMapper();
+
+            var currencyRatesGroups = rates.MapToCurrencyRateGrouped(mapper);
+
+            Assert.AreEqual(2, currencyRatesGroups.Count());
         }
 
         private static IMapper GetDefaultMapper()
@@ -135,6 +192,7 @@ namespace HomeBudget.Components.CurrencyRates.Tests
             return new Mapper(new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile<CurrencyRateProfiler>();
+                cfg.AddProfile<CurrencyRateGroupedProfile>();
             }));
         }
     }

@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+
+using HomeBudget.Components.CurrencyRates.Models;
 using HomeBudget.Components.CurrencyRates.Services.Interfaces;
+using HomeBudget.Core.Constants;
 using HomeBudget.Core.Models;
 using HomeBudget.Core.Services.Interfaces;
 using HomeBudget_Web_API.Models;
@@ -37,15 +41,15 @@ namespace HomeBudget_Web_API.Controllers
             var unifiedCurrencyRates = _mapper
                 .Map<IReadOnlyCollection<CurrencyRate>>(request.CurrencyRates);
 
-            return await _currencyRatesService.SaveTodayRatesIfNotExistAsync(unifiedCurrencyRates);
+            return await _currencyRatesService.SaveIfNotExistAsync(() => Task.FromResult(unifiedCurrencyRates));
         }
 
         [HttpPost("/currencyRates/period")]
-        public async Task<Result<IReadOnlyCollection<CurrencyRate>>> GetTodayRatesForPeriodAsync([FromBody] GetCurrencyRatesForPeriodRequest request)
+        public async Task<Result<IReadOnlyCollection<CurrencyRateGrouped>>> GetTodayRatesForPeriodAsync([FromBody] GetCurrencyRatesForPeriodRequest request)
         {
             var redisCacheKey = $"{CacheKeyPrefix}" +
                                 $"|{nameof(GetTodayRatesForPeriodAsync)}" +
-                                $"|{request.StartDate.ToShortDateString()}-{request.EndDate.ToShortDateString()}";
+                                $"|{request.StartDate.ToString(DateFormats.NationalBankExternalApi)}-{request.EndDate.ToString(DateFormats.NationalBankExternalApi)}";
 
             return await _redisCacheService.CacheWrappedMethodAsync(
                 redisCacheKey,
@@ -53,7 +57,7 @@ namespace HomeBudget_Web_API.Controllers
         }
 
         [HttpGet]
-        public async Task<Result<IReadOnlyCollection<CurrencyRate>>> GetRatesAsync()
+        public async Task<Result<IReadOnlyCollection<CurrencyRateGrouped>>> GetRatesAsync()
         {
             return await _redisCacheService.CacheWrappedMethodAsync(
                 $"{CacheKeyPrefix}|{nameof(GetRatesAsync)}|{DateTime.Today}",
@@ -61,7 +65,7 @@ namespace HomeBudget_Web_API.Controllers
         }
 
         [HttpGet("/currencyRates/today")]
-        public async Task<Result<IReadOnlyCollection<CurrencyRate>>> GetTodayRatesAsync()
+        public async Task<Result<IReadOnlyCollection<CurrencyRateGrouped>>> GetTodayRatesAsync()
         {
             return await _redisCacheService.CacheWrappedMethodAsync(
                 $"{CacheKeyPrefix}|{nameof(GetTodayRatesAsync)}|{DateTime.Today}",

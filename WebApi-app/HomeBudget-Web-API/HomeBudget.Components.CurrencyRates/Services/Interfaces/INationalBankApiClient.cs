@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+
 using Refit;
+
 using HomeBudget.Components.CurrencyRates.Models.Api;
 
 namespace HomeBudget.Components.CurrencyRates.Services.Interfaces
