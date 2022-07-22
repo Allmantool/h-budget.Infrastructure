@@ -85,7 +85,7 @@ RUN /tools/reportgenerator \
 
 RUN /tools/dotnet-sonarscanner end /d:sonar.login="${SONAR_TOKEN}"
 
-RUN snitch
+RUN /tools/snitch
 
 FROM build AS publish
 RUN dotnet publish "HomeBudget-Web-API.sln" \
