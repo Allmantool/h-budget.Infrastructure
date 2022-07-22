@@ -3,7 +3,10 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build-v5
+WORKDIR /scr
+
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-v6
 WORKDIR /scr
 
 COPY ["HomeBudget.Components.CurrencyRates.Tests/*.csproj", "HomeBudget.Components.CurrencyRates.Tests/"]
@@ -89,7 +92,7 @@ RUN /tools/dotnet-sonarscanner end /d:sonar.login="${SONAR_TOKEN}"
 
 RUN /tools/snitch
 
-FROM build AS publish
+FROM build-v6 AS publish
 RUN dotnet publish "HomeBudget-Web-API.sln" \
     --no-dependencies \
     --no-restore \
