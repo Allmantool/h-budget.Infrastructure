@@ -7,7 +7,7 @@
     "build": "ng build",
     "build-prod": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test",
+    "test": "ng test --code-coverage",
     "test-headless-ci-only": "ng test --browsers ChromiumNoSandbox",
     "lint": "ng lint --fix",
     "lint-css": "stylelint src/**/*.css",

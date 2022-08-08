@@ -92,9 +92,11 @@ jobs:
           node-version: "16"
           cache: "npm"
           cache-dependency-path: ./Angular-app/package-lock.json
-      - name: Upload & Update UI dependencies
+      - name: Upload & Install UI dependencies
         run: |
           npm ci
+      - name: Keep up minor UI dependencies up to date
+          npm update
       - name: Build UI project
         run: |
           npm run build-prod --if-present

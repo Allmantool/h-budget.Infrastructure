@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTableModule } from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -23,11 +24,13 @@ import { AppFormFieldComponent } from './components/form-field/app-form-field.co
 import { AppButtonComponent } from './components/button/app-button.component';
 import { AccountingCurrencyFormatPipe } from './pipes/accouting-currency-pipe';
 import { DateRangeDialogComponent } from './components/dialog/dates-rage/dates-range-dialog.component';
+import { ProgressBarComponent } from './components/progress-bar/progress-bar.component';
 
 @NgModule({
     declarations: [
         AppDividerComponent,
         ProgressSpinnerComponent,
+        ProgressBarComponent,
         PageNotFoundComponent,
         DatepickerComponent,
         DateRangeDialogComponent,
@@ -41,6 +44,7 @@ import { DateRangeDialogComponent } from './components/dialog/dates-rage/dates-r
 
         AppDividerComponent,
         ProgressSpinnerComponent,
+        ProgressBarComponent,
         PageNotFoundComponent,
         DatepickerComponent,
         DateRangeDialogComponent,
@@ -50,6 +54,7 @@ import { DateRangeDialogComponent } from './components/dialog/dates-rage/dates-r
         MatDividerModule,
         MatSidenavModule,
         MatProgressSpinnerModule,
+        MatProgressBarModule,
         MatTableModule,
         MatCheckboxModule,
         MatCardModule,
@@ -66,6 +71,7 @@ import { DateRangeDialogComponent } from './components/dialog/dates-rage/dates-r
         MatDividerModule,
         MatSidenavModule,
         MatProgressSpinnerModule,
+        MatProgressBarModule,
         MatDatepickerModule,
         MatDialogModule,
         MatNativeDateModule,

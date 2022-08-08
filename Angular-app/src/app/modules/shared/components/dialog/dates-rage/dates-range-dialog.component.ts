@@ -3,6 +3,7 @@ import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from "@angul
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 
 import { DialogContainer } from "app/modules/shared/models/dialog-container";
+import { BehaviorSubject } from "rxjs";
 
 @Component({
     selector: 'dates-range-dialog',
@@ -11,8 +12,8 @@ import { DialogContainer } from "app/modules/shared/models/dialog-container";
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DateRangeDialogComponent {
+    public isLoading$: BehaviorSubject<boolean>= new BehaviorSubject<boolean>(false);
     public dialogFg: UntypedFormGroup;
-
     public title: string;
 
     constructor(
@@ -33,6 +34,9 @@ export class DateRangeDialogComponent {
     }
 
     public getRates(): void {
-        this.dialogRef.close(this.dialogFg.value);
+        this.isLoading$.next(true);
+        this.dialogRef.beforeClosed().subscribe(() => {
+            this.dialogRef.close(this.dialogFg.value);
+        });
     }
 }

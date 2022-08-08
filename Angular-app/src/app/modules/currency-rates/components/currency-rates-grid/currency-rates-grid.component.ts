@@ -9,8 +9,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatDialogConfig } from '@angular/material/dialog';
 
 import { Select, Store } from '@ngxs/store';
-import { switchMap, take } from 'rxjs/operators';
 import { combineLatest, Observable, Subject, Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
+
 import * as _ from 'lodash';
 
 import { UnifiedCurrencyRates } from '../../models/unified-currency-rates';
@@ -24,6 +25,8 @@ import { DialogProvider } from './../../../shared/providers/dialog-provider';
 import { DateRangeDialogComponent } from './../../../shared/components/dialog/dates-rage/dates-range-dialog.component';
 import { DialogContainer } from './../../../shared/models/dialog-container';
 import { DialogDaysRangePayload } from './../../..//shared/models/dialog-dates-range-payload';
+import { NationalBankCurrencyRateGroup } from '../../models/currency-rates-group';
+import { CurrencyRateGroup } from 'app/modules/shared/store/models/currency-rates/currency-rates-group';
 
 @Component({
 	selector: 'app-currency-rates-grid',
@@ -41,8 +44,8 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 		[CurrencyTrend.down]: 'crimson',
 	};
 
-	public todayCurrencyRates$: Subject<UnifiedCurrencyRates[]> = new Subject<
-		UnifiedCurrencyRates[]
+	public todayCurrencyRateGroups$: Subject<NationalBankCurrencyRateGroup[]> = new Subject<
+		NationalBankCurrencyRateGroup[]
 	>();
 
 	public todayRatesTableDataSource = new MatTableDataSource<UnifiedCurrencyRates>([]);
@@ -74,19 +77,15 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnInit(): void {
-		const getRatesSub$ = this.todayCurrencyRates$
+		const getRatesSub$ = this.todayCurrencyRateGroups$
 			.pipe(
-				switchMap((rates) => {
-					this.todayRatesTableDataSource = new MatTableDataSource<UnifiedCurrencyRates>(rates);
-
-					return this.currencyRateProvider.saveCurrencies(rates);
-				})
+				take(1)
 			)
-			.subscribe((affectedRowCount) => console.log(affectedRowCount));
+			.subscribe(rates => this.todayRatesTableDataSource = new MatTableDataSource<UnifiedCurrencyRates>(rates));
 
 		const getTableOptions$ = combineLatest([
 			this.currencyTableOptions$,
-			this.todayCurrencyRates$
+			this.todayCurrencyRateGroups$
 		])
 			.pipe()
 			.subscribe(([tableOptions, todayRates]) => {
@@ -144,18 +143,18 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 	public getTodayCurrencyRates(): void {
 		this.currencyRateProvider.getTodayCurrencies()
 			.pipe(take(1))
-			.subscribe((todayRates) => {
-				this.upddateCurrencyStateStore(todayRates);
-				this.todayCurrencyRates$.next(todayRates);
+			.subscribe((todayRatesGroups) => {
+				this.upddateCurrencyStateStore(todayRatesGroups);
+				this.todayCurrencyRateGroups$.next(todayRatesGroups);
 			});
 
 		combineLatest([
 			this.previousDayRates$,
-			this.todayCurrencyRates$,
+			this.todayCurrencyRateGroups$,
 		])
 			.pipe(take(1))
 			.subscribe(([previousDayRates, todayRates]) => {
-				todayRates.forEach((tr) => {
+				/* todayRates.forEach((tr) => {
 					const previousDateRate = previousDayRates
 						.find((i) => i.currencyId == tr.currencyId);
 
@@ -172,7 +171,7 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 						(tr.ratePerUnit - previousDateRate.ratePerUnit) / previousDateRate.ratePerUnit * 100,
 						2)
 						.toFixed(2);
-				});
+				}); */
 			});
 	}
 
@@ -184,7 +183,7 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 				.getCurrenciesForSpecifiedPeriod(payload)
 				.pipe(take(1))
 				.subscribe((unifiedRates => {
-					this.store.dispatch(new AddRange(this.mapToCurrencyRate(unifiedRates)))
+					this.store.dispatch(new AddRange(this.mapToCurrencyRateGroups(unifiedRates)))
 				}));
 		};
 
@@ -196,9 +195,9 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 	}
 
 	private upddateCurrencyStateStore(
-		todayRates: UnifiedCurrencyRates[]
+		todayRates: NationalBankCurrencyRateGroup[]
 	): void {
-		this.store.dispatch(new AddRange(this.mapToCurrencyRate(todayRates)));
+		this.store.dispatch(new AddRange(this.mapToCurrencyRateGroups(todayRates)));
 	}
 
 	private getTrend(todayDayRate?: number, previousDayRate?: number): string {
@@ -217,14 +216,10 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 		return CurrencyTrend.down;
 	}
 
-	private mapToCurrencyRate(todayRates: UnifiedCurrencyRates[]): CurrencyRate[] {
-		return _.map(
-			todayRates,
-			(r) =>
-			({
-				currencyId: r.currencyId,
-				updateDate: r.updateDate,
-				ratePerUnit: r.ratePerUnit,
-			} as CurrencyRate));
+	private mapToCurrencyRateGroups(todayRatesGroups: NationalBankCurrencyRateGroup[]): CurrencyRateGroup[] {
+		return _.map(todayRatesGroups, rg => ({
+			currencyId: rg.currencyId,
+			currencyRates: rg.currencyRates
+		}) as CurrencyRateGroup)
 	}
 }
