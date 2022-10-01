@@ -20,14 +20,15 @@ export interface IAccountingStateModel {
 		operationRecords: [],
 		tableOptions: {
 			selectedRecordGuid: {},
-		} as AccountingTableOptions
+		} as AccountingTableOptions,
 	},
 })
 @Injectable()
 export class AccountingState {
-
 	@Selector([AccountingState])
-	static getAccountingRecords(state: IAccountingStateModel): AccountingGridRecord[] {
+	static getAccountingRecords(
+		state: IAccountingStateModel
+	): AccountingGridRecord[] {
 		return state.operationRecords;
 	}
 
@@ -57,7 +58,11 @@ export class AccountingState {
 		patchState({
 			operationRecords: _.concat(
 				state.operationRecords,
-				_.differenceWith(accountingRecord, state.operationRecords, _.isEqual)
+				_.differenceWith(
+					accountingRecord,
+					state.operationRecords,
+					_.isEqual
+				)
 			),
 		});
 	}
@@ -68,7 +73,7 @@ export class AccountingState {
 		{ id }: SetActive
 	): void {
 		patchState({
-			tableOptions: { selectedRecordGuid: id } as AccountingTableOptions
+			tableOptions: { selectedRecordGuid: id } as AccountingTableOptions,
 		});
 	}
 
@@ -77,9 +82,12 @@ export class AccountingState {
 		{ getState, patchState }: StateContext<IAccountingStateModel>,
 		{ accountingRecord }: Edit
 	): void {
-		const records = [...getState().operationRecords] ;
+		const records = [...getState().operationRecords];
 
-		const updatedItemIndex = _.findIndex(records, r => r.id === accountingRecord.id);
+		const updatedItemIndex = _.findIndex(
+			records,
+			(r) => r.id === accountingRecord.id
+		);
 		records.splice(updatedItemIndex, 1, accountingRecord);
 
 		patchState({

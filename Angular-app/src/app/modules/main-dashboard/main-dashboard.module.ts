@@ -8,10 +8,7 @@ import { MainDashboardComponent } from './components/dashboard/main-dashboard.co
 import { MainDashboardCartComponent } from './components/dashboard-item/main-dashboard-cart.component';
 
 @NgModule({
-	declarations: [
-		MainDashboardComponent,
-		MainDashboardCartComponent
-	],
+	declarations: [MainDashboardComponent, MainDashboardCartComponent],
 	imports: [
 		NgxsModule.forFeature([CurrencyRatesState]),
 		MainDashboardRoutingModule,
@@ -20,4 +17,4 @@ import { MainDashboardCartComponent } from './components/dashboard-item/main-das
 	providers: [],
 	bootstrap: [],
 })
-export class MainDashboardModule { }
+export class MainDashboardModule {}

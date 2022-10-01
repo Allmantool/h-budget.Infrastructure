@@ -28,14 +28,14 @@ export interface ICurrencyRatesStateModel {
 		tableOptions: {
 			selectedItem: {
 				currencyId: RatesCodes.USA,
-				abbreviation: "USA"
-			} as CurrencyTableItem
-		} as CurrencyTableOptions
+				abbreviation: 'USA',
+			} as CurrencyTableItem,
+		} as CurrencyTableOptions,
 	},
 })
 @Injectable()
 export class CurrencyRatesState {
-	constructor(private currencyRateProvider: NationalBankCurrencyProvider) { }
+	constructor(private currencyRateProvider: NationalBankCurrencyProvider) {}
 
 	@Selector([CurrencyRatesState])
 	static getRates(state: ICurrencyRatesStateModel): CurrencyRateGroup[] {
@@ -46,20 +46,24 @@ export class CurrencyRatesState {
 	static getCurrencyRatesByCurrencyId(
 		state: ICurrencyRatesStateModel
 	): (id: number) => CurrencyRateGroup {
-		return (id: number) => _.find(state.rateGroups, r => r.currencyId === id) as CurrencyRateGroup;
+		return (id: number) =>
+			_.find(
+				state.rateGroups,
+				(r) => r.currencyId === id
+			) as CurrencyRateGroup;
 	}
 
 	@Selector([CurrencyRatesState.getRates])
 	static getCurrencyRatesFromPreviousDay(
 		rates: CurrencyRate[]
 	): CurrencyRate[] {
-		const dates = _.chain(rates).map(i => i.updateDate).uniqBy(i => i).value();
+		const dates = _.chain(rates)
+			.map((i) => i.updateDate)
+			.uniqBy((i) => i)
+			.value();
 		const penultimateDate = dates[dates.length - 2];
 
-		return _.filter(
-			rates,
-			(r) => r.updateDate === penultimateDate
-		);
+		return _.filter(rates, (r) => r.updateDate === penultimateDate);
 	}
 
 	@Selector([CurrencyRatesState])
@@ -69,17 +73,21 @@ export class CurrencyRatesState {
 
 	@Action(FetchAllCurrencyRates)
 	getAllCurrencyRates(ctx: StateContext<ICurrencyRatesStateModel>) {
-		return this.currencyRateProvider.getCurrencies()
-			.pipe(
-				take(1),
-				tap((currencyRateGroups) => ctx.patchState(
-					{
-						rateGroups: _.map(currencyRateGroups, rg => ({
-							currencyId: rg.currencyId,
-							currencyRates: rg.currencyRates
-						}) as CurrencyRateGroup)
-					}))
-			);
+		return this.currencyRateProvider.getCurrencies().pipe(
+			take(1),
+			tap((currencyRateGroups) =>
+				ctx.patchState({
+					rateGroups: _.map(
+						currencyRateGroups,
+						(rg) =>
+							({
+								currencyId: rg.currencyId,
+								currencyRates: rg.currencyRates,
+							} as CurrencyRateGroup)
+					),
+				})
+			)
+		);
 	}
 
 	@Action(AddRange)
@@ -88,25 +96,40 @@ export class CurrencyRatesState {
 		{ addedRateGroups }: AddRange
 	): void {
 		const existedRateGroups = getState().rateGroups;
-		const updatedCurrencyGroups = existedRateGroups
-			.map(
-				cg => {
-					const addingRates = addedRateGroups.find(i => i.currencyId == cg.currencyId)?.currencyRates;
-					const ratesForUpdate = _.differenceWith(addingRates, cg.currencyRates, _.isEqual);
-					const notUpdatedOrNewRates = _.filter(
-						cg.currencyRates,
-						cgRate => !_.some(addingRates, addRate => addRate.updateDate.toDateString() === cgRate.updateDate.toDateString()));
-
-					const updatedCarrencyGroup = _.cloneDeep(cg);
-
-					updatedCarrencyGroup.currencyRates = _.concat(notUpdatedOrNewRates, ratesForUpdate);
-
-					return updatedCarrencyGroup;
-				}
+		const updatedCurrencyGroups = existedRateGroups.map((cg) => {
+			const addingRates = addedRateGroups.find(
+				(i) => i.currencyId == cg.currencyId
+			)?.currencyRates;
+			const ratesForUpdate = _.differenceWith(
+				addingRates,
+				cg.currencyRates,
+				_.isEqual
+			);
+			const notUpdatedOrNewRates = _.filter(
+				cg.currencyRates,
+				(cgRate) =>
+					!_.some(
+						addingRates,
+						(addRate) =>
+							addRate.updateDate.toDateString() ===
+							cgRate.updateDate.toDateString()
+					)
 			);
 
+			const updatedCarrencyGroup = _.cloneDeep(cg);
+
+			updatedCarrencyGroup.currencyRates = _.concat(
+				notUpdatedOrNewRates,
+				ratesForUpdate
+			);
+
+			return updatedCarrencyGroup;
+		});
+
 		patchState({
-			rateGroups: _.isEmpty(updatedCurrencyGroups) ? addedRateGroups : updatedCurrencyGroups
+			rateGroups: _.isEmpty(updatedCurrencyGroups)
+				? addedRateGroups
+				: updatedCurrencyGroups,
 		});
 	}
 
@@ -119,9 +142,9 @@ export class CurrencyRatesState {
 			tableOptions: {
 				selectedItem: {
 					currencyId: id,
-					abbreviation: label
-				} as CurrencyTableItem
-			} as CurrencyTableOptions
+					abbreviation: label,
+				} as CurrencyTableItem,
+			} as CurrencyTableOptions,
 		});
 	}
 }

@@ -2,7 +2,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from "@angular/core";
+import { NgModule } from '@angular/core';
 
 import { NgxsModule } from '@ngxs/store';
 import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
@@ -13,21 +13,19 @@ import { AppSharedModule } from './../shared/shared.module';
 import { ngxsConfig } from './../shared/store/ngxs.config';
 
 @NgModule({
-    declarations: [
-        AppRootComponent
-    ],
-    imports: [
-        NgxsModule.forRoot([], ngxsConfig),
-        NgxsLoggerPluginModule.forRoot(),
+	declarations: [AppRootComponent],
+	imports: [
+		NgxsModule.forRoot([], ngxsConfig),
+		NgxsLoggerPluginModule.forRoot(),
 		NgxsReduxDevtoolsPluginModule.forRoot(),
-        AppSharedModule,
-        CommonModule,
-        HttpClientModule,
-        BrowserModule,
+		AppSharedModule,
+		CommonModule,
+		HttpClientModule,
+		BrowserModule,
 		BrowserAnimationsModule,
-        AppBootsrapRoutingModule,
-    ],
-    providers: [],
-    bootstrap: [AppRootComponent],
+		AppBootsrapRoutingModule,
+	],
+	providers: [],
+	bootstrap: [AppRootComponent],
 })
-export class AppBootsrapModule { }
+export class AppBootsrapModule {}

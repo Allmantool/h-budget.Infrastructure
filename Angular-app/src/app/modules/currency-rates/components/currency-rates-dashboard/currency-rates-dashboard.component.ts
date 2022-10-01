@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
 	selector: 'currency-rates-dashboard.component',
@@ -6,4 +6,4 @@ import { ChangeDetectionStrategy, Component } from "@angular/core";
 	styleUrls: ['./currency-rates-dashboard.component.css'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CurrencyRatesDashboardComponent { }
+export class CurrencyRatesDashboardComponent {}

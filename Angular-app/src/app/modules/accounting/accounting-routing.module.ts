@@ -1,19 +1,22 @@
-import { NgModule } from "@angular/core";
-import { RouterModule, Routes } from "@angular/router";
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
 
-import { AccountingCrudComponent, AccountingGridComponent } from "../accounting";
+import {
+	AccountingCrudComponent,
+	AccountingGridComponent,
+} from '../accounting';
 
 const routes: Routes = [
-  { path: '', component: AccountingGridComponent },
-  {
-    path: '',
-    component: AccountingCrudComponent,
-    outlet: 'right-sidebar',
-  },
+	{ path: '', component: AccountingGridComponent },
+	{
+		path: '',
+		component: AccountingCrudComponent,
+		outlet: 'right-sidebar',
+	},
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
+	imports: [RouterModule.forChild(routes)],
+	exports: [RouterModule],
 })
-export class AccountingRoutingModule { }
+export class AccountingRoutingModule {}

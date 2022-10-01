@@ -6,7 +6,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatTableModule } from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button'
+import { MatButtonModule } from '@angular/material/button';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -18,7 +18,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { NgApexchartsModule } from 'ng-apexcharts';
 
-import { AppDividerComponent, ProgressSpinnerComponent, PageNotFoundComponent } from '../shared';
+import {
+	AppDividerComponent,
+	ProgressSpinnerComponent,
+	PageNotFoundComponent,
+} from '../shared';
 import { DatepickerComponent } from './components/datepicker/app-datepicker.component';
 import { AppFormFieldComponent } from './components/form-field/app-form-field.component';
 import { AppButtonComponent } from './components/button/app-button.component';
@@ -27,62 +31,62 @@ import { DateRangeDialogComponent } from './components/dialog/dates-rage/dates-r
 import { ProgressBarComponent } from './components/progress-bar/progress-bar.component';
 
 @NgModule({
-    declarations: [
-        AppDividerComponent,
-        ProgressSpinnerComponent,
-        ProgressBarComponent,
-        PageNotFoundComponent,
-        DatepickerComponent,
-        DateRangeDialogComponent,
-        AppFormFieldComponent,
-        AppButtonComponent,
+	declarations: [
+		AppDividerComponent,
+		ProgressSpinnerComponent,
+		ProgressBarComponent,
+		PageNotFoundComponent,
+		DatepickerComponent,
+		DateRangeDialogComponent,
+		AppFormFieldComponent,
+		AppButtonComponent,
 
-        AccountingCurrencyFormatPipe
-    ],
-    exports: [
-        CommonModule,
+		AccountingCurrencyFormatPipe,
+	],
+	exports: [
+		CommonModule,
 
-        AppDividerComponent,
-        ProgressSpinnerComponent,
-        ProgressBarComponent,
-        PageNotFoundComponent,
-        DatepickerComponent,
-        DateRangeDialogComponent,
-        AppFormFieldComponent,
-        AppButtonComponent,
+		AppDividerComponent,
+		ProgressSpinnerComponent,
+		ProgressBarComponent,
+		PageNotFoundComponent,
+		DatepickerComponent,
+		DateRangeDialogComponent,
+		AppFormFieldComponent,
+		AppButtonComponent,
 
-        MatDividerModule,
-        MatSidenavModule,
-        MatProgressSpinnerModule,
-        MatProgressBarModule,
-        MatTableModule,
-        MatCheckboxModule,
-        MatCardModule,
-        MatButtonModule,
-        NgApexchartsModule,
+		MatDividerModule,
+		MatSidenavModule,
+		MatProgressSpinnerModule,
+		MatProgressBarModule,
+		MatTableModule,
+		MatCheckboxModule,
+		MatCardModule,
+		MatButtonModule,
+		NgApexchartsModule,
 
-        FormsModule,
-        ReactiveFormsModule,
+		FormsModule,
+		ReactiveFormsModule,
 
-        AccountingCurrencyFormatPipe
-    ],
-    imports: [
-        CommonModule,
-        MatDividerModule,
-        MatSidenavModule,
-        MatProgressSpinnerModule,
-        MatProgressBarModule,
-        MatDatepickerModule,
-        MatDialogModule,
-        MatNativeDateModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatSelectModule,
-        MatButtonModule,
-        ReactiveFormsModule
-    ],
-    providers: [],
-    bootstrap: [],
-    entryComponents: [DateRangeDialogComponent]
+		AccountingCurrencyFormatPipe,
+	],
+	imports: [
+		CommonModule,
+		MatDividerModule,
+		MatSidenavModule,
+		MatProgressSpinnerModule,
+		MatProgressBarModule,
+		MatDatepickerModule,
+		MatDialogModule,
+		MatNativeDateModule,
+		MatFormFieldModule,
+		MatInputModule,
+		MatSelectModule,
+		MatButtonModule,
+		ReactiveFormsModule,
+	],
+	providers: [],
+	bootstrap: [],
+	entryComponents: [DateRangeDialogComponent],
 })
-export class AppSharedModule { }
+export class AppSharedModule {}

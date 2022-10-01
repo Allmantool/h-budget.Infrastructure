@@ -1,4 +1,4 @@
 export class DialogDaysRangePayload {
-    startDate!: Date;
-    endDate!: Date;
+	startDate!: Date;
+	endDate!: Date;
 }

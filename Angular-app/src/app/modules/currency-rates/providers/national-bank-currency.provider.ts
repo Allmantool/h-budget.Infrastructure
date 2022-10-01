@@ -15,20 +15,28 @@ import { NationalBankCurrencyRateGroup } from '../models/currency-rates-group';
 	providedIn: 'root',
 })
 export class NationalBankCurrencyProvider implements BankCurrencyProvider {
-	constructor(private http: HttpClient) { }
-	public getCurrenciesForSpecifiedPeriod(payload: DialogDaysRangePayload): Observable<NationalBankCurrencyRateGroup[]> {
+	constructor(private http: HttpClient) {}
+	public getCurrenciesForSpecifiedPeriod(
+		payload: DialogDaysRangePayload
+	): Observable<NationalBankCurrencyRateGroup[]> {
 		return this.http
 			.post<Result<NationalBankCurrencyRateGroup[]>>(
 				`${RoutesSegments.HOME_BUDGET_APP_HOST}/currencyRates/period`,
 				{
 					startDate: payload.startDate,
-					endDate: payload.endDate
+					endDate: payload.endDate,
 				}
 			)
-			.pipe(map(r => r.payload), retry(3), take(1));
+			.pipe(
+				map((r) => r.payload),
+				retry(3),
+				take(1)
+			);
 	}
 
-	public saveCurrencies(rates: UnifiedCurrencyRates[]): Observable<Result<number>> {
+	public saveCurrencies(
+		rates: UnifiedCurrencyRates[]
+	): Observable<Result<number>> {
 		return this.http
 			.post<Result<number>>(
 				`${RoutesSegments.HOME_BUDGET_APP_HOST}/currencyRates`,
@@ -49,7 +57,11 @@ export class NationalBankCurrencyProvider implements BankCurrencyProvider {
 			.get<Result<NationalBankCurrencyRateGroup[]>>(
 				`${RoutesSegments.HOME_BUDGET_APP_HOST}/currencyRates`
 			)
-			.pipe(map(r => r.payload), retry(3), take(1));
+			.pipe(
+				map((r) => r.payload),
+				retry(3),
+				take(1)
+			);
 	}
 
 	public getTodayCurrencies(): Observable<NationalBankCurrencyRateGroup[]> {

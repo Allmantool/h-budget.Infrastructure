@@ -6,7 +6,9 @@ import { NationalBankCurrencyRateGroup } from '../models/currency-rates-group';
 import { UnifiedCurrencyRates } from '../models/unified-currency-rates';
 
 export interface BankCurrencyProvider {
-	getCurrenciesForSpecifiedPeriod(payload: DialogDaysRangePayload): Observable<NationalBankCurrencyRateGroup[]>;
+	getCurrenciesForSpecifiedPeriod(
+		payload: DialogDaysRangePayload
+	): Observable<NationalBankCurrencyRateGroup[]>;
 	getTodayCurrencies(): Observable<NationalBankCurrencyRateGroup[]>;
 	getCurrencies(): Observable<NationalBankCurrencyRateGroup[]>;
 	saveCurrencies(rates: UnifiedCurrencyRates[]): Observable<Result<number>>;

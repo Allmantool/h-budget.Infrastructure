@@ -1,23 +1,23 @@
 table {
-    width: 100%;
+	width: 100%;
 }
 
 .accounting-table {
-    display: flex;
-    justify-content: center;
-    width: 100%;
+	display: flex;
+	justify-content: center;
+	width: 100%;
 }
 
 .mat-row .mat-cell {
-    border-bottom: 1px solid transparent;
-    border-top: 1px solid transparent;
-    cursor: pointer;
+	border-bottom: 1px solid transparent;
+	border-top: 1px solid transparent;
+	cursor: pointer;
 }
 
 .mat-row:hover .mat-cell {
-    border-color: currentColor;
+	border-color: currentColor;
 }
 
 .row-is-clicked {
-    font-weight: bold;
+	font-weight: bold;
 }

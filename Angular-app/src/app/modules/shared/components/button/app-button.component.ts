@@ -1,15 +1,15 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
-    selector: 'app-button',
-    templateUrl: './app-button.component.html',
-    styleUrls: ['./app-button.component.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+	selector: 'app-button',
+	templateUrl: './app-button.component.html',
+	styleUrls: ['./app-button.component.css'],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppButtonComponent {
-    @Input() public title: string = '';
+	@Input() public title: string = '';
 
-    constructor() {
-        // This is intentional
-    }
+	constructor() {
+		// This is intentional
+	}
 }

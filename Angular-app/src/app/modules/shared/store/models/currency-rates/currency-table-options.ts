@@ -1,4 +1,4 @@
-import { CurrencyTableItem } from "./currency-table-item";
+import { CurrencyTableItem } from './currency-table-item';
 
 export interface CurrencyTableOptions {
 	selectedItem: CurrencyTableItem;

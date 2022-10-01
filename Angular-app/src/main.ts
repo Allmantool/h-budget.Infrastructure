@@ -3,7 +3,7 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 import { environment } from './environments/environment';
 
-import { AppBootsrapModule } from './app/modules/app-boostrap/app-bootsrap.module'
+import { AppBootsrapModule } from './app/modules/app-boostrap/app-bootsrap.module';
 
 if (environment.production) {
 	enableProdMode();

@@ -1,3 +1,3 @@
 export class DialogContainer {
-    title!: string;
+	title!: string;
 }
