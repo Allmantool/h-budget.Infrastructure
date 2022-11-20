@@ -43,7 +43,7 @@ export class CurrencyRatesState {
 	}
 
 	@Selector([CurrencyRatesState])
-	static getCurrencyRatesByCurrencyId(
+	static getCurrencyRatesGroupByCurrencyId(
 		state: ICurrencyRatesStateModel
 	): (id: number) => CurrencyRateGroup {
 		return (id: number) =>
@@ -82,7 +82,7 @@ export class CurrencyRatesState {
 						(rg) =>
 							({
 								currencyId: rg.currencyId,
-								currencyRates: rg.currencyRates,
+								currencyRates: rg.rateValues,
 							} as CurrencyRateGroup)
 					),
 				})
@@ -111,8 +111,8 @@ export class CurrencyRatesState {
 					!_.some(
 						addingRates,
 						(addRate) =>
-							addRate.updateDate.toDateString() ===
-							cgRate.updateDate.toDateString()
+							new Date(addRate.updateDate).toDateString() ===
+							new Date(cgRate.updateDate).toDateString()
 					)
 			);
 

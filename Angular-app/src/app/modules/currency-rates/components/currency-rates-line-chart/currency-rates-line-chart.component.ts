@@ -27,10 +27,10 @@ import {
 import { filter } from 'rxjs/operators';
 
 import { FetchAllCurrencyRates } from './../../../shared/store/actions/currency-rates.actions';
-import { CurrencyRate } from '../../../shared/store/models/currency-rates/currency-rate';
 import { CurrencyTableOptions } from './../../../shared/store/models/currency-rates/currency-table-options';
 import { CurrencyRatesState } from './../../../shared/store/states/currency-rates.state';
 import { UnifiedCurrencyRates } from './../../models/unified-currency-rates';
+import { CurrencyRateGroup } from 'app/modules/shared/store/models/currency-rates/currency-rates-group';
 
 export type ChartOptions = {
 	series: ApexAxisChartSeries;
@@ -46,8 +46,8 @@ export type ChartOptions = {
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
-	@Select(CurrencyRatesState.getCurrencyRatesByCurrencyId)
-	rates$!: Observable<(id: number) => CurrencyRate[]>;
+	@Select(CurrencyRatesState.getCurrencyRatesGroupByCurrencyId)
+	ratesGroup$!: Observable<(id: number) => CurrencyRateGroup>;
 
 	@Select(CurrencyRatesState.getCurrencyTableOptions)
 	currencyTableOptions$!: Observable<CurrencyTableOptions>;
@@ -80,7 +80,7 @@ export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
 
 	private populateChartOptions(): void {
 		this.subs.push(
-			combineLatest([this.rates$, this.currencyTableOptions$])
+			combineLatest([this.ratesGroup$, this.currencyTableOptions$])
 				.pipe(
 					filter(
 						([getCurrencies, tableOptions]) =>
@@ -92,7 +92,7 @@ export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
 					)
 				)
 				.subscribe(([data, tableOptions]) => {
-					const rates = data(tableOptions.selectedItem.currencyId);
+					const rates = data(tableOptions.selectedItem.currencyId).currencyRates;
 					this.chartOptions = {
 						series: [
 							{

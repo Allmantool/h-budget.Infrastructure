@@ -226,7 +226,7 @@ describe('Currency rates store', () => {
 	});
 
 	it('it "GetCurrencyRatesByCurrencyId": return a currency group by id', () => {
-		const carrencyGroup = CurrencyRatesState.getCurrencyRatesByCurrencyId(
+		const carrencyGroup = CurrencyRatesState.getCurrencyRatesGroupByCurrencyId(
 			store.selectSnapshot((state) => state.currencyRateState)
 		)(2);
 
