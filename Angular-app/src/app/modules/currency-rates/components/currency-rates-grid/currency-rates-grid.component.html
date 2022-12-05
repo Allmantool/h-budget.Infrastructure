@@ -1,6 +1,7 @@
-<div class="currency-rates-grid__show-button
-			currency-rates-grid__show-button--align-center"
-	*ngIf="todayCurrencyRateGroups$ | async as todayCurrencyRateGroups">
+<div
+	class="currency-rates-grid__show-button currency-rates-grid__show-button--align-center"
+	*ngIf="todayCurrencyRateGroups$ | async as todayCurrencyRateGroups"
+>
 	<button mat-raised-button (click)="getTodayCurrencyRates()">
 		Get today currency rates
 	</button>
@@ -9,11 +10,18 @@
 	</button>
 </div>
 
-<div class="currency-rates-grid currency-rates-grid--width"
-	 *ngIf="todayCurrencyRateGroups$ | async as todayCurrencyRateGroups"
+<div
+	class="currency-rates-grid currency-rates-grid--width"
+	*ngIf="todayCurrencyRateGroups$ | async as todayCurrencyRateGroups"
 >
-	<table mat-table [dataSource]="todayCurrencyRateGroups" class="mat-elevation-z8">
-		<caption>Currency rates grid</caption>
+	<table
+		mat-table
+		[dataSource]="todayCurrencyRateGroups"
+		class="mat-elevation-z8"
+	>
+		<caption>
+			Currency rates grid
+		</caption>
 		<ng-container matColumnDef="select">
 			<th mat-header-cell *matHeaderCellDef>
 				<mat-checkbox
@@ -53,16 +61,26 @@
 
 		<ng-container matColumnDef="ratePerUnit">
 			<th mat-header-cell *matHeaderCellDef>Rate per an unit</th>
-			<td [style.color]="trendRateLookup[element.currencyTrend]" mat-cell *matCellDef="let element">
+			<td
+				[style.color]="trendRateLookup[element.currencyTrend]"
+				mat-cell
+				*matCellDef="let element"
+			>
 				{{ element.ratePerUnit }}
 			</td>
 		</ng-container>
 
 		<ng-container matColumnDef="percentageDiff">
 			<th mat-header-cell *matHeaderCellDef>Diffrence</th>
-			<td [style.color]="trendRateLookup[element.currencyTrend]" mat-cell *matCellDef="let element">
+			<td
+				[style.color]="trendRateLookup[element.currencyTrend]"
+				mat-cell
+				*matCellDef="let element"
+			>
 				{{ element.rateDiff }} %
-				<span class="material-icons md-18">{{ element.currencyTrend }}</span>
+				<span class="material-icons md-18"
+					>{{ element.currencyTrend }}</span
+				>
 			</td>
 		</ng-container>
 

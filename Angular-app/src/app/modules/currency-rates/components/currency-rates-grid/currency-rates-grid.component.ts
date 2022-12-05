@@ -180,24 +180,9 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 		combineLatest([this.previousDayRates$, this.todayCurrencyRateGroups$])
 			.pipe(take(1))
 			.subscribe(([previousDayRates, todayRates]) => {
-				/* todayRates.forEach((tr) => {
-					const previousDateRate = previousDayRates
-						.find((i) => i.currencyId == tr.currencyId);
+				todayRates.forEach((tr) => {
 
-					if (_.isNil(previousDateRate) || _.isNil(tr.ratePerUnit)) {
-						return;
-					}
-
-					tr.currencyTrend = this.getTrend(
-						tr.ratePerUnit,
-						previousDateRate.ratePerUnit
-					);
-
-					tr.rateDiff = _.round(
-						(tr.ratePerUnit - previousDateRate.ratePerUnit) / previousDateRate.ratePerUnit * 100,
-						2)
-						.toFixed(2);
-				}); */
+				});
 			});
 	}
 

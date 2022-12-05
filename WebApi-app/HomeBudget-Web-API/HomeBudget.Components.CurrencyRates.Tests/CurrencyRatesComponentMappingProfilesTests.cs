@@ -4,7 +4,8 @@ using HomeBudget_Web_API.MapperProfileConfigurations;
 
 namespace HomeBudget.Components.CurrencyRates.Tests
 {
-    public class Tests
+    [TestFixture]
+    public class CurrencyRatesComponentMappingProfilesTests
     {
         private readonly MapperConfiguration _mapperConfiguration = new (x => x.AddMaps(ApiCallMappingProfiles.GetExecutingAssembly()));
 

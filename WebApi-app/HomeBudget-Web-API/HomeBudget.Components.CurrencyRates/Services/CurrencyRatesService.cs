@@ -78,7 +78,9 @@ namespace HomeBudget.Components.CurrencyRates.Services
                 rate.RatePerUnit = rate.OfficialRate / configInfo.Scale;
             }
 
-            await SaveIfNotExistAsync(() => _currencyRatesReadProvider.GetRatesForPeriodAsync(startDate, endDate), ratesFromApiCall);
+            var ratesForPeriod = await _currencyRatesReadProvider.GetRatesForPeriodAsync(startDate, endDate);
+
+            await SaveIfNotExistAsync(ratesForPeriod, ratesFromApiCall);
 
             return Succeeded(ratesFromApiCall.MapToCurrencyRateGrouped(_mapper));
         }
@@ -95,18 +97,19 @@ namespace HomeBudget.Components.CurrencyRates.Services
 
             var ratesFromApiCall = _mapper.Map<IReadOnlyCollection<CurrencyRate>>(activeCurrencyRates);
 
-            await SaveIfNotExistAsync(() => _currencyRatesReadProvider.GetTodayRatesAsync(), ratesFromApiCall);
+            var todayRates = await _currencyRatesReadProvider.GetTodayRatesAsync();
+
+            await SaveIfNotExistAsync(todayRates, ratesFromApiCall);
 
             return Succeeded(ratesFromApiCall.MapToCurrencyRateGrouped(_mapper));
         }
 
         public async Task<Result<int>> SaveIfNotExistAsync(
-            Func<Task<IReadOnlyCollection<CurrencyRate>>> enquireCurrencyRatesAction,
+            IReadOnlyCollection<CurrencyRate> ratesFromDatabase,
             IReadOnlyCollection<CurrencyRate> ratesFromApiCall = null)
         {
             ratesFromApiCall ??= Enumerable.Empty<CurrencyRate>().ToList();
 
-            var ratesFromDatabase = await enquireCurrencyRatesAction();
             var amountOfAffectedRows = ratesFromDatabase.IsNullOrEmpty() || ratesFromDatabase.Count != ratesFromApiCall.Count
                 ? await _currencyRatesWriteProvider.SaveRatesAsync(ratesFromApiCall)
                 : default;

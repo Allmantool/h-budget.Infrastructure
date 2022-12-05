@@ -41,7 +41,7 @@ namespace HomeBudget_Web_API.Controllers
             var unifiedCurrencyRates = _mapper
                 .Map<IReadOnlyCollection<CurrencyRate>>(request.CurrencyRates);
 
-            return await _currencyRatesService.SaveIfNotExistAsync(() => Task.FromResult(unifiedCurrencyRates));
+            return await _currencyRatesService.SaveIfNotExistAsync(unifiedCurrencyRates);
         }
 
         [HttpPost("/currencyRates/period")]

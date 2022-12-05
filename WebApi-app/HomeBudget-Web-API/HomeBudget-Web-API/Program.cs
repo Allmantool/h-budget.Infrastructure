@@ -1,10 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
-using FluentValidation.AspNetCore;
+
+using FluentValidation;
+using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+
 using HomeBudget.Components.CurrencyRates.MapperProfileConfigurations;
 using HomeBudget_Web_API.Extensions;
 using HomeBudget_Web_API.Middlewares;
@@ -32,8 +38,18 @@ services.AddAutoMapper(new List<Assembly>
     CurrencyRatesComponentMappingProfiles.GetExecutingAssembly(),
 });
 
-services.AddMvc()
-    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Program>());
+services.AddHealthChecks()
+    .AddCheck("heartbeat", () => HealthCheckResult.Healthy())
+    .AddCheck<CustomLogicHealthCheck>(nameof(CustomLogicHealthCheck), tags: new[] { "custom" })
+    .AddSqlServer(builder.Configuration.GetRequiredSection("DatabaseOptions:ConnectionString").Value, tags: new[] { "sqlServer" })
+    .AddRedis(builder.Configuration.GetRequiredSection("DatabaseOptions:RedisConnectionString").Value, tags: new[] { "redis" });
+
+services.AddHealthChecksUI(setupSettings: setup =>
+{
+    setup.AddHealthCheckEndpoint("currency rates service", "/health");
+}).AddInMemoryStorage();
+
+services.AddValidatorsFromAssemblyContaining<Program>();
 
 services.AddResponseCaching();
 
@@ -57,13 +73,21 @@ app.UseHsts()
     .UseHttpsRedirection()
     .UseResponseCaching()
     .UseAuthorization()
-    .UseRouting();
+    .UseRouting()
+    .UseEndpoints(config =>
+    {
+        config.MapHealthChecks("/health", new HealthCheckOptions
+        {
+            Predicate = _ => true,
+            ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+        });
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers();
-});
-
-app.UseNationalBankClientWarmUpMiddleware(services);
+        config.MapHealthChecksUI();
+    })
+    .UseEndpoints(endpoints =>
+    {
+        endpoints.MapControllers();
+    })
+    .UseNationalBankClientWarmUpMiddleware(services);
 
 app.Run();

@@ -9,8 +9,8 @@ namespace HomeBudget.Components.CurrencyRates.Services.Interfaces
 {
     public interface ICurrencyRatesService
     {
-        Task<Result<int>> SaveIfNotExistAsync(
-            Func<Task<IReadOnlyCollection<CurrencyRate>>> enquireCurrencyRatesAction,
+        public Task<Result<int>> SaveIfNotExistAsync(
+            IReadOnlyCollection<CurrencyRate> ratesFromDatabase,
             IReadOnlyCollection<CurrencyRate> ratesFromApiCall = null);
 
         public Task<Result<IReadOnlyCollection<CurrencyRateGrouped>>> GetRatesAsync();
