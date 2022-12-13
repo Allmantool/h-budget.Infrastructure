@@ -80,6 +80,8 @@ services:
   elasticsearch:
     container_name: elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch:8.5.3
+    depends_on:
+      - homebudget-web-api
     ports:
       - 9200:9200
     volumes:
