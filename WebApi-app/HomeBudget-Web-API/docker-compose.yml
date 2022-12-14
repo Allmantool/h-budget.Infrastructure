@@ -83,12 +83,12 @@ services:
     depends_on:
       - homebudget-web-api
     ports:
-      - 9200:9200
+      - 9250:9200
     volumes:
       - elasticsearch-data:/usr/share/elasticsearch/data
     environment:
-      - xpack.monitoring.enabled=true
       - xpack.watcher.enabled=false
+      - xpack.security.enabled=false
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - discovery.type=single-node
     networks:
@@ -102,7 +102,7 @@ services:
     depends_on:
       - elasticsearch
     environment:
-      - ELASTICSEARCH_URL=http://localhost:9200
+      - ELASTICSEARCH_URL=http://localhost:9250
     networks:
       - elastic
 
