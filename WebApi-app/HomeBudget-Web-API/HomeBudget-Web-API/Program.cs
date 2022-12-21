@@ -12,7 +12,6 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Serilog;
-using Serilog.Sinks.Elasticsearch;
 
 using HomeBudget.Components.CurrencyRates.MapperProfileConfigurations;
 using HomeBudget_Web_API.Extensions;
@@ -27,10 +26,6 @@ var configuration = builder.Configuration
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
     .AddJsonFile($"appsettings.{environment.EnvironmentName}.json", optional: true)
     .Build();
-
-var host = builder.Host;
-
-host.UseSerilog();
 
 // This method gets called by the runtime. Use this method to add services to the container.
 services.AddControllers();
@@ -61,6 +56,8 @@ services.AddHealthChecksUI(setupSettings: setup =>
 services.AddValidatorsFromAssemblyContaining<Program>();
 
 services.AddResponseCaching();
+
+configuration.InitializeLogger(environment, builder.Host);
 
 // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 var app = builder.Build();
@@ -99,35 +96,14 @@ app.UseHsts()
     })
     .UseNationalBankClientWarmUpMiddleware(services);
 
-Log.Logger = new LoggerConfiguration()
-    .Enrich.FromLogContext()
-    .Enrich.WithMachineName()
-    .WriteTo.Debug()
-    .WriteTo.Console()
-    .WriteTo.Elasticsearch(ConfigureElasticSink(configuration, environment.EnvironmentName))
-    .Enrich.WithProperty("Environment", environment)
-    .ReadFrom.Configuration(configuration)
-    .CreateLogger();
-
 try
 {
+    Log.Logger.Information("The app '{0}' is about to start.", typeof(Program).Assembly.GetName().Name);
+
     app.Run();
-    Log.Information("The app has been started.");
 }
 catch (Exception ex)
 {
-    Log.Fatal($"Failed to start {typeof(Program).Assembly.GetName().Name}", ex);
+    Log.Logger.Fatal($"Failed to start {typeof(Program).Assembly.GetName().Name}", ex);
     throw;
-}
-
-static ElasticsearchSinkOptions ConfigureElasticSink(IConfigurationRoot configuration, string environment)
-{
-    var formattedExecuteAssemblyName = typeof(Program).Assembly.GetName().Name?.ToLower().Replace(".", "-");
-    var formattedEnvironmentName = environment?.ToLower().Replace(".", "-");
-
-    return new ElasticsearchSinkOptions(new Uri(configuration["ElasticConfiguration:Uri"]))
-    {
-        AutoRegisterTemplate = true,
-        IndexFormat = $"{formattedExecuteAssemblyName}-{formattedEnvironmentName}-{DateTime.UtcNow.Ticks.ToString("x")}"
-    };
 }
