@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Serilog;
 using Serilog.Exceptions;
 using Serilog.Sinks.Elasticsearch;
+
 using ILogger = Serilog.ILogger;
 using IMicrosoftILogger = Microsoft.Extensions.Logging.ILogger;
 

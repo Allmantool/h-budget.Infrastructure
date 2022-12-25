@@ -1,9 +1,17 @@
 name: Update packages
 
 on:
+  push:
+    branches: [ master ]
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: [ master ]
   schedule:
     # * is a special character in YAML so you have to quote this string
     - cron:  '0 0 * * 0'
+
+env:
+  GITHUB_TOKEN: ${{secrets.NUKEEPER_TOKEN}}
 
 jobs:
   update:
@@ -14,4 +22,4 @@ jobs:
         id: nukeeper
         uses: nukeeperdotnet/nukeeper-action@0.1
         with:
-          token: "${{ secrets.NUKEEPER_TOKEN }}"
+          token: "${{secrets.NUKEEPER_TOKEN}}"
