@@ -13,6 +13,7 @@ using HomeBudget.Core.Models;
 using HomeBudget.Core.Services.Interfaces;
 using HomeBudget_Web_API.Extensions;
 using HomeBudget_Web_API.Models;
+
 using CurrencyRate = HomeBudget.Components.CurrencyRates.Models.CurrencyRate;
 
 namespace HomeBudget_Web_API.Controllers
@@ -57,7 +58,7 @@ namespace HomeBudget_Web_API.Controllers
                                 $"|{request.StartDate.ToString(DateFormats.NationalBankExternalApi)}-{request.EndDate.ToString(DateFormats.NationalBankExternalApi)}";
 
             _logger
-                .EnrichExectionMemberName()
+                .EnrichExecutionMemberName()
                 .LogInformation($"Method: {nameof(GetTodayRatesForPeriodAsync)} with key: {redisCacheKey}");
 
             return await _redisCacheService.CacheWrappedMethodAsync(

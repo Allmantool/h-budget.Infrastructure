@@ -14,7 +14,7 @@ namespace HomeBudget_Web_API.Extensions
 {
     internal static class CustomLoggerExtensions
     {
-        public static IMicrosoftILogger EnrichExectionMemberName(
+        public static IMicrosoftILogger EnrichExecutionMemberName(
             this IMicrosoftILogger logger,
             [CallerMemberName] string memberName = "",
             [CallerLineNumber] int sourceLineNumber = 0)
@@ -23,7 +23,7 @@ namespace HomeBudget_Web_API.Extensions
                 .ForContext("MemberName", memberName)
                 .ForContext("LineNumber", sourceLineNumber);
 
-            return logger.;
+            return logger;
         }
 
         public static ILogger InitializeLogger(this IConfiguration configuration, IWebHostEnvironment environment, ConfigureHostBuilder host)
