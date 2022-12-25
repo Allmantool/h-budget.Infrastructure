@@ -3,19 +3,17 @@ using System.Collections.Generic;
 using System.Reflection;
 
 using FluentValidation;
-using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Serilog;
 
 using HomeBudget.Components.CurrencyRates.MapperProfileConfigurations;
 using HomeBudget_Web_API.Extensions;
 using HomeBudget_Web_API.Middlewares;
+using HomeBudget_Web_API.Extensions.Logs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,7 +40,8 @@ services.AddAutoMapper(new List<Assembly>
     CurrencyRatesComponentMappingProfiles.GetExecutingAssembly(),
 });
 
-services.AddHealthChecks()
+services
+    .AddHealthChecks()
     .AddCheck("heartbeat", () => HealthCheckResult.Healthy())
     .AddCheck<CustomLogicHealthCheck>(nameof(CustomLogicHealthCheck), tags: new[] { "custom" })
     .AddSqlServer(builder.Configuration.GetRequiredSection("DatabaseOptions:ConnectionString").Value, tags: new[] { "sqlServer" })
@@ -53,57 +52,27 @@ services.AddHealthChecksUI(setupSettings: setup =>
     setup.AddHealthCheckEndpoint("currency rates service", "/health");
 }).AddInMemoryStorage();
 
-services.AddValidatorsFromAssemblyContaining<Program>();
-
-services.AddResponseCaching();
+services
+    .AddValidatorsFromAssemblyContaining<Program>()
+    .AddResponseCaching();
 
 configuration.InitializeLogger(environment, builder.Host);
 
 // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 var app = builder.Build();
 
-if (environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
-    app.UseSwagger();
-    app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v1/swagger.json", "HomeBudget_Web_API v1"));
-    app.UseCors(corsPolicyBuilder =>
-    {
-        corsPolicyBuilder.AllowAnyOrigin();
-        corsPolicyBuilder.AllowAnyHeader();
-        corsPolicyBuilder.AllowAnyMethod();
-    });
-}
+app.SetUpBaseApplication(services);
 
-app.UseHsts()
-    .UseHttpsRedirection()
-    .UseResponseCaching()
-    .UseAuthorization()
-    .UseRouting()
-    .UseEndpoints(config =>
-    {
-        config.MapHealthChecks("/health", new HealthCheckOptions
-        {
-            Predicate = _ => true,
-            ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-        });
-
-        config.MapHealthChecksUI();
-    })
-    .UseEndpoints(endpoints =>
-    {
-        endpoints.MapControllers();
-    })
-    .UseNationalBankClientWarmUpMiddleware(services);
+var executionAppName = typeof(Program).Assembly.GetName().Name;
 
 try
 {
-    Log.Logger.Information("The app '{0}' is about to start.", typeof(Program).Assembly.GetName().Name);
+    Log.Information("The app '{0}' is about to start.", executionAppName);
 
     app.Run();
 }
 catch (Exception ex)
 {
-    Log.Logger.Fatal($"Failed to start {typeof(Program).Assembly.GetName().Name}", ex);
-    throw;
+    Log.Fatal(ex, $"Application terminated unexpectedly, failed to start {executionAppName}");
+    Log.CloseAndFlush();
 }

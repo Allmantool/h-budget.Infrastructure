@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,24 +8,11 @@ using Serilog.Exceptions;
 using Serilog.Sinks.Elasticsearch;
 
 using ILogger = Serilog.ILogger;
-using IMicrosoftILogger = Microsoft.Extensions.Logging.ILogger;
 
-namespace HomeBudget_Web_API.Extensions
+namespace HomeBudget_Web_API.Extensions.Logs
 {
     internal static class CustomLoggerExtensions
     {
-        public static IMicrosoftILogger EnrichExecutionMemberName(
-            this IMicrosoftILogger logger,
-            [CallerMemberName] string memberName = "",
-            [CallerLineNumber] int sourceLineNumber = 0)
-        {
-            Log.Logger
-                .ForContext("MemberName", memberName)
-                .ForContext("LineNumber", sourceLineNumber);
-
-            return logger;
-        }
-
         public static ILogger InitializeLogger(this IConfiguration configuration, IWebHostEnvironment environment, ConfigureHostBuilder host)
         {
             Log.Logger = new LoggerConfiguration()
