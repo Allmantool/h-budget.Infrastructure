@@ -1,7 +1,10 @@
 ﻿using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
 using Serilog;
 using Serilog.Events;
 
@@ -14,9 +17,9 @@ namespace HomeBudget_Web_API.Extensions
         public static IApplicationBuilder SetUpBaseApplication(
             this IApplicationBuilder app,
             IServiceCollection services,
-            bool isDevelopment = false)
+            IWebHostEnvironment env)
         {
-            if (isDevelopment)
+            if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();

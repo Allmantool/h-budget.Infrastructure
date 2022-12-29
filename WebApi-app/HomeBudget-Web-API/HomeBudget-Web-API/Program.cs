@@ -14,6 +14,7 @@ using HomeBudget.Components.CurrencyRates.MapperProfileConfigurations;
 using HomeBudget_Web_API.Extensions;
 using HomeBudget_Web_API.Middlewares;
 using HomeBudget_Web_API.Extensions.Logs;
+using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -63,7 +64,7 @@ configuration.InitializeLogger(environment, builder.Host);
 // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 var app = builder.Build();
 
-app.SetUpBaseApplication(services);
+app.SetUpBaseApplication(services, environment);
 
 var executionAppName = typeof(Program).Assembly.GetName().Name;
 
