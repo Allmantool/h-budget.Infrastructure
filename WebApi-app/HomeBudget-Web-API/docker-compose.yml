@@ -26,6 +26,8 @@ services:
       - homebudget-sql-server
       - redis_server
       - sonarCube
+      - elasticsearch
+      - kibana
 
   homebudget-sql-server:
     image: "mcr.microsoft.com/mssql/server:2019-latest"
@@ -55,7 +57,7 @@ services:
       - ${FLYWAY_SCRIPTS_PATH}:/flyway/sql
 
   redis_server:
-    image: redis:latest
+    image: redis:7.0.7
     depends_on:
       - homebudget-sql-server
     container_name: homebudget-cache
@@ -63,7 +65,7 @@ services:
       - "6379:6379"
 
   sonarCube:
-    image: sonarqube:latest
+    image: sonarqube:9.8.0-developer
     depends_on:
       - homebudget-sql-server
     container_name: sonar-cube
@@ -80,8 +82,6 @@ services:
   elasticsearch:
     container_name: elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch:8.5.3
-    depends_on:
-      - homebudget-web-api
     ports:
       - 9250:9200
     volumes:
