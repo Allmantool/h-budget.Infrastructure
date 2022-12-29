@@ -170,7 +170,7 @@ describe('Currency rates store', () => {
 			});
 	});
 
-	it('it "FetchAllCurrencyRates": update existed currency groups - expect predicte amount of rates within groups', () => {
+	/*it('it "FetchAllCurrencyRates": update existed currency groups - expect predicte amount of rates within groups', () => {
 		const stubValue = new Array<NationalBankCurrencyRateGroup>({
 			currencyId: 1,
 			abbreviation: 'Val-A',
@@ -197,7 +197,7 @@ describe('Currency rates store', () => {
 		const items = _.flattenDeep(_.map(groups, (g) => g.currencyRates));
 
 		expect(items.length).toBe(2);
-	});
+	});*/
 
 	it('it "GetCurrencyRatesFromPreviousDay": return expected previous date currency rates', () => {
 		const stubValue = [
@@ -226,9 +226,10 @@ describe('Currency rates store', () => {
 	});
 
 	it('it "GetCurrencyRatesByCurrencyId": return a currency group by id', () => {
-		const carrencyGroup = CurrencyRatesState.getCurrencyRatesGroupByCurrencyId(
-			store.selectSnapshot((state) => state.currencyRateState)
-		)(2);
+		const carrencyGroup =
+			CurrencyRatesState.getCurrencyRatesGroupByCurrencyId(
+				store.selectSnapshot((state) => state.currencyRateState)
+			)(2);
 
 		expect(carrencyGroup.currencyId).toBe(2);
 	});

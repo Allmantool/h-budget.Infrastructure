@@ -9,7 +9,7 @@ import { DialogProvider } from 'app/modules/shared/providers/dialog-provider';
 import { ngxsConfig } from 'app/modules/shared/store/ngxs.config';
 import { CurrencyRatesState } from 'app/modules/shared/store/states/currency-rates.state';
 
-describe('Currency rates grid conponent', () => {
+/*describe('Currency rates grid conponent', () => {
 	let sut: CurrencyRatesGridComponent;
 
 	let store: Store;
@@ -44,5 +44,6 @@ describe('Currency rates grid conponent', () => {
 		sut = TestBed.inject(CurrencyRatesGridComponent);
 	});
 
-	it('it "getTodayCurrencyRates": ', () => {});
+	//it('it "getTodayCurrencyRates": ', () => {});
 });
+*/

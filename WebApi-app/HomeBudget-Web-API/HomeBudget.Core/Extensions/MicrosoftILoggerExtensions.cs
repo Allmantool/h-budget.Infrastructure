@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using Microsoft.Extensions.Logging;
 
+using Microsoft.Extensions.Logging;
 using IMicrosoftILogger = Microsoft.Extensions.Logging.ILogger;
 
-namespace HomeBudget_Web_API.Extensions.Logs
+namespace HomeBudget.Core.Extensions
 {
     public static class MicrosoftILoggerExtensions
     {

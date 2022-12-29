@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Serilog;
+using Serilog.Enrichers.Span;
 using Serilog.Exceptions;
 using Serilog.Sinks.Elasticsearch;
 
@@ -20,6 +21,7 @@ namespace HomeBudget_Web_API.Extensions.Logs
                  .Enrich.WithMachineName()
                  .Enrich.WithExceptionDetails()
                  .Enrich.WithProperty("Environment", environment)
+                 .Enrich.WithSpan()
                  .WriteTo.Debug()
                  .WriteTo.Console()
                  .WriteTo.Elasticsearch(ConfigureElasticSink(configuration, environment.EnvironmentName))

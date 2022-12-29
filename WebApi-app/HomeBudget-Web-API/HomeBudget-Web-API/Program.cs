@@ -47,10 +47,12 @@ services
     .AddSqlServer(builder.Configuration.GetRequiredSection("DatabaseOptions:ConnectionString").Value, tags: new[] { "sqlServer" })
     .AddRedis(builder.Configuration.GetRequiredSection("DatabaseOptions:RedisConnectionString").Value, tags: new[] { "redis" });
 
-services.AddHealthChecksUI(setupSettings: setup =>
-{
-    setup.AddHealthCheckEndpoint("currency rates service", "/health");
-}).AddInMemoryStorage();
+services
+    .AddHealthChecksUI(setupSettings: setup =>
+    {
+        setup.AddHealthCheckEndpoint("currency rates service", "/health");
+    })
+    .AddInMemoryStorage();
 
 services
     .AddValidatorsFromAssemblyContaining<Program>()

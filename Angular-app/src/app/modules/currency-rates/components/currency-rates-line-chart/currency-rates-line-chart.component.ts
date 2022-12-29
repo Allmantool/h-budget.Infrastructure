@@ -92,7 +92,9 @@ export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
 					)
 				)
 				.subscribe(([data, tableOptions]) => {
-					const rates = data(tableOptions.selectedItem.currencyId).currencyRates;
+					const rates = data(
+						tableOptions.selectedItem.currencyId
+					).currencyRates;
 					this.chartOptions = {
 						series: [
 							{

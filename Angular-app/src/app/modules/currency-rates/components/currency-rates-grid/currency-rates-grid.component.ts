@@ -180,9 +180,7 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 		combineLatest([this.previousDayRates$, this.todayCurrencyRateGroups$])
 			.pipe(take(1))
 			.subscribe(([previousDayRates, todayRates]) => {
-				todayRates.forEach((tr) => {
-
-				});
+				todayRates.forEach((tr) => {});
 			});
 	}
 
