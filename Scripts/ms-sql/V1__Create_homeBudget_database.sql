@@ -1,6 +1,9 @@
-IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'HomeBudget')
+USE master;
+GO
+
+IF NOT EXISTS(SELECT * FROM sys.databases WITH (NOLOCK) WHERE name = N'HomeBudget')
 BEGIN
-    CREATE DATABASE [HomeBudget]
+    CREATE DATABASE [HomeBudget];
 END
 
 GO

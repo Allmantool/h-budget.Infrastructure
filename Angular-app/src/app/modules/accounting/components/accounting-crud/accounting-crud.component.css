@@ -1,0 +1,27 @@
+.crud-content {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding-top: 5em;
+	width: 100%;
+	height: 100%;
+	justify-content: space-between;
+}
+
+.record-crud-section-title {
+	padding-bottom: 2em;
+}
+
+.command-buttons {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+}
+
+.expense-section {
+	color: red;
+}
+
+.income-section {
+	color: green;
+}

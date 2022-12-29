@@ -1,0 +1,21 @@
+<!-- Toolbar -->
+<div class="toolbar" (click)="navigateToDashboard()" role="banner">
+    <img class="toolbar-logo" alt="Angular Logo" src='/assets/angular-logo.png' />
+    <span>Welcome to h-budget app</span>
+</div>
+
+<div class="layout-content">
+    <div class="app-root-left-sidebar-outlet">
+        <router-outlet name="left-sidebar"></router-outlet>
+    </div>
+
+    <div class="app-root-central-outlet">
+        <router-outlet #rootAppOutlet="outlet"></router-outlet>
+    </div>
+    
+    <div class="app-root-right-sidebar-outlet">
+        <router-outlet name="right-sidebar"></router-outlet>
+    </div>
+</div>
+
+<progress-spinner [isLoaded]="rootAppOutlet.isActivated"></progress-spinner>

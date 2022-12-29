@@ -1,5 +1,5 @@
 export class NationalBankCurrencyRate {
-	constructor(private currencyRates: Partial<NationalBankCurrencyRate>) {
+	constructor(currencyRates: Partial<NationalBankCurrencyRate>) {
 		this.updateDate = currencyRates.updateDate;
 		this.abbreviation = currencyRates.abbreviation;
 		this.scale = currencyRates.scale;

@@ -1,7 +1,7 @@
-USE [HomeBudget]
+USE [HomeBudget];
 GO
 
-IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='CurrencyRates' and xtype='U')
+IF NOT EXISTS (SELECT * FROM sysobjects WITH (NOLOCK) WHERE [name]=N'CurrencyRates' and xtype=N'U')
 BEGIN
     CREATE TABLE CurrencyRates (
         Id INT PRIMARY KEY IDENTITY (1, 1),
