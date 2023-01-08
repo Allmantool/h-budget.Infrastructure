@@ -43,7 +43,7 @@ namespace HomeBudget.Components.CurrencyRates.Providers
                                     "SET Settings = @settings" +
                                   "WHERE [Key] = @Key";
 
-            return await _baseWriteRepository.SaveAsync(
+            return await _baseWriteRepository.ExecuteAsync(
                 query,
                 new
                 {

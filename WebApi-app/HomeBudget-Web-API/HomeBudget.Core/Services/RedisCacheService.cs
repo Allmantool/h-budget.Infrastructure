@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -48,6 +49,8 @@ namespace HomeBudget.Core.Services
                     TimeSpan.FromMinutes(_cacheOptions.ExpirationInMinutes));
         }
 
+        public Task FlushDatabaseAsync() => GetCurrentServer().FlushDatabaseAsync();
+
         public async Task<Result<T>> CacheWrappedMethodAsync<T>(string cacheKey, Func<Task<Result<T>>> wrappedMethod)
         {
             if (await KeyExistsAsync(cacheKey))
@@ -64,6 +67,13 @@ namespace HomeBudget.Core.Services
             await AddAsync(cacheKey, cacheValue.Payload);
 
             return Succeeded(await GetAsync<T>(cacheKey));
+        }
+
+        private IServer GetCurrentServer()
+        {
+            var servers = _redisDatabase.Multiplexer.GetServers();
+
+            return servers.FirstOrDefault();
         }
     }
 }

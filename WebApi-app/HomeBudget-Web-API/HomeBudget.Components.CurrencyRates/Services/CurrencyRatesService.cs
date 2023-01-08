@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 using AutoMapper;
 
+using HomeBudget.Components.CurrencyRates.Commands;
 using HomeBudget.Components.CurrencyRates.Extensions;
 using HomeBudget.Components.CurrencyRates.Models;
 using HomeBudget.Components.CurrencyRates.Providers.Interfaces;
@@ -18,8 +19,8 @@ namespace HomeBudget.Components.CurrencyRates.Services
 {
     internal class CurrencyRatesService : BaseService, ICurrencyRatesService
     {
-        private readonly IMapper _mapper;
         private readonly ConfigSettings _configSettings;
+        private readonly IMapper _mapper;
         private readonly INationalBankApiClient _nationalBankApiClient;
         private readonly ICurrencyRatesReadProvider _currencyRatesReadProvider;
         private readonly ICurrencyRatesWriteProvider _currencyRatesWriteProvider;
@@ -78,9 +79,9 @@ namespace HomeBudget.Components.CurrencyRates.Services
                 rate.RatePerUnit = rate.OfficialRate / configInfo.Scale;
             }
 
-            var ratesForPeriod = await _currencyRatesReadProvider.GetRatesForPeriodAsync(startDate, endDate);
+            var ratesForPeriodFromDatabase = await _currencyRatesReadProvider.GetRatesForPeriodAsync(startDate, endDate);
 
-            await SaveIfNotExistAsync(ratesForPeriod, ratesFromApiCall);
+            await SaveWithRewriteAsync(new SaveCurrencyRatesCommand(ratesFromApiCall, ratesForPeriodFromDatabase));
 
             return Succeeded(ratesFromApiCall.MapToCurrencyRateGrouped(_mapper));
         }
@@ -97,21 +98,20 @@ namespace HomeBudget.Components.CurrencyRates.Services
 
             var ratesFromApiCall = _mapper.Map<IReadOnlyCollection<CurrencyRate>>(activeCurrencyRates);
 
-            var todayRates = await _currencyRatesReadProvider.GetTodayRatesAsync();
+            var todayRatesFromDatabase = await _currencyRatesReadProvider.GetTodayRatesAsync();
 
-            await SaveIfNotExistAsync(todayRates, ratesFromApiCall);
+            await SaveWithRewriteAsync(new SaveCurrencyRatesCommand(ratesFromApiCall, todayRatesFromDatabase));
 
             return Succeeded(ratesFromApiCall.MapToCurrencyRateGrouped(_mapper));
         }
 
-        public async Task<Result<int>> SaveIfNotExistAsync(
-            IReadOnlyCollection<CurrencyRate> ratesFromDatabase,
-            IReadOnlyCollection<CurrencyRate> ratesFromApiCall = null)
+        public async Task<Result<int>> SaveWithRewriteAsync(SaveCurrencyRatesCommand saveRatesCommand)
         {
-            ratesFromApiCall ??= Enumerable.Empty<CurrencyRate>().ToList();
+            var ratesFromApiCall = saveRatesCommand.RatesFromApiCall ?? Enumerable.Empty<CurrencyRate>().ToList();
 
-            var amountOfAffectedRows = ratesFromDatabase.IsNullOrEmpty() || ratesFromDatabase.Count != ratesFromApiCall.Count
-                ? await _currencyRatesWriteProvider.SaveRatesAsync(ratesFromApiCall)
+            var amountOfAffectedRows = saveRatesCommand.RatesFromDatabase.IsNullOrEmpty()
+                                       || saveRatesCommand.RatesFromDatabase.Count != ratesFromApiCall.Count
+                ? await _currencyRatesWriteProvider.UpsertRatesSaveAsync(ratesFromApiCall)
                 : default;
 
             return Succeeded(amountOfAffectedRows);
