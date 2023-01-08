@@ -27,7 +27,7 @@ namespace HomeBudget.Components.CurrencyRates.Providers
 
             using var upsertTransaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 
-            await _writeRepository.DeleteAsync(
+            await _writeRepository.ExecuteAsync(
                 deleteQuery,
                 new
                 {
@@ -35,7 +35,7 @@ namespace HomeBudget.Components.CurrencyRates.Providers
                     @UpdateDates = rates.Select(r => r.UpdateDate)
                 });
 
-            var affectedRowsAmount = await _writeRepository.SaveAsync(insertQuery, rates);
+            var affectedRowsAmount = await _writeRepository.ExecuteAsync(insertQuery, rates);
 
             upsertTransaction.Complete();
 

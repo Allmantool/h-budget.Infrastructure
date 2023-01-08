@@ -80,4 +80,7 @@ catch (Exception ex)
 }
 
 // To add visibility for integration tests
-public partial class Program { }
+public partial class Program
+{
+    protected Program() { }
+}

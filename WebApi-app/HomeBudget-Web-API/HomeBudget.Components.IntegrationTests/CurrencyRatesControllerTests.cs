@@ -54,7 +54,7 @@ namespace HomeBudget.Components.IntegrationTests
             var response = await RestHttpClient!.ExecuteAsync<Result<IReadOnlyCollection<CurrencyRateGrouped>>>(getCurrencyRatesForPeriodRequest);
             var payload = response.Data;
 
-            Assert.AreEqual(6, payload.Payload.Count);
+            Assert.AreEqual(6, payload?.Payload.Count);
         }
 
         [Test]

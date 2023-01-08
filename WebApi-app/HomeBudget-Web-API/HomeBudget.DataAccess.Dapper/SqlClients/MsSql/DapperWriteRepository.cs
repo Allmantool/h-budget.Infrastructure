@@ -16,16 +16,7 @@ namespace HomeBudget.DataAccess.Dapper.SqlClients.MsSql
             _sqlConnectionFactory = sqlConnectionFactory;
         }
 
-        public async Task<int> SaveAsync<T>(string sqlQuery, T parameters, IDbTransaction dbTransaction = null)
-        {
-            using var db = _sqlConnectionFactory.Create();
-
-            return dbTransaction == null
-                ? await db.ExecuteAsync(sqlQuery, parameters)
-                : await db.ExecuteAsync(sqlQuery, parameters, dbTransaction);
-        }
-
-        public async Task<int> DeleteAsync<T>(string sqlQuery, T parameters, IDbTransaction dbTransaction = null)
+        public async Task<int> ExecuteAsync<T>(string sqlQuery, T parameters, IDbTransaction dbTransaction = null)
         {
             using var db = _sqlConnectionFactory.Create();
 
