@@ -18,8 +18,8 @@ jobs:
     steps:
       - name: Nukeeper
         env:
-          NUKEEPER_TOKEN: ${{secrets.NUKEEPER_TOKEN_CLASSIC}}
+          NUKEEPER_TOKEN: ${{ secrets.NUKEEPER_TOKEN }}
         id: nukeeper
         uses: nukeeperdotnet/nukeeper-action@0.1
         with:
-          token: "${NUKEEPER_TOKEN}"
+          token: "${{ secrets.NUKEEPER_TOKEN}}"
