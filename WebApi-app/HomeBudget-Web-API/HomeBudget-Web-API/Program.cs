@@ -14,7 +14,6 @@ using HomeBudget.Components.CurrencyRates.MapperProfileConfigurations;
 using HomeBudget_Web_API.Extensions;
 using HomeBudget_Web_API.Middlewares;
 using HomeBudget_Web_API.Extensions.Logs;
-using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -79,3 +78,6 @@ catch (Exception ex)
     Log.Fatal(ex, $"Application terminated unexpectedly, failed to start {executionAppName}");
     Log.CloseAndFlush();
 }
+
+// To add visibility for integration tests
+public partial class Program { }

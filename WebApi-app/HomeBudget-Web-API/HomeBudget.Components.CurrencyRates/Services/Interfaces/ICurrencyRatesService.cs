@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+using HomeBudget.Components.CurrencyRates.Commands;
 using HomeBudget.Components.CurrencyRates.Models;
 using HomeBudget.Core.Models;
 
@@ -9,9 +10,7 @@ namespace HomeBudget.Components.CurrencyRates.Services.Interfaces
 {
     public interface ICurrencyRatesService
     {
-        public Task<Result<int>> SaveIfNotExistAsync(
-            IReadOnlyCollection<CurrencyRate> ratesFromDatabase,
-            IReadOnlyCollection<CurrencyRate> ratesFromApiCall = null);
+        public Task<Result<int>> SaveWithRewriteAsync(SaveCurrencyRatesCommand saveRatesCommand);
 
         public Task<Result<IReadOnlyCollection<CurrencyRateGrouped>>> GetRatesAsync();
 

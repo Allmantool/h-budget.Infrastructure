@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using AutoMapper;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
+using HomeBudget.Components.CurrencyRates.Commands;
 using HomeBudget.Components.CurrencyRates.Models;
 using HomeBudget.Components.CurrencyRates.Services.Interfaces;
 using HomeBudget.Core.Constants;
@@ -47,7 +49,11 @@ namespace HomeBudget_Web_API.Controllers
             var unifiedCurrencyRates = _mapper
                 .Map<IReadOnlyCollection<CurrencyRate>>(request.CurrencyRates);
 
-            return await _currencyRatesService.SaveIfNotExistAsync(unifiedCurrencyRates);
+            var saveResult = await _currencyRatesService.SaveWithRewriteAsync(new SaveCurrencyRatesCommand(unifiedCurrencyRates));
+
+            await _redisCacheService.FlushDatabaseAsync();
+
+            return saveResult;
         }
 
         [HttpPost("/currencyRates/period")]
@@ -65,10 +71,10 @@ namespace HomeBudget_Web_API.Controllers
         }
 
         [HttpGet]
-        public async Task<Result<IReadOnlyCollection<CurrencyRateGrouped>>> GetRatesAsync()
+        public async Task<Result<IReadOnlyCollection<CurrencyRateGrouped>>> GetAllRatesAsync()
         {
             return await _redisCacheService.CacheWrappedMethodAsync(
-                $"{CacheKeyPrefix}|{nameof(GetRatesAsync)}|{DateTime.Today}",
+                $"{CacheKeyPrefix}|{nameof(GetAllRatesAsync)}|{DateTime.Today}",
                 () => _currencyRatesService.GetRatesAsync());
         }
 

@@ -47,6 +47,7 @@
 		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
 			<_Parameter1>HomeBudget.Components.CurrencyRates.Tests</_Parameter1>
 		</AssemblyAttribute>
+      <InternalsVisibleTo Include="MinimalApiPlayground.Tests" />
 	</ItemGroup>
 
 	<ItemGroup>

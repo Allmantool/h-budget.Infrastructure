@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Transactions;
+
 using HomeBudget.Components.CurrencyRates.Models;
 using HomeBudget.Components.CurrencyRates.Providers.Interfaces;
 using HomeBudget.DataAccess.Interfaces;
@@ -12,14 +15,31 @@ namespace HomeBudget.Components.CurrencyRates.Providers
 
         public CurrencyRatesWriteProvider(IBaseWriteRepository writeRepository) => _writeRepository = writeRepository;
 
-        public Task<int> SaveRatesAsync(IReadOnlyCollection<CurrencyRate> rates)
+        public async Task<int> UpsertRatesSaveAsync(IReadOnlyCollection<CurrencyRate> rates)
         {
-            const string query = "INSERT INTO dbo.[CurrencyRates] " +
-                                        "([CurrencyId], [Name], [Abbreviation], [Scale], [OfficialRate], [RatePerUnit], [UpdateDate]) " +
-                                 "VALUES (@CurrencyId, @Name, @Abbreviation, @Scale, @OfficialRate, @RatePerUnit, @UpdateDate);";
+            const string insertQuery = "INSERT INTO dbo.[CurrencyRates] " +
+                                       "([CurrencyId], [Name], [Abbreviation], [Scale], [OfficialRate], [RatePerUnit], [UpdateDate]) " +
+                                       "VALUES (@CurrencyId, @Name, @Abbreviation, @Scale, @OfficialRate, @RatePerUnit, @UpdateDate);";
 
-            // TODO: Apply mapper there, each layer have it's own model/dto
-            return _writeRepository.SaveAsync(query, rates);
+            const string deleteQuery = "DELETE " +
+                                       "FROM dbo.[CurrencyRates] " +
+                                       "WHERE CurrencyId IN (@CurrencyIds) AND UpdateDate IN (@UpdateDates)";
+
+            using var upsertTransaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+
+            await _writeRepository.DeleteAsync(
+                deleteQuery,
+                new
+                {
+                    @CurrencyIds = rates.Select(r => r.CurrencyId),
+                    @UpdateDates = rates.Select(r => r.UpdateDate)
+                });
+
+            var affectedRowsAmount = await _writeRepository.SaveAsync(insertQuery, rates);
+
+            upsertTransaction.Complete();
+
+            return affectedRowsAmount;
         }
     }
 }

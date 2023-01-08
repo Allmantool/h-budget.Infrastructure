@@ -13,11 +13,13 @@ namespace HomeBudget.Core.Services
     internal class RedisCacheService : BaseService, IRedisCacheService
     {
         private readonly IDatabase _redisDatabase;
+        private readonly string _redisConnectionString;
         private readonly CacheStoreOptions _cacheOptions;
 
-        public RedisCacheService(IDatabase redisDatabase, IOptions<CacheStoreOptions> cacheOptions)
+        public RedisCacheService(IDatabase redisDatabase, IOptions<CacheStoreOptions> cacheOptions, IOptions<DatabaseOptions> databaseOptions)
         {
             _redisDatabase = redisDatabase;
+            _redisConnectionString = databaseOptions.Value.RedisConnectionString;
             _cacheOptions = cacheOptions.Value;
         }
 
@@ -48,6 +50,8 @@ namespace HomeBudget.Core.Services
                     TimeSpan.FromMinutes(_cacheOptions.ExpirationInMinutes));
         }
 
+        public Task FlushDatabaseAsync() => GetCurrentServer().FlushDatabaseAsync();
+
         public async Task<Result<T>> CacheWrappedMethodAsync<T>(string cacheKey, Func<Task<Result<T>>> wrappedMethod)
         {
             if (await KeyExistsAsync(cacheKey))
@@ -65,5 +69,7 @@ namespace HomeBudget.Core.Services
 
             return Succeeded(await GetAsync<T>(cacheKey));
         }
+
+        private IServer GetCurrentServer() => _redisDatabase.Multiplexer.GetServer(_redisConnectionString);
     }
 }

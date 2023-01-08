@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+
 using HomeBudget_Web_API.Models;
 
 namespace HomeBudget_Web_API.Validators
@@ -8,7 +9,7 @@ namespace HomeBudget_Web_API.Validators
         public CurrencyRateValidator()
         {
             RuleFor(x => x.RatePerUnit)
-                .GreaterThanOrEqualTo(default(decimal));
+                .GreaterThan(default(decimal));
 
             RuleFor(x => x.Abbreviation)
                 .NotNull()
@@ -19,10 +20,10 @@ namespace HomeBudget_Web_API.Validators
                 .NotEmpty();
 
             RuleFor(x => x.OfficialRate)
-                .GreaterThanOrEqualTo(default(decimal));
+                .GreaterThan(default(decimal));
 
             RuleFor(x => x.Scale)
-                .GreaterThanOrEqualTo(default(int));
+                .GreaterThan(default(int));
         }
     }
 }
