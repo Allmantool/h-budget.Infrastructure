@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -13,13 +14,11 @@ namespace HomeBudget.Core.Services
     internal class RedisCacheService : BaseService, IRedisCacheService
     {
         private readonly IDatabase _redisDatabase;
-        private readonly string _redisConnectionString;
         private readonly CacheStoreOptions _cacheOptions;
 
-        public RedisCacheService(IDatabase redisDatabase, IOptions<CacheStoreOptions> cacheOptions, IOptions<DatabaseOptions> databaseOptions)
+        public RedisCacheService(IDatabase redisDatabase, IOptions<CacheStoreOptions> cacheOptions)
         {
             _redisDatabase = redisDatabase;
-            _redisConnectionString = databaseOptions.Value.RedisConnectionString;
             _cacheOptions = cacheOptions.Value;
         }
 
@@ -70,6 +69,11 @@ namespace HomeBudget.Core.Services
             return Succeeded(await GetAsync<T>(cacheKey));
         }
 
-        private IServer GetCurrentServer() => _redisDatabase.Multiplexer.GetServer(_redisConnectionString);
+        private IServer GetCurrentServer()
+        {
+            var servers = _redisDatabase.Multiplexer.GetServers();
+
+            return servers.FirstOrDefault();
+        }
     }
 }
