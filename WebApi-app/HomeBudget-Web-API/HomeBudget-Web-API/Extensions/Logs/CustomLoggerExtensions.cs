@@ -35,11 +35,10 @@ namespace HomeBudget_Web_API.Extensions.Logs
 
         private static ElasticsearchSinkOptions ConfigureElasticSink(IConfiguration configuration, string environment)
         {
-            var formattedExecuteAssemblyName = typeof(Program).Assembly.GetName().Name?.Replace(".", "-");
-            var formattedEnvironmentName = environment?.Replace(".", "-");
+            var formattedExecuteAssemblyName = typeof(Program).Assembly.GetName().Name;
             var dateIndexPostfix = DateTime.UtcNow.ToString("MM-yyyy");
 
-            return new ElasticsearchSinkOptions(new Uri(configuration["ElasticConfiguration:Uri"]))
+            return new ElasticsearchSinkOptions(new Uri(configuration["ElasticConfiguration:Uri"] ?? throw new InvalidOperationException("ElasticConfiguration -- Uri can not be null or empty")))
             {
                 AutoRegisterTemplate = true,
                 TypeName = null,
@@ -47,7 +46,7 @@ namespace HomeBudget_Web_API.Extensions.Logs
                 BatchAction = ElasticOpType.Create,
                 NumberOfReplicas = 1,
                 NumberOfShards = 2,
-                IndexFormat = $"{formattedExecuteAssemblyName}-{formattedEnvironmentName}-{dateIndexPostfix}".ToLower()
+                IndexFormat = $"{formattedExecuteAssemblyName}-{environment}-{dateIndexPostfix}".Replace(".", "-").ToLower()
             };
         }
     }

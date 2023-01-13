@@ -63,7 +63,7 @@ namespace HomeBudget_Web_API.Extensions
 
             services.AddHealthChecksUI(setupSettings: setup =>
                 {
-                    setup.AddHealthCheckEndpoint("currency rates service", "/health");
+                    setup.AddHealthCheckEndpoint("currency rates service", configuration.GetHealthCheckEndpoint());
                 })
                 .AddInMemoryStorage();
 

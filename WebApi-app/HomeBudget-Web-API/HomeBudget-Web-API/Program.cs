@@ -48,7 +48,7 @@ configuration.InitializeLogger(environment, builder.Host);
 // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 var app = builder.Build();
 
-app.SetUpBaseApplication(services, environment);
+app.SetUpBaseApplication(services, environment, configuration);
 
 var executionAppName = typeof(Program).Assembly.GetName().Name;
 
