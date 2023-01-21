@@ -39,7 +39,7 @@ services.AddAutoMapper(new List<Assembly>
 });
 
 services
-    .SetUpHealthCheck(configuration)
+    .SetUpHealthCheck(configuration, Environment.GetEnvironmentVariable("ASPNETCORE_URLS"))
     .AddValidatorsFromAssemblyContaining<Program>()
     .AddResponseCaching();
 

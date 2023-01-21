@@ -9,6 +9,7 @@ using Serilog;
 using Serilog.Events;
 
 using HomeBudget_Web_API.Middlewares;
+using HomeBudget_Web_API.Constants;
 
 namespace HomeBudget_Web_API.Extensions
 {
@@ -56,10 +57,10 @@ namespace HomeBudget_Web_API.Extensions
                 })
                 .UseEndpoints(config =>
                 {
-                    config.MapHealthChecks(configuration.GetHealthCheckEndpoint(), new HealthCheckOptions
+                    config.MapHealthChecks(Endpoints.HealthCheckSource, new HealthCheckOptions
                     {
                         Predicate = _ => true,
-                        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
                     });
 
                     config.MapHealthChecksUI(options =>

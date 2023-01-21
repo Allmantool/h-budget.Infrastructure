@@ -44,7 +44,7 @@ namespace HomeBudget_Web_API.Extensions
                 .AddScoped(sp => sp.GetRequiredService<ConnectionMultiplexer>().GetDatabase());
         }
 
-        public static IServiceCollection SetUpHealthCheck(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection SetUpHealthCheck(this IServiceCollection services, IConfiguration configuration, string hostUrls)
         {
             var msSqlConnectionString = configuration.GetRequiredSection("DatabaseOptions:ConnectionString").Value;
             var redisConnectionString = configuration.GetRequiredSection("DatabaseOptions:RedisConnectionString").Value;
@@ -63,7 +63,7 @@ namespace HomeBudget_Web_API.Extensions
 
             services.AddHealthChecksUI(setupSettings: setup =>
                 {
-                    setup.AddHealthCheckEndpoint("currency rates service", configuration.GetHealthCheckEndpoint());
+                    setup.AddHealthCheckEndpoint("currency rates service", configuration.GetHealthCheckEndpoint(hostUrls));
                 })
                 .AddInMemoryStorage();
 

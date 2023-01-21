@@ -3,7 +3,7 @@ version: '3.9'
 services:
   homebudget-web-api:
     image: ${DOCKER_REGISTRY-}homebudget-webapi:v0.0.1
-    container_name: homebudget-webapi-container
+    container_name: homebudget-api
     build:
       context: .
       dockerfile: dockerfile
