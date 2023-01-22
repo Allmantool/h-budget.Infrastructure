@@ -4,11 +4,12 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
+using Microsoft.Extensions.Configuration;
 using Serilog;
 using Serilog.Events;
 
 using HomeBudget_Web_API.Middlewares;
+using HomeBudget_Web_API.Constants;
 
 namespace HomeBudget_Web_API.Extensions
 {
@@ -17,7 +18,8 @@ namespace HomeBudget_Web_API.Extensions
         public static IApplicationBuilder SetUpBaseApplication(
             this IApplicationBuilder app,
             IServiceCollection services,
-            IWebHostEnvironment env)
+            IWebHostEnvironment env,
+            IConfiguration configuration)
         {
             if (env.IsDevelopment())
             {
@@ -55,13 +57,17 @@ namespace HomeBudget_Web_API.Extensions
                 })
                 .UseEndpoints(config =>
                 {
-                    config.MapHealthChecks("/health", new HealthCheckOptions
+                    config.MapHealthChecks(Endpoints.HealthCheckSource, new HealthCheckOptions
                     {
                         Predicate = _ => true,
-                        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
                     });
 
-                    config.MapHealthChecksUI();
+                    config.MapHealthChecksUI(options =>
+                    {
+                        options.UIPath = "/show-health-ui";
+                        options.ApiPath = "/health-ui-api";
+                    });
                 })
                 .UseEndpoints(endpoints =>
                 {

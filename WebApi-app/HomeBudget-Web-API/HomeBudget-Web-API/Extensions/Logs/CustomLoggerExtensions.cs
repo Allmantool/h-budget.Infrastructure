@@ -24,7 +24,7 @@ namespace HomeBudget_Web_API.Extensions.Logs
                  .Enrich.WithSpan()
                  .WriteTo.Debug()
                  .WriteTo.Console()
-                 .WriteTo.Elasticsearch(ConfigureElasticSink(configuration, environment.EnvironmentName))
+                 .WriteTo.Elasticsearch(ConfigureElasticSink(configuration, environment))
                  .ReadFrom.Configuration(configuration)
                  .CreateLogger();
 
@@ -33,13 +33,13 @@ namespace HomeBudget_Web_API.Extensions.Logs
             return Log.Logger;
         }
 
-        private static ElasticsearchSinkOptions ConfigureElasticSink(IConfiguration configuration, string environment)
+        private static ElasticsearchSinkOptions ConfigureElasticSink(IConfiguration configuration, IWebHostEnvironment environment)
         {
-            var formattedExecuteAssemblyName = typeof(Program).Assembly.GetName().Name?.Replace(".", "-");
-            var formattedEnvironmentName = environment?.Replace(".", "-");
-            var dateIndexPostfix = DateTime.UtcNow.ToString("MM-yyyy");
+            var formattedExecuteAssemblyName = typeof(Program).Assembly.GetName().Name;
+            var dateIndexPostfix = DateTime.UtcNow.ToString("MM-yyyy-dd");
+            var nodeUri = new Uri((configuration["ElasticConfiguration:Uri"] ?? Environment.GetEnvironmentVariable("ASPNETCORE_URLS")) ?? string.Empty);
 
-            return new ElasticsearchSinkOptions(new Uri(configuration["ElasticConfiguration:Uri"]))
+            return new ElasticsearchSinkOptions(nodeUri)
             {
                 AutoRegisterTemplate = true,
                 TypeName = null,
@@ -47,7 +47,7 @@ namespace HomeBudget_Web_API.Extensions.Logs
                 BatchAction = ElasticOpType.Create,
                 NumberOfReplicas = 1,
                 NumberOfShards = 2,
-                IndexFormat = $"{formattedExecuteAssemblyName}-{formattedEnvironmentName}-{dateIndexPostfix}".ToLower()
+                IndexFormat = $"{formattedExecuteAssemblyName}-{environment.EnvironmentName}-{dateIndexPostfix}".Replace(".", "-").ToLower()
             };
         }
     }
