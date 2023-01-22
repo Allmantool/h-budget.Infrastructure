@@ -23,7 +23,7 @@ namespace HomeBudget.Components.CurrencyRates.Providers
 
             const string deleteQuery = "DELETE " +
                                        "FROM dbo.[CurrencyRates] " +
-                                       "WHERE CurrencyId IN (@CurrencyIds) AND UpdateDate IN (@UpdateDates)";
+                                       "WHERE CurrencyId IN @CurrencyIds AND UpdateDate IN @UpdateDates";
 
             using var upsertTransaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 
@@ -31,15 +31,15 @@ namespace HomeBudget.Components.CurrencyRates.Providers
                 deleteQuery,
                 new
                 {
-                    @CurrencyIds = rates.Select(r => r.CurrencyId),
-                    @UpdateDates = rates.Select(r => r.UpdateDate)
+                    CurrencyIds = rates.Select(r => r.CurrencyId),
+                    UpdateDates = rates.Select(r => r.UpdateDate)
                 });
 
-            var affectedRowsAmount = await _writeRepository.ExecuteAsync(insertQuery, rates);
+            var insertAffectedRowsAmount = await _writeRepository.ExecuteAsync(insertQuery, rates);
 
             upsertTransaction.Complete();
 
-            return affectedRowsAmount;
+            return insertAffectedRowsAmount;
         }
     }
 }
