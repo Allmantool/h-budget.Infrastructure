@@ -14,12 +14,14 @@
             "trigger": "commit",
             "bump": "minor",
             "branch": "master",
-            "reset": "build"
+            "reset": "build",
+            "tag": true
         },
         {
             "trigger": "commit",
             "bump": "major",
             "branch": "release",
+            "tag": true,
             "reset": [
                 "minor",
                 "build"
