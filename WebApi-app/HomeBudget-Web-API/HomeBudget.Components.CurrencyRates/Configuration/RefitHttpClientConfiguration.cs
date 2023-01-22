@@ -5,37 +5,20 @@ using System.Net.Http.Headers;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json;
+using Polly.Extensions.Http;
 using Polly;
 using Refit;
-using Polly.Extensions.Http;
 
-using HomeBudget.Components.CurrencyRates.Providers;
-using HomeBudget.Components.CurrencyRates.Providers.Interfaces;
-using HomeBudget.Components.CurrencyRates.Services;
 using HomeBudget.Components.CurrencyRates.Services.Interfaces;
 using HomeBudget.Core.Models;
 
-namespace HomeBudget.Components.CurrencyRates.Extensions
+namespace HomeBudget.Components.CurrencyRates.Configuration
 {
-    public static class ServiceCollectionExtensions
+    internal static class RefitHttpClientConfiguration
     {
-        public static IServiceCollection RegisterCurrencyRatedIoCDependency(
-            this IServiceCollection services)
-        {
-            var serviceProvider = services.BuildServiceProvider();
-
-            return services
-                .AddScoped<IConfigSettingsProvider, ConfigSettingsProvider>()
-                .AddScoped<IConfigSettingsServices, ConfigSettingsServices>()
-                .AddScoped<ICurrencyRatesWriteProvider, CurrencyRatesWriteProvider>()
-                .AddScoped<ICurrencyRatesReadProvider, CurrencyRatesReadProvider>()
-                .AddScoped<ICurrencyRatesService, CurrencyRatesService>()
-                .RegisterNationalApiHttpClient(serviceProvider);
-        }
-
-        private static IServiceCollection RegisterNationalApiHttpClient(
+        public static IServiceCollection RegisterNationalApiHttpClient(
             this IServiceCollection services,
             IServiceProvider serviceProvider)
         {

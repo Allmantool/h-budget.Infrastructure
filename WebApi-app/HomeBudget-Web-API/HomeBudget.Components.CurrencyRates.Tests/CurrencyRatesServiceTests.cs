@@ -184,7 +184,7 @@ namespace HomeBudget.Components.CurrencyRates.Tests
 
             var currencyRatesGroups = rates.MapToCurrencyRateGrouped(mapper);
 
-            Assert.AreEqual(2, currencyRatesGroups.Count());
+            Assert.AreEqual(2, currencyRatesGroups.Count);
         }
 
         private static IMapper GetDefaultMapper()
