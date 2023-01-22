@@ -1,4 +1,6 @@
-﻿using HealthChecks.UI.Client;
+﻿using System;
+
+using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -21,7 +23,7 @@ namespace HomeBudget_Web_API.Extensions
             IWebHostEnvironment env,
             IConfiguration configuration)
         {
-            if (env.IsDevelopment())
+            if (env.IsDevelopment() || env.IsEnvironment("Docker"))
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
@@ -29,7 +31,7 @@ namespace HomeBudget_Web_API.Extensions
                 app.UseCors(corsPolicyBuilder =>
                 {
                     corsPolicyBuilder
-                        .AllowAnyOrigin()
+                        .WithOrigins(configuration["UiOriginsUrl"] ?? throw new InvalidOperationException())
                         .AllowAnyHeader()
                         .AllowAnyMethod();
                 });
