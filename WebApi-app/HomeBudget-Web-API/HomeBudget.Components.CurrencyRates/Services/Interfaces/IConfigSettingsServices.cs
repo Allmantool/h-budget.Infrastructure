@@ -7,7 +7,7 @@ namespace HomeBudget.Components.CurrencyRates.Services.Interfaces
 {
     public interface IConfigSettingsServices
     {
-        public Task<Result<IReadOnlyCollection<Currency>>> GetAvailableCurrencies();
+        public Task<Result<IReadOnlyCollection<Currency>>> GetAvailableCurrenciesAsync();
 
         public Task<Result<int>> SaveSettingsAsync(ConfigSettings settings);
 

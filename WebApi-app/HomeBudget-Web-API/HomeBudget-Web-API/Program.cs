@@ -6,13 +6,11 @@ using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Models;
 using Serilog;
 
 using HomeBudget.Components.CurrencyRates.MapperProfileConfigurations;
 using HomeBudget_Web_API.Extensions;
-using HomeBudget_Web_API.Middlewares;
 using HomeBudget_Web_API.Extensions.Logs;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,20 +39,7 @@ services.AddAutoMapper(new List<Assembly>
 });
 
 services
-    .AddHealthChecks()
-    .AddCheck("heartbeat", () => HealthCheckResult.Healthy())
-    .AddCheck<CustomLogicHealthCheck>(nameof(CustomLogicHealthCheck), tags: new[] { "custom" })
-    .AddSqlServer(builder.Configuration.GetRequiredSection("DatabaseOptions:ConnectionString").Value, tags: new[] { "sqlServer" })
-    .AddRedis(builder.Configuration.GetRequiredSection("DatabaseOptions:RedisConnectionString").Value, tags: new[] { "redis" });
-
-services
-    .AddHealthChecksUI(setupSettings: setup =>
-    {
-        setup.AddHealthCheckEndpoint("currency rates service", "/health");
-    })
-    .AddInMemoryStorage();
-
-services
+    .SetUpHealthCheck(configuration, Environment.GetEnvironmentVariable("ASPNETCORE_URLS"))
     .AddValidatorsFromAssemblyContaining<Program>()
     .AddResponseCaching();
 
@@ -63,7 +48,7 @@ configuration.InitializeLogger(environment, builder.Host);
 // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 var app = builder.Build();
 
-app.SetUpBaseApplication(services, environment);
+app.SetUpBaseApplication(services, environment, configuration);
 
 var executionAppName = typeof(Program).Assembly.GetName().Name;
 

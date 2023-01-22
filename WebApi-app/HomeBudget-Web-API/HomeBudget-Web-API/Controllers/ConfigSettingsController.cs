@@ -29,7 +29,7 @@ namespace HomeBudget_Web_API.Controllers
         [HttpGet("/configSettings/availableCurrencies")]
         public async Task<Result<IReadOnlyCollection<Currency>>> GetAvailableCurrencies()
         {
-            return await _configSettingsServices.GetAvailableCurrencies();
+            return await _configSettingsServices.GetAvailableCurrenciesAsync();
         }
 
         [HttpPost]
