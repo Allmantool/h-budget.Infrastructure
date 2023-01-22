@@ -22,7 +22,7 @@ namespace HomeBudget_Web_API.Middlewares
 
             if (httpClient != null)
             {
-                await httpClient.WarmUp();
+                await httpClient.WarmUpAsync();
                 await httpClient.GetTodayRatesAsync();
             }
 
