@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using AutoMapper;
-
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using MediatR;
 
-using HomeBudget.Components.CurrencyRates.Commands;
+using HomeBudget.Components.CurrencyRates.CQRS.Commands.Models;
+using HomeBudget.Components.CurrencyRates.CQRS.Queries.Models;
 using HomeBudget.Components.CurrencyRates.Models;
-using HomeBudget.Components.CurrencyRates.Services.Interfaces;
-using HomeBudget.Core.Constants;
-using HomeBudget.Core.Extensions;
 using HomeBudget.Core.Models;
-using HomeBudget.Core.Services.Interfaces;
 using HomeBudget_Web_API.Models;
 
 using CurrencyRate = HomeBudget.Components.CurrencyRates.Models.CurrencyRate;
@@ -24,66 +19,43 @@ namespace HomeBudget_Web_API.Controllers
     [Route("[controller]")]
     public class CurrencyRatesController : ControllerBase
     {
-        private const string CacheKeyPrefix = nameof(ICurrencyRatesService);
-
-        private readonly ILogger<CurrencyRatesController> _logger;
+        private readonly IMediator _mediator;
         private readonly IMapper _mapper;
-        private readonly IRedisCacheService _redisCacheService;
-        private readonly ICurrencyRatesService _currencyRatesService;
 
         public CurrencyRatesController(
-            ILogger<CurrencyRatesController> logger,
-            IMapper mapper,
-            IRedisCacheService redisCacheService,
-            ICurrencyRatesService currencyRatesService)
+            IMediator mediator,
+            IMapper mapper)
         {
-            _logger = logger;
+            _mediator = mediator;
             _mapper = mapper;
-            _redisCacheService = redisCacheService;
-            _currencyRatesService = currencyRatesService;
         }
 
         [HttpPost]
-        public async Task<Result<int>> SaveRatesAsync([FromBody] CurrencySaveRatesRequest request)
+        public async Task<Result<Unit>> SaveRatesAsync([FromBody] CurrencySaveRatesRequest request)
         {
             var unifiedCurrencyRates = _mapper
                 .Map<IReadOnlyCollection<CurrencyRate>>(request.CurrencyRates);
 
-            var saveResult = await _currencyRatesService.SaveWithRewriteAsync(new SaveCurrencyRatesCommand(unifiedCurrencyRates));
-
-            await _redisCacheService.FlushDatabaseAsync();
-
-            return saveResult;
+            return new Result<Unit>(await _mediator.Send(new SaveCurrencyRatesCommand(unifiedCurrencyRates)));
         }
 
         [HttpPost("/currencyRates/period")]
-        public async Task<Result<IReadOnlyCollection<CurrencyRateGrouped>>> GetTodayRatesForPeriodAsync([FromBody] GetCurrencyRatesForPeriodRequest request)
+        public async Task<Result<IReadOnlyCollection<CurrencyRateGrouped>>> GetTodayRatesForPeriodAsync(
+            [FromBody] GetCurrencyRatesForPeriodRequest request)
         {
-            var redisCacheKey = $"{CacheKeyPrefix}" +
-                                $"|{nameof(GetTodayRatesForPeriodAsync)}" +
-                                $"|{request.StartDate.ToString(DateFormats.NationalBankExternalApi)}-{request.EndDate.ToString(DateFormats.NationalBankExternalApi)}";
-
-            _logger.LogWithExecutionMemberName($"Method: {nameof(GetTodayRatesForPeriodAsync)} with key: {redisCacheKey}");
-
-            return await _redisCacheService.CacheWrappedMethodAsync(
-                redisCacheKey,
-                () => _currencyRatesService.GetTodayRatesForPeriodAsync(request.StartDate, request.EndDate));
+            return await _mediator.Send(new GetCurrencyGroupedRatesForPeriodQuery
+            {
+                StartDate = request.StartDate,
+                EndDate = request.EndDate,
+            });
         }
 
         [HttpGet]
         public async Task<Result<IReadOnlyCollection<CurrencyRateGrouped>>> GetAllRatesAsync()
-        {
-            return await _redisCacheService.CacheWrappedMethodAsync(
-                $"{CacheKeyPrefix}|{nameof(GetAllRatesAsync)}|{DateTime.Today}",
-                () => _currencyRatesService.GetRatesAsync());
-        }
+            => await _mediator.Send(new GetAllRatesQuery());
 
         [HttpGet("/currencyRates/today")]
         public async Task<Result<IReadOnlyCollection<CurrencyRateGrouped>>> GetTodayRatesAsync()
-        {
-            return await _redisCacheService.CacheWrappedMethodAsync(
-                $"{CacheKeyPrefix}|{nameof(GetTodayRatesAsync)}|{DateTime.Today}",
-                () => _currencyRatesService.GetTodayRatesAsync());
-        }
+            => await _mediator.Send(new GetTodayRatesQuery());
     }
 }

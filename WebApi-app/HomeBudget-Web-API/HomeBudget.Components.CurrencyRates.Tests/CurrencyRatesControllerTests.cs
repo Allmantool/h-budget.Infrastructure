@@ -4,10 +4,9 @@ using System.Threading.Tasks;
 
 using AutoMapper;
 using Moq;
-using Microsoft.Extensions.Logging;
+using MediatR;
 using NUnit.Framework;
 
-using HomeBudget.Components.CurrencyRates.Services.Interfaces;
 using HomeBudget.Core.Services.Interfaces;
 using HomeBudget_Web_API.Controllers;
 using HomeBudget_Web_API.Models;
@@ -21,25 +20,20 @@ namespace HomeBudget.Components.CurrencyRates.Tests
     {
         private CurrencyRatesController _sut;
 
-        private Mock<ILogger<CurrencyRatesController>> _mockLogger;
         private Mock<IMapper> _mockMapper;
         private Mock<IRedisCacheService> _mockRedisCacheService;
-        private Mock<ICurrencyRatesService> _mockCurrencyRatesService;
+        private Mock<IMediator> _mockMediator;
 
         [SetUp]
         public void SetUp()
         {
             _mockMapper = new Mock<IMapper>();
-            _mockLogger = new Mock<ILogger<CurrencyRatesController>>();
             _mockRedisCacheService = new Mock<IRedisCacheService>();
-
-            _mockCurrencyRatesService = new Mock<ICurrencyRatesService>();
+            _mockMediator = new Mock<IMediator>();
 
             _sut = new CurrencyRatesController(
-                _mockLogger.Object,
-                _mockMapper.Object,
-                _mockRedisCacheService.Object,
-                _mockCurrencyRatesService.Object);
+                _mockMediator.Object,
+                _mockMapper.Object);
         }
 
         [Test]

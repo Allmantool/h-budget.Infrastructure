@@ -3,6 +3,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Enrichers.Span;
 using Serilog.Exceptions;
@@ -14,7 +15,10 @@ namespace HomeBudget_Web_API.Extensions.Logs
 {
     internal static class CustomLoggerExtensions
     {
-        public static ILogger InitializeLogger(this IConfiguration configuration, IWebHostEnvironment environment, ConfigureHostBuilder host)
+        public static ILogger InitializeLogger(
+            this IConfiguration configuration,
+            IWebHostEnvironment environment,
+            ConfigureHostBuilder host)
         {
             Log.Logger = new LoggerConfiguration()
                  .Enrich.FromLogContext()
@@ -33,7 +37,7 @@ namespace HomeBudget_Web_API.Extensions.Logs
             return Log.Logger;
         }
 
-        private static ElasticsearchSinkOptions ConfigureElasticSink(IConfiguration configuration, IWebHostEnvironment environment)
+        private static ElasticsearchSinkOptions ConfigureElasticSink(IConfiguration configuration, IHostEnvironment environment)
         {
             var formattedExecuteAssemblyName = typeof(Program).Assembly.GetName().Name;
             var dateIndexPostfix = DateTime.UtcNow.ToString("MM-yyyy-dd");

@@ -10,6 +10,7 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 
 using HomeBudget.Components.CurrencyRates.MapperProfileConfigurations;
+using HomeBudget_Web_API.Configuration;
 using HomeBudget_Web_API.Extensions;
 using HomeBudget_Web_API.Extensions.Logs;
 

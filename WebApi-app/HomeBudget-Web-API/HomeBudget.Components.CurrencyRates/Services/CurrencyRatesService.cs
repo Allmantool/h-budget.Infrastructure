@@ -4,8 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using AutoMapper;
-
-using HomeBudget.Components.CurrencyRates.Commands;
+using HomeBudget.Components.CurrencyRates.CQRS.Commands.Models;
 using HomeBudget.Components.CurrencyRates.Extensions;
 using HomeBudget.Components.CurrencyRates.Models;
 using HomeBudget.Components.CurrencyRates.Providers.Interfaces;
