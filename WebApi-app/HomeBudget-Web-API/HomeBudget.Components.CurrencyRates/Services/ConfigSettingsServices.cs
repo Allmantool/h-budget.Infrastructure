@@ -31,7 +31,7 @@ namespace HomeBudget.Components.CurrencyRates.Services
             _configSettings = configSettings;
         }
 
-        public async Task<Result<IReadOnlyCollection<Currency>>> GetAvailableCurrencies()
+        public async Task<Result<IReadOnlyCollection<Currency>>> GetAvailableCurrenciesAsync()
         {
             var currencies = await _nationalBankApiClient.GetCurrenciesAsync();
             var upToDateCurrencies = currencies.Where(c => c.DateStart <= DateTime.Today && c.DateEnd >= DateTime.Today);
