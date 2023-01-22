@@ -10,7 +10,7 @@ namespace HomeBudget.Components.CurrencyRates.Services.Interfaces
     public interface INationalBankApiClient
     {
         [Get("/")]
-        Task WarmUp();
+        Task WarmUpAsync();
 
         [Get("/api/exrates/rates?periodicity=0")]
         Task<IEnumerable<NationalBankCurrencyRate>> GetTodayRatesAsync();
