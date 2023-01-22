@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 using AutoMapper;
@@ -31,31 +32,31 @@ namespace HomeBudget_Web_API.Controllers
         }
 
         [HttpPost]
-        public async Task<Result<Unit>> SaveRatesAsync([FromBody] CurrencySaveRatesRequest request)
+        public async Task<Result<int>> SaveRatesAsync([FromBody] CurrencySaveRatesRequest request, CancellationToken token = default)
         {
             var unifiedCurrencyRates = _mapper
                 .Map<IReadOnlyCollection<CurrencyRate>>(request.CurrencyRates);
 
-            return new Result<Unit>(await _mediator.Send(new SaveCurrencyRatesCommand(unifiedCurrencyRates)));
+            return await _mediator.Send(new SaveCurrencyRatesCommand(unifiedCurrencyRates), token);
         }
 
         [HttpPost("/currencyRates/period")]
         public async Task<Result<IReadOnlyCollection<CurrencyRateGrouped>>> GetTodayRatesForPeriodAsync(
-            [FromBody] GetCurrencyRatesForPeriodRequest request)
-        {
-            return await _mediator.Send(new GetCurrencyGroupedRatesForPeriodQuery
-            {
-                StartDate = request.StartDate,
-                EndDate = request.EndDate,
-            });
-        }
+            [FromBody] GetCurrencyRatesForPeriodRequest request, CancellationToken token = default)
+            => await _mediator.Send(
+                new GetCurrencyGroupedRatesForPeriodQuery
+                {
+                    StartDate = request.StartDate,
+                    EndDate = request.EndDate
+                },
+                token);
 
         [HttpGet]
-        public async Task<Result<IReadOnlyCollection<CurrencyRateGrouped>>> GetAllRatesAsync()
-            => await _mediator.Send(new GetAllRatesQuery());
+        public async Task<Result<IReadOnlyCollection<CurrencyRateGrouped>>> GetAllRatesAsync(CancellationToken token = default)
+            => await _mediator.Send(new GetAllRatesQuery(), token);
 
         [HttpGet("/currencyRates/today")]
-        public async Task<Result<IReadOnlyCollection<CurrencyRateGrouped>>> GetTodayRatesAsync()
-            => await _mediator.Send(new GetTodayRatesQuery());
+        public async Task<Result<IReadOnlyCollection<CurrencyRateGrouped>>> GetTodayRatesAsync(CancellationToken token = default)
+            => await _mediator.Send(new GetTodayRatesQuery(), token);
     }
 }

@@ -6,10 +6,11 @@ using MediatR;
 using HomeBudget.Components.CurrencyRates.CQRS.Commands.Models;
 using HomeBudget.Components.CurrencyRates.Services.Interfaces;
 using HomeBudget.Core.Services.Interfaces;
+using HomeBudget.Core.Models;
 
 namespace HomeBudget.Components.CurrencyRates.CQRS.Commands.Handlers
 {
-    internal class SaveCurrencyRatesCommandHandler : IRequestHandler<SaveCurrencyRatesCommand, Unit>
+    internal class SaveCurrencyRatesCommandHandler : IRequestHandler<SaveCurrencyRatesCommand, Result<int>>
     {
         private readonly ICurrencyRatesService _currencyRatesService;
         private readonly IRedisCacheService _redisCacheService;
@@ -20,13 +21,13 @@ namespace HomeBudget.Components.CurrencyRates.CQRS.Commands.Handlers
             _redisCacheService = redisCacheService;
         }
 
-        public async Task<Unit> Handle(SaveCurrencyRatesCommand request, CancellationToken cancellationToken)
+        public async Task<Result<int>> Handle(SaveCurrencyRatesCommand request, CancellationToken cancellationToken)
         {
-            await _currencyRatesService.SaveWithRewriteAsync(request);
+            var result = await _currencyRatesService.SaveWithRewriteAsync(request);
 
             await _redisCacheService.FlushDatabaseAsync();
 
-            return Unit.Value;
+            return result;
         }
     }
 }

@@ -13,13 +13,16 @@ namespace HomeBudget.Components.IntegrationTests
 {
     [Ignore("Intend to be used only for local testing. Not appropriate infrastructure has been setup")]
     [TestFixture]
+    [Category("Integration")]
     public class CurrencyRatesControllerTests
         : BaseWebApplicationFactory<HomeBudgetWebApplicationFactory<Program>, Program>
     {
         [SetUp]
-        public void SetUp()
+        public override void SetUp()
         {
             SetUpHttpClient();
+
+            base.SetUp();
         }
 
         [Test]

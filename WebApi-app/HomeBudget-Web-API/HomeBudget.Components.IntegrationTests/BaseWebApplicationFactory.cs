@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Testing;
+using NUnit.Framework;
 using RestSharp;
 
 namespace HomeBudget.Components.IntegrationTests
@@ -7,6 +8,8 @@ namespace HomeBudget.Components.IntegrationTests
         where TWebFactory : WebApplicationFactory<TEntryPoint>, new()
         where TEntryPoint : class
     {
+        protected const string CategoryToExclude = "Integration";
+
         protected BaseWebApplicationFactory()
         {
             SetUpHttpClient();
@@ -23,6 +26,18 @@ namespace HomeBudget.Components.IntegrationTests
         }
 
         private bool _disposed;
+
+        [SetUp]
+        public virtual void SetUp()
+        {
+            var activeEnvironment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            var testCategories = TestContext.CurrentContext.Test.Properties["Category"];
+
+            if (string.Equals("Docker", activeEnvironment, StringComparison.OrdinalIgnoreCase) && testCategories.Contains(CategoryToExclude))
+            {
+                Assert.Inconclusive($"Cannot run this type of test on environment: {activeEnvironment}");
+            }
+        }
 
         public void Dispose()
         {

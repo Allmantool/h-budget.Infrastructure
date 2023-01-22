@@ -10,7 +10,7 @@ services:
       args:
         - SONAR_TOKEN=${SONAR_TOKEN}
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:80
       - SONAR_TOKEN=${SONAR_TOKEN}
       - GITHUB_RUN_ID={GITHUB_RUN_ID}
