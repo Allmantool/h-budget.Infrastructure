@@ -23,7 +23,7 @@ namespace HomeBudget_Web_API.Extensions
             IWebHostEnvironment env,
             IConfiguration configuration)
         {
-            if (env.IsDevelopment() || env.IsEnvironment("Docker"))
+            if (env.IsDevelopment() || env.IsEnvironment(HostEnvironments.Docker))
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();

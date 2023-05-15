@@ -191,8 +191,8 @@ namespace HomeBudget.Components.CurrencyRates.Tests
         {
             return new Mapper(new MapperConfiguration(cfg =>
             {
-                cfg.AddProfile<CurrencyRateProfiler>();
-                cfg.AddProfile<CurrencyRateGroupedProfile>();
+                cfg.AddProfile<CurrencyRateMappingProfiler>();
+                cfg.AddProfile<CurrencyRateGroupedMappingProfile>();
             }));
         }
     }

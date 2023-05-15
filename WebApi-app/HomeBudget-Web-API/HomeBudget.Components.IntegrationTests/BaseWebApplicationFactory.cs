@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Testing;
+﻿using HomeBudget_Web_API.Constants;
+using Microsoft.AspNetCore.Mvc.Testing;
 using NUnit.Framework;
 using RestSharp;
 
@@ -33,7 +34,7 @@ namespace HomeBudget.Components.IntegrationTests
             var activeEnvironment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             var testCategories = TestContext.CurrentContext.Test.Properties["Category"];
 
-            if (string.Equals("Docker", activeEnvironment, StringComparison.OrdinalIgnoreCase) && testCategories.Contains(CategoryToExclude))
+            if (HostEnvironments.Docker.Equals(activeEnvironment, StringComparison.OrdinalIgnoreCase) && testCategories.Contains(CategoryToExclude))
             {
                 Assert.Inconclusive($"Cannot run this type of test on environment: {activeEnvironment}");
             }

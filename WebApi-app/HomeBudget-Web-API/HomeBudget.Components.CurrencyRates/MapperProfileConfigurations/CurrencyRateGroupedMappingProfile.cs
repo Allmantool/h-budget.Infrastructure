@@ -5,9 +5,9 @@ using HomeBudget.Components.CurrencyRates.Models;
 
 namespace HomeBudget.Components.CurrencyRates.MapperProfileConfigurations
 {
-    internal class CurrencyRateGroupedProfile : Profile
+    internal class CurrencyRateGroupedMappingProfile : Profile
     {
-        public CurrencyRateGroupedProfile()
+        public CurrencyRateGroupedMappingProfile()
         {
             CreateMap<IEnumerable<CurrencyRate>, CurrencyRateGrouped>()
                 .ForMember(dest => dest.CurrencyId, opt => opt.MapFrom(src => src.FirstOrDefault().CurrencyId))

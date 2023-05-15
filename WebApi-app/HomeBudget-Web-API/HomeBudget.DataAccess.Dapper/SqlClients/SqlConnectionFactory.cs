@@ -13,26 +13,26 @@ namespace HomeBudget.DataAccess.Dapper.SqlClients
     internal class SqlConnectionFactory : ISqlConnectionFactory
     {
         private readonly ILogger<SqlConnectionFactory> _logger;
-        private readonly DatabaseOptions _databaseOptions;
+        private readonly DatabaseConnectionOptions _databaseConnectionOptions;
 
         public SqlConnectionFactory(
             ILogger<SqlConnectionFactory> logger,
-            IOptions<DatabaseOptions> options)
+            IOptions<DatabaseConnectionOptions> options)
         {
             _logger = logger;
-            _databaseOptions = options.Value;
+            _databaseConnectionOptions = options.Value;
         }
 
         public IDbConnection Create()
         {
             try
             {
-                return new SqlConnection(_databaseOptions.ConnectionString);
+                return new SqlConnection(_databaseConnectionOptions.ConnectionString);
             }
             catch (Exception ex)
             {
                 _logger.LogWithExecutionMemberName(
-                    $"Failed connect to database with connection string: '{_databaseOptions.ConnectionString}'. " +
+                    $"Failed connect to database with connection string: '{_databaseConnectionOptions.ConnectionString}'. " +
                     $"Error message: '{ex.Message}'",
                     LogLevel.Critical);
 

@@ -5,9 +5,9 @@ using HomeBudget.Components.CurrencyRates.Models.Api;
 
 namespace HomeBudget.Components.CurrencyRates.MapperProfileConfigurations
 {
-    internal class CurrencyRateProfiler : Profile
+    internal class CurrencyRateMappingProfiler : Profile
     {
-        public CurrencyRateProfiler()
+        public CurrencyRateMappingProfiler()
         {
             CreateMap<NationalBankCurrencyRate, CurrencyRate>()
                 .ForMember(

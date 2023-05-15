@@ -21,7 +21,7 @@ namespace HomeBudget_Web_API.Configuration
             IConfiguration configuration)
         {
             services
-                .Configure<DatabaseOptions>(configuration.GetSection(ConfigurationSectionKeys.DatabaseOptions))
+                .Configure<DatabaseConnectionOptions>(configuration.GetSection(ConfigurationSectionKeys.DatabaseOptions))
                 .Configure<CacheStoreOptions>(configuration.GetSection(ConfigurationSectionKeys.CacheStoreOptions))
                 .Configure<ExternalResourceUrls>(configuration.GetSection(ConfigurationSectionKeys.ExternalResourceUrls))
                 .Configure<PollyRetryOptions>(configuration.GetSection(ConfigurationSectionKeys.PollyRetryOptions))
@@ -31,7 +31,7 @@ namespace HomeBudget_Web_API.Configuration
 
             var serviceProvider = services.BuildServiceProvider();
 
-            var databaseOptions = serviceProvider.GetRequiredService<IOptions<DatabaseOptions>>().Value;
+            var databaseOptions = serviceProvider.GetRequiredService<IOptions<DatabaseConnectionOptions>>().Value;
             var configSettingsProvider = serviceProvider.GetRequiredService<IConfigSettingsProvider>();
             var configSetting = await configSettingsProvider.GetDefaultSettingsAsync();
             var redisConnectionMultiplexer = await ConnectionMultiplexer.ConnectAsync(databaseOptions.RedisConnectionString);
