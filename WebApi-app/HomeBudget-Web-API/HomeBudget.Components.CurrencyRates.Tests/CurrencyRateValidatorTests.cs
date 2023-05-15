@@ -23,7 +23,7 @@ namespace HomeBudget.Components.CurrencyRates.Tests
         [Test]
         public void Validate_WithNullCurrencyRate_ThenArgumentNullException()
         {
-            Assert.ThrowsAsync<ArgumentNullException>(() => _sut.TestValidateAsync(null));
+            Assert.ThrowsAsync<ArgumentNullException>(() => _sut.TestValidateAsync(null, null));
         }
 
         [Test]

@@ -1,6 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using MediatR;
-
 using HomeBudget.Components.CurrencyRates.Providers;
 using HomeBudget.Components.CurrencyRates.Providers.Interfaces;
 using HomeBudget.Components.CurrencyRates.Services;
@@ -22,7 +20,10 @@ namespace HomeBudget.Components.CurrencyRates.Configuration
                 .AddScoped<ICurrencyRatesReadProvider, CurrencyRatesReadProvider>()
                 .AddScoped<ICurrencyRatesService, CurrencyRatesService>()
                 .RegisterNationalApiHttpClient(serviceProvider)
-                .AddMediatR(typeof(DependencyRegistrations).Assembly);
+                .AddMediatR(configuration =>
+                {
+                    configuration.RegisterServicesFromAssembly(typeof(DependencyRegistrations).Assembly);
+                });
         }
     }
 }
