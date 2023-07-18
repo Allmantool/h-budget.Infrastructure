@@ -5,8 +5,8 @@ import {
 	OnInit,
 } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatDialogConfig } from '@angular/material/dialog';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
+import { MatLegacyDialogConfig as MatDialogConfig } from '@angular/material/legacy-dialog';
 
 import { Select, Store } from '@ngxs/store';
 import { combineLatest, Observable, Subject, Subscription } from 'rxjs';
