@@ -87,6 +87,5 @@ import { ProgressBarComponent } from './components/progress-bar/progress-bar.com
 	],
 	providers: [],
 	bootstrap: [],
-	entryComponents: [DateRangeDialogComponent],
 })
 export class AppSharedModule {}
