@@ -1,6 +1,6 @@
 import { ComponentType } from '@angular/cdk/portal';
 import { Injectable, TemplateRef } from '@angular/core';
-import { MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig } from '@angular/material/legacy-dialog';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 
 import * as _ from 'lodash';
 import { take } from 'rxjs/operators';
