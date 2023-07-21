@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using System.Threading.Tasks;
+
 using HomeBudget.Components.CurrencyRates.Models;
 using HomeBudget.Components.CurrencyRates.Providers.Interfaces;
 using HomeBudget.DataAccess.Interfaces;
@@ -23,7 +24,7 @@ namespace HomeBudget.Components.CurrencyRates.Providers
 
         public async Task<ConfigSettings> GetDefaultSettingsAsync()
         {
-            const string query = "SELECT [Settings] FROM [ConfigSettings] WHERE [Key] = @Key";
+            const string query = "SELECT [Settings] FROM [ConfigSettings] WITH (NOLOCK) WHERE [Key] = @Key";
 
             var configAsJson = await _readRepository.SingleAsync<string>(
                 query,
