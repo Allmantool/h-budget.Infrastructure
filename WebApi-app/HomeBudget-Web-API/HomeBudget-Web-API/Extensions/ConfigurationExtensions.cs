@@ -8,7 +8,9 @@ namespace HomeBudget_Web_API.Extensions
     {
         public static string GetHealthCheckEndpoint(this IConfiguration configuration, string hostUrls)
         {
-            var healthCheckHost = configuration.GetRequiredSection("HealthCheckOptions:Host").Value ?? hostUrls;
+            var hostFromConfiguration = configuration.GetRequiredSection("HealthCheckOptions:Host").Value;
+
+            var healthCheckHost = string.IsNullOrWhiteSpace(hostFromConfiguration) ? hostUrls : hostFromConfiguration;
 
             return $"{healthCheckHost}{Endpoints.HealthCheckSource}";
         }

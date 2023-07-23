@@ -1,7 +1,8 @@
-﻿using HomeBudget_Web_API.Constants;
-using Microsoft.AspNetCore.Mvc.Testing;
+﻿using Microsoft.AspNetCore.Mvc.Testing;
 using NUnit.Framework;
 using RestSharp;
+
+using HomeBudget_Web_API.Constants;
 
 namespace HomeBudget.Components.IntegrationTests
 {

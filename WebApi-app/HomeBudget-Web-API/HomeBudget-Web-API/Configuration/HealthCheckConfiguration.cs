@@ -1,13 +1,17 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
+using HomeBudget_Web_API.Constants;
 using HomeBudget_Web_API.Extensions;
 using HomeBudget_Web_API.Middlewares;
 
 namespace HomeBudget_Web_API.Configuration
 {
-    public static class HealthCheckConfiguration
+    internal static class HealthCheckConfiguration
     {
         public static IServiceCollection SetUpHealthCheck(this IServiceCollection services, IConfiguration configuration, string hostUrls)
         {
@@ -28,11 +32,29 @@ namespace HomeBudget_Web_API.Configuration
 
             services.AddHealthChecksUI(setupSettings: setup =>
                 {
-                    setup.AddHealthCheckEndpoint("currency rates service", configuration.GetHealthCheckEndpoint(hostUrls));
+                    setup.AddHealthCheckEndpoint("[Currency rates endpoint]", configuration.GetHealthCheckEndpoint(hostUrls));
                 })
                 .AddInMemoryStorage();
 
             return services;
+        }
+
+        public static IApplicationBuilder SetUpHealthCheckEndpoints(this IApplicationBuilder builder)
+        {
+            return builder.UseEndpoints(config =>
+            {
+                config.MapHealthChecks(Endpoints.HealthCheckSource, new HealthCheckOptions
+                {
+                    Predicate = _ => true,
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
+                });
+
+                config.MapHealthChecksUI(options =>
+                {
+                    options.UIPath = "/show-health-ui";
+                    options.ApiPath = "/health-ui-api";
+                });
+            });
         }
     }
 }

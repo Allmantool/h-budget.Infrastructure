@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
 using Serilog;
 
 using HomeBudget.Components.CurrencyRates.MapperProfileConfigurations;
@@ -44,11 +43,6 @@ webHost
 
 // This method gets called by the runtime. Use this method to add services to the container.
 services.AddControllers();
-services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc("v1", new OpenApiInfo { Title = "HomeBudget_Web_API", Version = "v1" });
-    options.CustomSchemaIds(type => type.ToString());
-});
 
 await services.SetUpDiAsync(configuration);
 services.AddAutoMapper(new List<Assembly>
@@ -60,7 +54,8 @@ services.AddAutoMapper(new List<Assembly>
 services
     .SetUpHealthCheck(configuration, Environment.GetEnvironmentVariable("ASPNETCORE_URLS"))
     .AddValidatorsFromAssemblyContaining<Program>()
-    .AddResponseCaching();
+    .AddResponseCaching()
+    .SetupSwaggerGen();
 
 configuration.InitializeLogger(environment, webAppBuilder.Host);
 
