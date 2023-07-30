@@ -61,7 +61,7 @@ namespace HomeBudget.Components.CurrencyRates.Tests
         }
 
         [Test]
-        public async Task GetTodayRatesForPeriodAsync_WhenPerformSeveralApiCallsForCurrencies_ResultExpectedRatesCount()
+        public async Task GetRatesForPeriodAsync_WhenPerformSeveralApiCallsForCurrencies_ResultExpectedRatesCount()
         {
             const int expectedRatesCount = 4;
 
@@ -128,7 +128,7 @@ namespace HomeBudget.Components.CurrencyRates.Tests
                 _currencyRatesReadProviderMock.Object,
                 _currencyRatesWriteProviderMock.Object);
 
-            var rates = await _sut.GetTodayRatesForPeriodAsync(testStartDate, testEndDate);
+            var rates = await _sut.GetRatesForPeriodAsync(testStartDate, testEndDate);
 
             Assert.AreEqual(expectedRatesCount, rates.Payload.SelectMany(i => i.RateValues).Count());
         }

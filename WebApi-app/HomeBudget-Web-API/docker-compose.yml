@@ -81,24 +81,21 @@ services:
       - elasticsearch
 
   homebudget-web-api:
-    image: ${DOCKER_REGISTRY-}homebudget-webapi:v0.0.25
+    image: ${DOCKER_REGISTRY-}homebudget-webapi:v0.0.36
     container_name: homebudget-api
     build:
       context: .
       dockerfile: dockerfile
       args:
         - SONAR_TOKEN=${SONAR_TOKEN}
-        - ASPNETCORE_ENVIRONMENT=Development
-    environment:
+        - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+        - GITHUB_RUN_ID=${GITHUB_RUN_ID}
+        - PULL_REQUEST_ID=${PULL_REQUEST_ID}
+        - PULL_REQUEST_SOURCE_BRANCH=${PULL_REQUEST_SOURCE_BRANCH}
+        - PULL_REQUEST_TARGET_BRANCH=${PULL_REQUEST_TARGET_BRANCH}
+ #   environment:
     # - ASPNETCORE_HTTPS_PORT=5008
-      - ASPNETCORE_ENVIRONMENT=Development
-    #  - ASPNETCORE_URLS=http://+:80;https://+:443
-    #  - ASPNETCORE_URLS=http://+:80
-      - SONAR_TOKEN=${SONAR_TOKEN}
-      - GITHUB_RUN_ID={GITHUB_RUN_ID}
-      - PULL_REQUEST_ID=${PULL_REQUEST_ID}
-      - PULL_REQUEST_SOURCE_BRANCH=${PULL_REQUEST_SOURCE_BRANCH}
-      - PULL_REQUEST_TARGET_BRANCH=${PULL_REQUEST_TARGET_BRANCH}
+    # - ASPNETCORE_URLS=https://+:443;http://+:80
     ports:
       - "5207:80"
       - "5208:443"

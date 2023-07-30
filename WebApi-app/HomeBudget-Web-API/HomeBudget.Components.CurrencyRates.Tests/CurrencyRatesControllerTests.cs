@@ -32,7 +32,7 @@ namespace HomeBudget.Components.CurrencyRates.Tests
         }
 
         [Test]
-        public async Task GetTodayRatesForPeriodAsync_WhenEnquireRatesForPeriod_ThenSendExpectedTypeOfQuery()
+        public async Task GetRatesForPeriodAsync_WhenEnquiriedRatesForPeriod_ThenSendExpectedTypeOfQuery()
         {
             var request = new GetCurrencyRatesForPeriodRequest
             {
@@ -40,7 +40,7 @@ namespace HomeBudget.Components.CurrencyRates.Tests
                 EndDate = new DateTime(2022, 12, 25)
             };
 
-            _ = await _sut.GetTodayRatesForPeriodAsync(request);
+            _ = await _sut.GetRatesForPeriodAsync(request.StartDate, request.EndDate);
 
             _mockMediator.Verify(s => s.Send(It.IsAny<GetCurrencyGroupedRatesForPeriodQuery>(), default), Times.Once);
         }

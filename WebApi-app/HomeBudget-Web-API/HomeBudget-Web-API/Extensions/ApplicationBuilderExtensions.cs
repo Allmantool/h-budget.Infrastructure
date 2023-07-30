@@ -24,11 +24,7 @@ namespace HomeBudget_Web_API.Extensions
         {
             app.SetUpSwaggerUi();
 
-            Log.Information(
-                "The IsDevelopment(): '{0}' or HostEnvironments.Docker: '{1}'. Current env is '{2}'.",
-                env.IsDevelopment(),
-                env.IsEnvironment(HostEnvironments.Docker),
-                env.EnvironmentName);
+            Log.Information("Current env is '{0}'.", env.EnvironmentName);
 
             if (env.IsDevelopment() || env.IsEnvironment(HostEnvironments.Docker))
             {
@@ -36,8 +32,12 @@ namespace HomeBudget_Web_API.Extensions
 
                 app.UseCors(corsPolicyBuilder =>
                 {
+                    var uiOrigin = configuration["UiOriginsUrl"];
+
+                    Log.Information("UI origin is '{0}'", uiOrigin);
+
                     corsPolicyBuilder
-                        .WithOrigins(configuration["UiOriginsUrl"] ?? throw new InvalidOperationException())
+                        .WithOrigins(uiOrigin ?? throw new InvalidOperationException())
                         .AllowAnyHeader()
                         .AllowAnyMethod();
                 });

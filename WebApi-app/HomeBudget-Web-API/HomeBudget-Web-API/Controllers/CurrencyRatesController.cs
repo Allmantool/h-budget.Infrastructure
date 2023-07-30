@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,7 +18,7 @@ using CurrencyRate = HomeBudget.Components.CurrencyRates.Models.CurrencyRate;
 namespace HomeBudget_Web_API.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("currencyRates")]
     public class CurrencyRatesController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -32,7 +33,7 @@ namespace HomeBudget_Web_API.Controllers
         }
 
         [HttpPost]
-        public async Task<Result<int>> SaveRatesAsync([FromBody] CurrencySaveRatesRequest request, CancellationToken token = default)
+        public async Task<Result<int>> AddRatesAsync([FromBody] CurrencySaveRatesRequest request, CancellationToken token = default)
         {
             var unifiedCurrencyRates = _mapper
                 .Map<IReadOnlyCollection<CurrencyRate>>(request.CurrencyRates);
@@ -40,14 +41,16 @@ namespace HomeBudget_Web_API.Controllers
             return await _mediator.Send(new SaveCurrencyRatesCommand(unifiedCurrencyRates), token);
         }
 
-        [HttpPost("/currencyRates/period")]
-        public async Task<Result<IReadOnlyCollection<CurrencyRateGrouped>>> GetTodayRatesForPeriodAsync(
-            [FromBody] GetCurrencyRatesForPeriodRequest request, CancellationToken token = default)
+        [HttpGet("period/{startDate}/{endDate}")]
+        public async Task<Result<IReadOnlyCollection<CurrencyRateGrouped>>> GetRatesForPeriodAsync(
+            DateTime startDate,
+            DateTime endDate,
+            CancellationToken token = default)
             => await _mediator.Send(
                 new GetCurrencyGroupedRatesForPeriodQuery
                 {
-                    StartDate = request.StartDate,
-                    EndDate = request.EndDate
+                    StartDate = startDate,
+                    EndDate = endDate
                 },
                 token);
 
@@ -55,7 +58,7 @@ namespace HomeBudget_Web_API.Controllers
         public async Task<Result<IReadOnlyCollection<CurrencyRateGrouped>>> GetAllRatesAsync(CancellationToken token = default)
             => await _mediator.Send(new GetAllRatesQuery(), token);
 
-        [HttpGet("/currencyRates/today")]
+        [HttpGet("today")]
         public async Task<Result<IReadOnlyCollection<CurrencyRateGrouped>>> GetTodayRatesAsync(CancellationToken token = default)
             => await _mediator.Send(new GetTodayRatesQuery(), token);
     }

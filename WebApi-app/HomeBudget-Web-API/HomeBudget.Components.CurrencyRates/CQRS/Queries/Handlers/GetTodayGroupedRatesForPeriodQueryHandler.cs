@@ -36,15 +36,14 @@ namespace HomeBudget.Components.CurrencyRates.CQRS.Queries.Handlers
         public async Task<Result<IReadOnlyCollection<CurrencyRateGrouped>>> Handle(GetCurrencyGroupedRatesForPeriodQuery request, CancellationToken cancellationToken)
         {
             var redisCacheKey = $"{CacheKeyPrefix}" +
-                                $"|{nameof(ICurrencyRatesService.GetTodayRatesForPeriodAsync)}" +
+                                $"|{nameof(ICurrencyRatesService.GetRatesForPeriodAsync)}" +
                                 $"|{request.StartDate.ToString(DateFormats.NationalBankExternalApi)}-{request.EndDate.ToString(DateFormats.NationalBankExternalApi)}";
 
-            _logger.LogWithExecutionMemberName($"Method: {nameof(ICurrencyRatesService.GetTodayRatesForPeriodAsync)} " +
-                                               $"with key: {redisCacheKey}");
+            _logger.LogWithExecutionMemberName($"Method: '{nameof(ICurrencyRatesService.GetRatesForPeriodAsync)}' with key: {redisCacheKey}");
 
             return await _redisCacheService.CacheWrappedMethodAsync(
                   redisCacheKey,
-                  () => _currencyRatesService.GetTodayRatesForPeriodAsync(request.StartDate, request.EndDate));
+                  () => _currencyRatesService.GetRatesForPeriodAsync(request.StartDate, request.EndDate));
         }
     }
 }

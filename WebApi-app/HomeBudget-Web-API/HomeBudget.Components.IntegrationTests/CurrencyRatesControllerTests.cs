@@ -1,5 +1,5 @@
 ﻿using System.Net;
-
+using FluentAssertions;
 using NUnit.Framework;
 using RestSharp;
 
@@ -26,16 +26,12 @@ namespace HomeBudget.Components.IntegrationTests
         }
 
         [Test]
-        public async Task GetTodayRatesForPeriodAsync_WhenExecuteTheCallToEnquireRatesForPeriodOfTime_ThenIsSuccessStatusCode()
+        public async Task GetRatesForPeriodAsync_WhenExecuteTheCallToEnquireRatesForPeriodOfTime_ThenIsSuccessStatusCode()
         {
-            var requestBody = new GetCurrencyRatesForPeriodRequest
-            {
-                StartDate = new DateTime(2022, 12, 25),
-                EndDate = new DateTime(2022, 12, 25),
-            };
+            var startDay = new DateTime(2022, 10, 25).ToString("yyyy-MM-dd");
+            var endDate = new DateTime(2022, 12, 25).ToString("yyyy-MM-dd");
 
-            var getCurrencyRatesForPeriodRequest = new RestRequest("/currencyRates/period", Method.Post)
-                .AddJsonBody(requestBody);
+            var getCurrencyRatesForPeriodRequest = new RestRequest($"/currencyRates/period/{startDay}/{endDate}");
 
             var response = await RestHttpClient!.ExecuteAsync<Result<IReadOnlyCollection<CurrencyRateGrouped>>>(getCurrencyRatesForPeriodRequest);
 
@@ -43,21 +39,19 @@ namespace HomeBudget.Components.IntegrationTests
         }
 
         [Test]
-        public async Task GetTodayRatesForPeriodAsync_WhenExecuteTheCallToEnquireRatesForPeriodOfTime_ThenReturnsExpectedAmountOfRecordsInResponse()
+        public async Task GetRatesForPeriodAsync_WhenExecuteTheCallToEnquireRatesForPeriodOfTime_ThenReturnsExpectedAmountOfCurrencyGroupsInResponse()
         {
-            var requestBody = new GetCurrencyRatesForPeriodRequest
-            {
-                StartDate = new DateTime(2022, 12, 25),
-                EndDate = new DateTime(2022, 12, 25),
-            };
+            // "2023-07-30"
+            var startDay = new DateTime(2022, 10, 25).ToString("yyyy-MM-dd");
+            var endDate = new DateTime(2022, 12, 25).ToString("yyyy-MM-dd");
 
-            var getCurrencyRatesForPeriodRequest = new RestRequest("/currencyRates/period", Method.Post)
-                .AddJsonBody(requestBody);
+            var getCurrencyRatesForPeriodRequest = new RestRequest($"/currencyRates/period/{startDay}/{endDate}");
 
             var response = await RestHttpClient!.ExecuteAsync<Result<IReadOnlyCollection<CurrencyRateGrouped>>>(getCurrencyRatesForPeriodRequest);
             var payload = response.Data;
+            var currencyGroupAmount = payload?.Payload.Count;
 
-            Assert.AreEqual(6, payload?.Payload.Count);
+            currencyGroupAmount.Should().Be(6);
         }
 
         [Test]
@@ -72,7 +66,7 @@ namespace HomeBudget.Components.IntegrationTests
         }
 
         [Test]
-        public async Task GetTodayRatesAsync_WhenEnquireAndSaveTodayRates_ThenOkAsStatus()
+        public async Task GetTodayRatesAsync_WhenEnquiringAndSaveTodayRates_ThenOkAsStatus()
         {
             var getTodayRatesRequest = new RestRequest("/currencyRates/today");
 
@@ -82,7 +76,7 @@ namespace HomeBudget.Components.IntegrationTests
         }
 
         [Test]
-        public async Task SaveRatesAsync_WhenTryToSaveAlreadyExistedValue_ThenOk()
+        public async Task AddRatesAsync_WhenTryToSaveAlreadyExistedValue_ThenOk()
         {
             var requestBody = new CurrencySaveRatesRequest
             {

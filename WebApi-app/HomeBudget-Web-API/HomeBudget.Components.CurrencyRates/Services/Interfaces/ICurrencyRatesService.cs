@@ -14,7 +14,7 @@ namespace HomeBudget.Components.CurrencyRates.Services.Interfaces
 
         public Task<Result<IReadOnlyCollection<CurrencyRateGrouped>>> GetRatesAsync();
 
-        public Task<Result<IReadOnlyCollection<CurrencyRateGrouped>>> GetTodayRatesForPeriodAsync(DateTime startDate, DateTime endDate);
+        public Task<Result<IReadOnlyCollection<CurrencyRateGrouped>>> GetRatesForPeriodAsync(DateTime startDate, DateTime endDate);
 
         public Task<Result<IReadOnlyCollection<CurrencyRateGrouped>>> GetTodayRatesAsync();
     }

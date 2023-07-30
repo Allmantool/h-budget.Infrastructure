@@ -22,5 +22,13 @@ namespace HomeBudget.Components.CurrencyRates.Extensions
                 .Select(mapper.Map<IEnumerable<CurrencyRate>, CurrencyRateGrouped>)
                 .ToList();
         }
+
+        public static void EnrichWithRateGroupInfo(this CurrencyRate rate, CurrencyRateGrouped configInfo)
+        {
+            rate.Abbreviation = configInfo.Abbreviation;
+            rate.Name = configInfo.Name;
+            rate.Scale = configInfo.Scale;
+            rate.RatePerUnit = rate.OfficialRate / configInfo.Scale;
+        }
     }
 }

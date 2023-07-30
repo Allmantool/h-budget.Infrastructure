@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using AutoMapper;
+
 using HomeBudget.Components.CurrencyRates.CQRS.Commands.Models;
 using HomeBudget.Components.CurrencyRates.Extensions;
 using HomeBudget.Components.CurrencyRates.Models;
@@ -47,7 +48,7 @@ namespace HomeBudget.Components.CurrencyRates.Services
             return Succeeded(groupedCurrencyRates);
         }
 
-        public async Task<Result<IReadOnlyCollection<CurrencyRateGrouped>>> GetTodayRatesForPeriodAsync(DateTime startDate, DateTime endDate)
+        public async Task<Result<IReadOnlyCollection<CurrencyRateGrouped>>> GetRatesForPeriodAsync(DateTime startDate, DateTime endDate)
         {
             var todayRatesResponse = await GetTodayRatesAsync();
 
@@ -72,10 +73,7 @@ namespace HomeBudget.Components.CurrencyRates.Services
                     continue;
                 }
 
-                rate.Abbreviation = configInfo.Abbreviation;
-                rate.Name = configInfo.Name;
-                rate.Scale = configInfo.Scale;
-                rate.RatePerUnit = rate.OfficialRate / configInfo.Scale;
+                rate.EnrichWithRateGroupInfo(configInfo);
             }
 
             var ratesForPeriodFromDatabase = await _currencyRatesReadProvider.GetRatesForPeriodAsync(startDate, endDate);
@@ -110,7 +108,7 @@ namespace HomeBudget.Components.CurrencyRates.Services
 
             var amountOfAffectedRows = saveRatesCommand.RatesFromDatabase.IsNullOrEmpty()
                                        || saveRatesCommand.RatesFromDatabase.Count != ratesFromApiCall.Count
-                ? await _currencyRatesWriteProvider.UpsertRatesSaveAsync(ratesFromApiCall)
+                ? await _currencyRatesWriteProvider.UpsertRatesWithSaveAsync(ratesFromApiCall)
                 : default;
 
             return Succeeded(amountOfAffectedRows);

@@ -24,7 +24,7 @@ namespace HomeBudget.Components.IntegrationTests
             var webAppFactory = new TWebFactory();
             var httpClient = webAppFactory.CreateClient();
 
-            RestHttpClient = new RestClient(httpClient, new RestClientOptions(new Uri("http://localhost")));
+            RestHttpClient = new RestClient(httpClient, new RestClientOptions(new Uri("http://localhost:6064")));
         }
 
         private bool _disposed;
@@ -33,7 +33,9 @@ namespace HomeBudget.Components.IntegrationTests
         public virtual void SetUp()
         {
             var activeEnvironment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-            var testCategories = TestContext.CurrentContext.Test.Properties["Category"];
+
+            var testProperties = TestContext.CurrentContext.Test.Properties;
+            var testCategories = testProperties["Category"];
 
             if (HostEnvironments.Docker.Equals(activeEnvironment, StringComparison.OrdinalIgnoreCase) && testCategories.Contains(CategoryToExclude))
             {

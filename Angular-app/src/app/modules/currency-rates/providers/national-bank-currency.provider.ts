@@ -20,12 +20,8 @@ export class NationalBankCurrencyProvider implements BankCurrencyProvider {
 		payload: DialogDaysRangePayload
 	): Observable<NationalBankCurrencyRateGroup[]> {
 		return this.http
-			.post<Result<NationalBankCurrencyRateGroup[]>>(
-				`${RoutesSegments.HOME_BUDGET_APP_HOST}/currencyRates/period`,
-				{
-					startDate: payload.startDate,
-					endDate: payload.endDate,
-				}
+			.get<Result<NationalBankCurrencyRateGroup[]>>(
+				`${RoutesSegments.HOME_BUDGET_APP_HOST}/currencyRates/period/${payload.startDate}/${payload.endDate}`,
 			)
 			.pipe(
 				map((r) => r.payload),
