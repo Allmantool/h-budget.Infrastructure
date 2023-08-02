@@ -81,7 +81,7 @@ services:
       - elasticsearch
 
   homebudget-web-api:
-    image: ${DOCKER_REGISTRY-}homebudget-webapi:v0.0.37
+    image: ${DOCKER_REGISTRY-}homebudget-webapi:v0.0.44
     container_name: homebudget-api
     build:
       context: .
@@ -93,9 +93,10 @@ services:
         - PULL_REQUEST_ID=${PULL_REQUEST_ID}
         - PULL_REQUEST_SOURCE_BRANCH=${PULL_REQUEST_SOURCE_BRANCH}
         - PULL_REQUEST_TARGET_BRANCH=${PULL_REQUEST_TARGET_BRANCH}
- #   environment:
-    # - ASPNETCORE_HTTPS_PORT=5008
-    # - ASPNETCORE_URLS=https://+:443;http://+:80
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      # - ASPNETCORE_HTTPS_PORT=5008
+      # - ASPNETCORE_URLS=https://+:443;http://+:80
     ports:
       - "5207:80"
       - "5208:443"
