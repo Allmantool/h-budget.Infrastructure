@@ -24,16 +24,16 @@ RUN wget https://packages.microsoft.com/config/debian/11/packages-microsoft-prod
 RUN dpkg -i packages-microsoft-prod.deb 
 RUN rm packages-microsoft-prod.deb 
 
-# RUN --mount=type=cache,target=/var/cache/apt \ 
-RUN apt-get update && \
+RUN --mount=type=cache,target=/var/cache/apt \ 
+    apt-get update && \
     apt-get install -y --quiet --no-install-recommends \
     apt-transport-https && \
     apt-get -y autoremove && \
     apt-get clean autoclean && \
     apt-get clean autoclean
 
-# RUN --mount=type=cache,target=/var/cache/apt \     
-RUN apt-get update && \
+RUN --mount=type=cache,target=/var/cache/apt \      
+    apt-get update && \
     apt-get install -y --quiet --no-install-recommends \
     openjdk-11-jdk ant dos2unix ca-certificates-java dotnet-sdk-7.0 && \
     apt-get -y autoremove && \
