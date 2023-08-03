@@ -8,19 +8,6 @@ WORKDIR /scr
 
 COPY --from=mcr.microsoft.com/dotnet/sdk:5.0 /usr/share/dotnet/shared /usr/share/dotnet/shared
 
-COPY ["HomeBudget.Components.CurrencyRates.Tests/*.csproj", "HomeBudget.Components.CurrencyRates.Tests/"]
-COPY ["HomeBudget.Components.IntegrationTests/*.csproj", "HomeBudget.Components.IntegrationTests/"]
-COPY ["HomeBudget.Components.CurrencyRates/*.csproj", "HomeBudget.Components.CurrencyRates/"]
-COPY ["HomeBudget.DataAccess/*.csproj", "HomeBudget.DataAccess/"]
-COPY ["HomeBudget.Core/*.csproj", "HomeBudget.Core/"]
-COPY ["HomeBudget-Web-API/*.csproj", "HomeBudget-Web-API/"]
-COPY ["HomeBudget.DataAccess.Dapper/*.csproj", "HomeBudget.DataAccess.Dapper/"]
-COPY ["docker-compose.dcproj", "."]
-
-COPY . .
-
-RUN dotnet restore ./HomeBudget-Web-API.sln
-
 ARG SONAR_TOKEN
 ARG PULL_REQUEST_ID
 ARG PULL_REQUEST_SOURCE_BRANCH
@@ -37,10 +24,21 @@ RUN wget https://packages.microsoft.com/config/debian/11/packages-microsoft-prod
 RUN dpkg -i packages-microsoft-prod.deb 
 RUN rm packages-microsoft-prod.deb 
 
-RUN apt-get install -y apt-transport-https && \
+RUN --mount=type=cache,target=/var/cache/apt \ 
+   # apt-get update && \
+    apt-get install -y --quiet --no-install-recommends \
+    apt-transport-https && \
+    apt-get -y autoremove && \
+    apt-get clean autoclean && \
+    apt-get clean autoclean
+    
+RUN --mount=type=cache,target=/var/cache/apt \ 
     apt-get update && \
-    apt-get install -y openjdk-11-jdk ant dos2unix ca-certificates-java dotnet-sdk-6.0 && \
-    apt-get clean
+    apt-get install -y --quiet --no-install-recommends \
+    openjdk-11-jdk ant dos2unix ca-certificates-java dotnet-sdk-6.0 && \
+    apt-get -y autoremove && \
+    apt-get clean autoclean && \
+    apt-get clean autoclean
 
 # Fix certificate issues
 RUN update-ca-certificates -f
@@ -63,6 +61,19 @@ RUN echo '--->PULL_REQUEST_ID:' ${PULL_REQUEST_ID}
 RUN echo '--->GITHUB_RUN_ID:' ${GITHUB_RUN_ID}
 RUN echo '--->PULL_REQUEST_SOURCE_BRANCH:' ${PULL_REQUEST_SOURCE_BRANCH}
 RUN echo '--->PULL_REQUEST_TARGET_BRANCH:' ${PULL_REQUEST_TARGET_BRANCH}
+
+COPY ["HomeBudget.Components.CurrencyRates.Tests/*.csproj", "HomeBudget.Components.CurrencyRates.Tests/"]
+COPY ["HomeBudget.Components.IntegrationTests/*.csproj", "HomeBudget.Components.IntegrationTests/"]
+COPY ["HomeBudget.Components.CurrencyRates/*.csproj", "HomeBudget.Components.CurrencyRates/"]
+COPY ["HomeBudget.DataAccess/*.csproj", "HomeBudget.DataAccess/"]
+COPY ["HomeBudget.Core/*.csproj", "HomeBudget.Core/"]
+COPY ["HomeBudget-Web-API/*.csproj", "HomeBudget-Web-API/"]
+COPY ["HomeBudget.DataAccess.Dapper/*.csproj", "HomeBudget.DataAccess.Dapper/"]
+COPY ["docker-compose.dcproj", "."]
+
+COPY . .
+
+RUN dotnet restore ./HomeBudget-Web-API.sln
 
 RUN dos2unix ./startsonar.sh
 RUN chmod +x ./startsonar.sh
