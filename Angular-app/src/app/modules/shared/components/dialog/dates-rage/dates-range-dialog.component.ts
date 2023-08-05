@@ -6,8 +6,9 @@ import {
 } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
-import { DialogContainer } from 'app/modules/shared/models/dialog-container';
 import { BehaviorSubject } from 'rxjs';
+
+import { DialogContainer } from 'app/modules/shared/models/dialog-container';
 
 @Component({
 	selector: 'dates-range-dialog',
@@ -41,8 +42,11 @@ export class DateRangeDialogComponent {
 
 	public getRates(): void {
 		this.isLoading$.next(true);
+
+		this.dialogRef.close(this.dialogFg.value);
+		
 		this.dialogRef.beforeClosed().subscribe(() => {
-			this.dialogRef.close(this.dialogFg.value);
+			this.isLoading$.next(false);
 		});
 	}
 }

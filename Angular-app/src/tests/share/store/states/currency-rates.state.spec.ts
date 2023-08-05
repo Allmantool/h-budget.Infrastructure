@@ -5,7 +5,7 @@ import { of } from 'rxjs';
 import * as _ from 'lodash';
 
 import {
-	AddRange,
+	AddCurrencyGroups,
 	FetchAllCurrencyRates,
 } from 'app/modules/shared/store/actions/currency-rates.actions';
 import { CurrencyRate } from 'app/modules/shared/store/models/currency-rates/currency-rate';
@@ -66,7 +66,7 @@ describe('Currency rates store', () => {
 
 		store = TestBed.inject(Store);
 
-		store.dispatch(new AddRange(initialStoreRateGroups));
+		store.dispatch(new AddCurrencyGroups(initialStoreRateGroups));
 	});
 
 	it('it "AddRange": initial setup - expect 2 carrency groups', () => {
@@ -94,7 +94,7 @@ describe('Currency rates store', () => {
 			],
 		} as CurrencyRateGroup);
 
-		store.dispatch(new AddRange(updatedCurrencyRateGroups));
+		store.dispatch(new AddCurrencyGroups(updatedCurrencyRateGroups));
 
 		store
 			.selectOnce((state) => state.currencyRateState.rateGroups)
@@ -120,7 +120,7 @@ describe('Currency rates store', () => {
 			],
 		} as CurrencyRateGroup);
 
-		store.dispatch(new AddRange(updatedCurrencyRateGroups));
+		store.dispatch(new AddCurrencyGroups(updatedCurrencyRateGroups));
 
 		store
 			.selectOnce((state) => state.currencyRateState.rateGroups)
@@ -157,7 +157,7 @@ describe('Currency rates store', () => {
 			],
 		} as CurrencyRateGroup);
 
-		store.dispatch(new AddRange(updatedCurrencyRateGroups));
+		store.dispatch(new AddCurrencyGroups(updatedCurrencyRateGroups));
 
 		store
 			.selectOnce((state) => state.currencyRateState.rateGroups)

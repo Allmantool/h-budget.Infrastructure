@@ -15,6 +15,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 import { NgApexchartsModule } from 'ng-apexcharts';
 
@@ -57,6 +58,7 @@ import { ProgressBarComponent } from './components/progress-bar/progress-bar.com
 
 		MatDividerModule,
 		MatSidenavModule,
+		MatButtonToggleModule,
 		MatProgressSpinnerModule,
 		MatProgressBarModule,
 		MatTableModule,
@@ -74,6 +76,7 @@ import { ProgressBarComponent } from './components/progress-bar/progress-bar.com
 		CommonModule,
 		MatDividerModule,
 		MatSidenavModule,
+		MatButtonToggleModule,
 		MatProgressSpinnerModule,
 		MatProgressBarModule,
 		MatDatepickerModule,

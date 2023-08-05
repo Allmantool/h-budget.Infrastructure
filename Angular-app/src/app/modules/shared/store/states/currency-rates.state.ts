@@ -1,20 +1,23 @@
 import { Injectable } from '@angular/core';
 
+import { addMonths } from 'date-fns';
 import { State, Action, StateContext, Selector } from '@ngxs/store';
 import { tap, take } from 'rxjs/operators';
 import * as _ from 'lodash';
 
 import { RatesCodes } from '../../constants/rates-codes';
 import {
-	AddRange,
+	AddCurrencyGroups,
 	FetchAllCurrencyRates,
-	SetActive,
+	SetActiveCurrency,
+	SetCurrencyDateRange,
 } from '../actions/currency-rates.actions';
 import { CurrencyRate } from '../models/currency-rates/currency-rate';
 import { NationalBankCurrencyProvider } from './../../../currency-rates/providers/national-bank-currency.provider';
 import { CurrencyTableItem } from './../models/currency-rates/currency-table-item';
 import { CurrencyTableOptions } from './../models/currency-rates/currency-table-options';
 import { CurrencyRateGroup } from '../models/currency-rates/currency-rates-group';
+import { CurrencyDateRange } from '../models/currency-rates/currency-date-range';
 
 export interface ICurrencyRatesStateModel {
 	rateGroups: CurrencyRateGroup[];
@@ -30,6 +33,10 @@ export interface ICurrencyRatesStateModel {
 				currencyId: RatesCodes.USA,
 				abbreviation: 'USA',
 			} as CurrencyTableItem,
+			selectedDateRange: {
+				start: addMonths(new Date(), -3),
+				end: new Date()
+			} as CurrencyDateRange
 		} as CurrencyTableOptions,
 	},
 })
@@ -72,7 +79,7 @@ export class CurrencyRatesState {
 	}
 
 	@Action(FetchAllCurrencyRates)
-	getAllCurrencyRates(ctx: StateContext<ICurrencyRatesStateModel>) {
+	fetchAllCurrencyRates(ctx: StateContext<ICurrencyRatesStateModel>) {
 		return this.currencyRateProvider.getCurrencies().pipe(
 			take(1),
 			tap((currencyRateGroups) =>
@@ -90,53 +97,61 @@ export class CurrencyRatesState {
 		);
 	}
 
-	@Action(AddRange)
-	addRange(
+	@Action(AddCurrencyGroups)
+	addCurrencyGroups(
 		{ getState, patchState }: StateContext<ICurrencyRatesStateModel>,
-		{ addedRateGroups }: AddRange
+		{ addedRateGroups }: AddCurrencyGroups
 	): void {
-		const existedRateGroups = getState().rateGroups;
-		const updatedCurrencyGroups = existedRateGroups.map((cg) => {
+		const ratesFromTheState = getState().rateGroups;
+
+		const upToDateCurrencyGroups = ratesFromTheState.map((cg) => {
+
 			const addingRates = addedRateGroups.find(
 				(i) => i.currencyId == cg.currencyId
 			)?.currencyRates;
+
 			const ratesForUpdate = _.differenceWith(
 				addingRates,
 				cg.currencyRates,
 				_.isEqual
 			);
+
+			if (_.isNil(ratesForUpdate) || _.isEmpty(ratesForUpdate)) {
+				return cg;
+			}
+
 			const notUpdatedOrNewRates = _.filter(
 				cg.currencyRates,
 				(cgRate) =>
 					!_.some(
 						addingRates,
-						(addRate) =>
-							new Date(addRate.updateDate).toDateString() ===
-							new Date(cgRate.updateDate).toDateString()
+						(addRate) => _.isEqual(new Date(addRate.updateDate).toDateString(), new Date(cgRate.updateDate).toDateString())
 					)
 			);
 
 			const updatedCarrencyGroup = _.cloneDeep(cg);
 
-			updatedCarrencyGroup.currencyRates = _.concat(
+			const upToDateRates = _.concat(
 				notUpdatedOrNewRates,
 				ratesForUpdate
 			);
+
+			updatedCarrencyGroup.currencyRates = _.orderBy(upToDateRates, r => r.updateDate);
 
 			return updatedCarrencyGroup;
 		});
 
 		patchState({
-			rateGroups: _.isEmpty(updatedCurrencyGroups)
+			rateGroups: _.isEmpty(upToDateCurrencyGroups)
 				? addedRateGroups
-				: updatedCurrencyGroups,
+				: upToDateCurrencyGroups,
 		});
 	}
 
-	@Action(SetActive)
-	setActive(
-		{ patchState }: StateContext<ICurrencyRatesStateModel>,
-		{ id, label }: SetActive
+	@Action(SetActiveCurrency)
+	setActiveCurrency(
+		{ getState, patchState }: StateContext<ICurrencyRatesStateModel>,
+		{ id, label }: SetActiveCurrency
 	): void {
 		patchState({
 			tableOptions: {
@@ -144,6 +159,23 @@ export class CurrencyRatesState {
 					currencyId: id,
 					abbreviation: label,
 				} as CurrencyTableItem,
+				selectedDateRange: getState().tableOptions.selectedDateRange,
+			} as CurrencyTableOptions,
+		});
+	}
+
+	@Action(SetCurrencyDateRange)
+	setCurrencyDateRange(
+		{ getState, patchState }: StateContext<ICurrencyRatesStateModel>,
+		{ amountOfMonths }: SetCurrencyDateRange
+	): void {
+		patchState({
+			tableOptions: {
+				selectedItem: getState().tableOptions.selectedItem,
+				selectedDateRange: {
+					start: addMonths(new Date(), -amountOfMonths),
+					end: new Date()
+				} as CurrencyDateRange,
 			} as CurrencyTableOptions,
 		});
 	}
