@@ -2,10 +2,18 @@ import { CurrencyRate } from 'app/modules/shared/store/models/currency-rates/cur
 
 export class NationalBankCurrencyRateGroup {
 	constructor(currencyRates: Partial<NationalBankCurrencyRateGroup>) {
+		this.currencyId = currencyRates.currencyId,
 		this.abbreviation = currencyRates.abbreviation;
 		this.scale = currencyRates.scale;
 		this.name = currencyRates.name;
-		this.rateValues = currencyRates.rateValues;
+		
+		this.rateValues = currencyRates.rateValues?.map(rv => {
+			return <CurrencyRate>{
+				updateDate: new Date(rv.updateDate),
+				ratePerUnit: rv.ratePerUnit,
+				currencyTrend: rv.currencyTrend
+			}
+		});
 	}
 	currencyId?: number;
 	name?: string;

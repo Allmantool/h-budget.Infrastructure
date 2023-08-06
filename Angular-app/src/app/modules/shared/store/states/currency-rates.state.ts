@@ -64,10 +64,12 @@ export class CurrencyRatesState {
 	static getCurrencyRatesFromPreviousDay(
 		rates: CurrencyRate[]
 	): CurrencyRate[] {
+		
 		const dates = _.chain(rates)
 			.map((i) => i.updateDate)
 			.uniqBy((i) => i)
 			.value();
+
 		const penultimateDate = dates[dates.length - 2];
 
 		return _.filter(rates, (r) => r.updateDate === penultimateDate);
@@ -125,7 +127,7 @@ export class CurrencyRatesState {
 				(cgRate) =>
 					!_.some(
 						addingRates,
-						(addRate) => _.isEqual(new Date(addRate.updateDate).toDateString(), new Date(cgRate.updateDate).toDateString())
+						(addRate) => addRate.updateDate === cgRate.updateDate
 					)
 			);
 

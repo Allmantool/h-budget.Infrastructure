@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 
-import { addMonths, format } from 'date-fns';
+import { format } from 'date-fns';
 import * as _ from 'lodash';
 import {
 	ApexAxisChartSeries,
@@ -97,7 +97,9 @@ export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
 						tableOptions.selectedItem.currencyId
 					).currencyRates;
 
-					const ratesForPeriod = rates.filter(r => new Date(r.updateDate) >= tableOptions.selectedDateRange.start && new Date(r.updateDate) <= tableOptions.selectedDateRange.end);
+					const ratesForPeriod = _.filter(rates, r => {
+						return r.updateDate >= tableOptions.selectedDateRange.start && r.updateDate <= tableOptions.selectedDateRange.end
+					});
 
 					const ratesFilterByDateRange = _.sortBy(ratesForPeriod, i => i.updateDate)
 
@@ -118,7 +120,7 @@ export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
 						},
 						xaxis: {
 							categories: _.map(ratesFilterByDateRange, (r) =>
-								format(new Date(r.updateDate), 'dd MMM yy')
+								format(r.updateDate, 'dd MMM yy')
 							),
 						},
 					};
