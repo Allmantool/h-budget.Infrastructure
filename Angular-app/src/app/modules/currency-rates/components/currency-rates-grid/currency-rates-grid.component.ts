@@ -6,7 +6,6 @@ import {
 } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatDialogConfig } from '@angular/material/dialog';
 
 import { Select, Store } from '@ngxs/store';
 import { combineLatest, Observable, Subject, Subscription } from 'rxjs';
@@ -25,12 +24,9 @@ import {
 import { CurrencyRatesState } from '../../../shared/store/states/currency-rates.state';
 import { CurrencyTrend } from './../../../shared/store/models/currency-rates/currency-trend';
 import { CurrencyTableOptions } from './../../../shared/store/models/currency-rates/currency-table-options';
-import { DialogProvider } from './../../../shared/providers/dialog-provider';
-import { DateRangeDialogComponent } from './../../../shared/components/dialog/dates-rage/dates-range-dialog.component';
-import { DialogContainer } from './../../../shared/models/dialog-container';
-import { DialogDaysRangePayload } from './../../../shared/models/dialog-dates-range-payload';
 import { NationalBankCurrencyRateGroup } from '../../models/currency-rates-group';
 import { CurrencyRateGroup } from './../../../shared/store/models/currency-rates/currency-rates-group';
+import { RatesDialogService } from './../../services/rates-dialog.service'
 
 @Component({
 	selector: 'app-currency-rates-grid',
@@ -73,9 +69,9 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 	private subs: Subscription[] = [];
 
 	constructor(
-		private dialogProvider: DialogProvider,
 		private currencyRateProvider: NationalBankCurrencyProvider,
-		private store: Store
+		private store: Store,
+        private ratesDialogService: RatesDialogService
 	) {}
 
 	ngOnDestroy(): void {
@@ -186,32 +182,7 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 	}
 
 	public openGetCurrencyRatesDialog(): void {
-		const config = new MatDialogConfig<DialogContainer>();
-
-		const onGetRatesForPeriod = (payload: DialogDaysRangePayload) => {
-			if (_.isNil(payload)) {
-				return;
-			}
-
-			this.currencyRateProvider
-				.getCurrenciesForSpecifiedPeriod(payload)
-				.pipe(take(1))
-				.subscribe((unifiedRates) => {
-					this.store.dispatch(
-						new AddCurrencyGroups(this.mapToCurrencyRateGroups(unifiedRates))
-					);
-				});
-		};
-
-		config.data = {
-			title: 'Update rates for specify period:',
-		} as DialogContainer;
-
-		this.dialogProvider.openDialog(
-			DateRangeDialogComponent,
-			onGetRatesForPeriod,
-			config
-		);
+        this.ratesDialogService.openLoadRatesForPeriod();
 	}
 
 	public setDateRange(monthsAmount: number): void {

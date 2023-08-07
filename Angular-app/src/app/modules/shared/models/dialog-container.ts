@@ -1,3 +1,6 @@
+import { Observable } from 'rxjs';
+
 export class DialogContainer {
-	title!: string;
+    title!: string;
+    onSubmit!: <T>(payload: T) => Observable<T>;
 }
