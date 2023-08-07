@@ -223,6 +223,9 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 			(rg) =>
 				({
 					currencyId: rg.currencyId,
+                    name: rg.name,
+                    abbreviation: rg.abbreviation,
+                    scale: rg.scale,
 					currencyRates: rg.rateValues,
 				} as CurrencyRateGroup)
 		);

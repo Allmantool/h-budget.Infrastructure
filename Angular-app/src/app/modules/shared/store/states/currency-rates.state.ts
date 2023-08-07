@@ -91,6 +91,9 @@ export class CurrencyRatesState {
 						(rg) =>
 							({
 								currencyId: rg.currencyId,
+                                name: rg.name,
+                                abbreviation: rg.abbreviation,
+                                scale: rg.scale,
 								currencyRates: _.orderBy(rg.rateValues, i => i.updateDate),
 							} as CurrencyRateGroup)
 					),
