@@ -8,6 +8,7 @@ import {
 } from '../currency-rates';
 import { AppSharedModule } from '../shared';
 import { AppCoreModule } from './../core/core.module';
+import { LineChartService } from './services/line-chart.service';
 
 @NgModule({
 	declarations: [
@@ -16,7 +17,7 @@ import { AppCoreModule } from './../core/core.module';
 		CurrencyRatesLineChartComponent,
 	],
 	imports: [CurrencyRatesRoutingModule, AppSharedModule, AppCoreModule],
-	providers: [],
+	providers: [LineChartService],
 	bootstrap: [],
 })
 export class CurrencyRatesModule {}

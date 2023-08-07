@@ -8,7 +8,6 @@ import {
 } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 
-import { format } from 'date-fns';
 import * as _ from 'lodash';
 import {
 	ApexAxisChartSeries,
@@ -31,6 +30,8 @@ import { CurrencyTableOptions } from './../../../shared/store/models/currency-ra
 import { CurrencyRatesState } from './../../../shared/store/states/currency-rates.state';
 import { UnifiedCurrencyRates } from './../../models/unified-currency-rates';
 import { CurrencyRateGroup } from './../../../shared/store/models/currency-rates/currency-rates-group';
+import { LineChartService } from '../../services/line-chart.service';
+import { LineChartOptions } from '../../models/line-chart-options';
 
 export type ChartOptions = {
 	series: ApexAxisChartSeries;
@@ -67,7 +68,7 @@ export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
 
 	private subs: Subscription[] = [];
 
-	constructor(private store: Store) { }
+	constructor(private store: Store, private linechartService: LineChartService) { }
 
 	ngOnDestroy(): void {
 		this.subs.forEach((s) => s.unsubscribe());
@@ -97,33 +98,14 @@ export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
 						tableOptions.selectedItem.currencyId
 					).currencyRates;
 
-					const ratesForPeriod = _.filter(rates, r => {
-						return r.updateDate >= tableOptions.selectedDateRange.start && r.updateDate <= tableOptions.selectedDateRange.end
+					const lineChartOptions: LineChartOptions = ({
+						height: this.chartHeight,
+						width: this.chartWidth,
+						dateFormat: 'dd MMM yy',
+						type: 'area'
 					});
 
-					const ratesFilterByDateRange = _.sortBy(ratesForPeriod, i => i.updateDate)
-
-					this.chartOptions = {
-						series: [
-							{
-								name: tableOptions.selectedItem.abbreviation,
-								data: _.map(ratesFilterByDateRange, (r) => r.ratePerUnit ?? 0),
-							},
-						],
-						chart: {
-							height: this.chartHeight,
-							width: this.chartWidth,
-							type: 'area',
-						},
-						title: {
-							text: tableOptions.selectedItem.abbreviation,
-						},
-						xaxis: {
-							categories: _.map(ratesFilterByDateRange, (r) =>
-								format(r.updateDate, 'dd MMM yy')
-							),
-						},
-					};
+					this.chartOptions = this.linechartService.getChartOptions(rates, tableOptions, lineChartOptions);
 
 					this.isChartInitialized$.next(true);
 				})
