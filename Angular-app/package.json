@@ -1,6 +1,6 @@
 {
   "name": "h-budget",
-  "version": "0.51",
+  "version": "0.52",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --watch --open",
