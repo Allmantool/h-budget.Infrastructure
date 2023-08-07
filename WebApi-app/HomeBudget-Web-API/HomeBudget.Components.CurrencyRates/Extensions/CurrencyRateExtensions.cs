@@ -12,7 +12,9 @@ namespace HomeBudget.Components.CurrencyRates.Extensions
         public static IReadOnlyCollection<CurrencyRateGrouped> MapToCurrencyRateGrouped(
             this IEnumerable<CurrencyRate> rates, IMapper mapper)
         {
-            return rates.GroupBy(rate => new
+            return rates
+                .OrderBy(r => r.UpdateDate)
+                .GroupBy(rate => new
                 {
                     rate.CurrencyId,
                     rate.Abbreviation,

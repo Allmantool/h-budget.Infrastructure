@@ -8,7 +8,7 @@ using HomeBudget.DataAccess.Interfaces;
 
 namespace HomeBudget.DataAccess.Dapper.SqlClients.MsSql
 {
-    public class DapperReadRepository : IBaseReadRepository
+    internal class DapperReadRepository : IBaseReadRepository
     {
         private readonly ISqlConnectionFactory _sqlConnectionFactory;
 
@@ -17,10 +17,12 @@ namespace HomeBudget.DataAccess.Dapper.SqlClients.MsSql
             _sqlConnectionFactory = sqlConnectionFactory;
         }
 
-        public async Task<IReadOnlyCollection<T>> GetAsync<T>(string sqlQuery, object parameters)
+        public async Task<IReadOnlyCollection<T>> GetAsync<T>(string sqlQuery, object parameters = null)
         {
             using var db = _sqlConnectionFactory.Create();
-            var result = await db.QueryAsync<T>(sqlQuery, parameters);
+            var result = parameters == null
+                ? await db.QueryAsync<T>(sqlQuery)
+                : await db.QueryAsync<T>(sqlQuery, parameters);
 
             return result.ToList();
         }

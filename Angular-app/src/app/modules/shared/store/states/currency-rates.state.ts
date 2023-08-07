@@ -64,7 +64,7 @@ export class CurrencyRatesState {
 	static getCurrencyRatesFromPreviousDay(
 		rates: CurrencyRate[]
 	): CurrencyRate[] {
-		
+
 		const dates = _.chain(rates)
 			.map((i) => i.updateDate)
 			.uniqBy((i) => i)
@@ -91,7 +91,7 @@ export class CurrencyRatesState {
 						(rg) =>
 							({
 								currencyId: rg.currencyId,
-								currencyRates: rg.rateValues,
+								currencyRates: _.orderBy(rg.rateValues, i => i.updateDate),
 							} as CurrencyRateGroup)
 					),
 				})
