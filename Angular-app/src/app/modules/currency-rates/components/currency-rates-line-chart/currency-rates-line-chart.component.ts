@@ -30,7 +30,7 @@ import { FetchAllCurrencyRates } from './../../../shared/store/actions/currency-
 import { CurrencyTableOptions } from './../../../shared/store/models/currency-rates/currency-table-options';
 import { CurrencyRatesState } from './../../../shared/store/states/currency-rates.state';
 import { UnifiedCurrencyRates } from './../../models/unified-currency-rates';
-import { CurrencyRateGroup } from 'app/modules/shared/store/models/currency-rates/currency-rates-group';
+import { CurrencyRateGroup } from './../../../shared/store/models/currency-rates/currency-rates-group';
 
 export type ChartOptions = {
 	series: ApexAxisChartSeries;
@@ -67,7 +67,7 @@ export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
 
 	private subs: Subscription[] = [];
 
-	constructor(private store: Store) {}
+	constructor(private store: Store) { }
 
 	ngOnDestroy(): void {
 		this.subs.forEach((s) => s.unsubscribe());
@@ -87,19 +87,27 @@ export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
 							!_.isEmpty(
 								getCurrencies(
 									tableOptions.selectedItem.currencyId
-								)
+								)?.currencyRates
 							)
 					)
 				)
 				.subscribe(([data, tableOptions]) => {
+
 					const rates = data(
 						tableOptions.selectedItem.currencyId
 					).currencyRates;
+
+					const ratesForPeriod = _.filter(rates, r => {
+						return r.updateDate >= tableOptions.selectedDateRange.start && r.updateDate <= tableOptions.selectedDateRange.end
+					});
+
+					const ratesFilterByDateRange = _.sortBy(ratesForPeriod, i => i.updateDate)
+
 					this.chartOptions = {
 						series: [
 							{
 								name: tableOptions.selectedItem.abbreviation,
-								data: _.map(rates, (r) => r.ratePerUnit ?? 0),
+								data: _.map(ratesFilterByDateRange, (r) => r.ratePerUnit ?? 0),
 							},
 						],
 						chart: {
@@ -111,8 +119,8 @@ export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
 							text: tableOptions.selectedItem.abbreviation,
 						},
 						xaxis: {
-							categories: _.map(rates, (r) =>
-								format(new Date(r.updateDate), 'dd MMM yy')
+							categories: _.map(ratesFilterByDateRange, (r) =>
+								format(r.updateDate, 'dd MMM yy')
 							),
 						},
 					};

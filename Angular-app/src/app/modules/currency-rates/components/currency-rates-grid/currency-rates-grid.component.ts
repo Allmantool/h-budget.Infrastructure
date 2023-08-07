@@ -18,8 +18,9 @@ import { UnifiedCurrencyRates } from '../../models/unified-currency-rates';
 import { NationalBankCurrencyProvider } from '../../providers/national-bank-currency.provider';
 import { CurrencyRate } from '../../../shared/store/models/currency-rates/currency-rate';
 import {
-	AddRange,
-	SetActive,
+	AddCurrencyGroups,
+	SetActiveCurrency,
+	SetCurrencyDateRange,
 } from '../../../shared/store/actions/currency-rates.actions';
 import { CurrencyRatesState } from '../../../shared/store/states/currency-rates.state';
 import { CurrencyTrend } from './../../../shared/store/models/currency-rates/currency-trend';
@@ -27,9 +28,9 @@ import { CurrencyTableOptions } from './../../../shared/store/models/currency-ra
 import { DialogProvider } from './../../../shared/providers/dialog-provider';
 import { DateRangeDialogComponent } from './../../../shared/components/dialog/dates-rage/dates-range-dialog.component';
 import { DialogContainer } from './../../../shared/models/dialog-container';
-import { DialogDaysRangePayload } from './../../..//shared/models/dialog-dates-range-payload';
+import { DialogDaysRangePayload } from './../../../shared/models/dialog-dates-range-payload';
 import { NationalBankCurrencyRateGroup } from '../../models/currency-rates-group';
-import { CurrencyRateGroup } from 'app/modules/shared/store/models/currency-rates/currency-rates-group';
+import { CurrencyRateGroup } from './../../../shared/store/models/currency-rates/currency-rates-group';
 
 @Component({
 	selector: 'app-currency-rates-grid',
@@ -130,7 +131,7 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 			!_.isNil(selectedRate.abbreviation)
 		) {
 			this.store.dispatch(
-				new SetActive(
+				new SetActiveCurrency(
 					selectedRate.currencyId,
 					selectedRate.abbreviation
 				)
@@ -188,12 +189,16 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 		const config = new MatDialogConfig<DialogContainer>();
 
 		const onGetRatesForPeriod = (payload: DialogDaysRangePayload) => {
+			if (_.isNil(payload)) {
+				return;
+			}
+
 			this.currencyRateProvider
 				.getCurrenciesForSpecifiedPeriod(payload)
 				.pipe(take(1))
 				.subscribe((unifiedRates) => {
 					this.store.dispatch(
-						new AddRange(this.mapToCurrencyRateGroups(unifiedRates))
+						new AddCurrencyGroups(this.mapToCurrencyRateGroups(unifiedRates))
 					);
 				});
 		};
@@ -209,11 +214,17 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 		);
 	}
 
+	public setDateRange(monthsAmount: number): void {
+		this.store.dispatch(
+			new SetCurrencyDateRange(monthsAmount)
+		);
+	}
+
 	private upddateCurrencyStateStore(
 		todayRates: NationalBankCurrencyRateGroup[]
 	): void {
 		this.store.dispatch(
-			new AddRange(this.mapToCurrencyRateGroups(todayRates))
+			new AddCurrencyGroups(this.mapToCurrencyRateGroups(todayRates))
 		);
 	}
 

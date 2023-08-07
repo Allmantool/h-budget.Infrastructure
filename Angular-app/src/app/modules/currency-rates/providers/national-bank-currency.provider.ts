@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs';
 import { map, retry, take, tap } from 'rxjs/operators';
+import { format } from 'date-fns';
 
 import { UnifiedCurrencyRates } from '../models/unified-currency-rates';
 import { BankCurrencyProvider } from './bank-currency.provider';
@@ -21,10 +22,10 @@ export class NationalBankCurrencyProvider implements BankCurrencyProvider {
 	): Observable<NationalBankCurrencyRateGroup[]> {
 		return this.http
 			.get<Result<NationalBankCurrencyRateGroup[]>>(
-				`${RoutesSegments.HOME_BUDGET_APP_HOST}/currencyRates/period/${payload.startDate}/${payload.endDate}`,
+				`${RoutesSegments.HOME_BUDGET_APP_HOST}/currencyRates/period/${format(payload.startDate, 'yyyy-MM-dd')}/${format(payload.endDate, 'yyyy-MM-dd')}`,
 			)
 			.pipe(
-				map((r) => r.payload),
+				map((r) => r.payload.map(gr => new NationalBankCurrencyRateGroup(gr))),
 				retry(3),
 				take(1)
 			);
@@ -54,7 +55,7 @@ export class NationalBankCurrencyProvider implements BankCurrencyProvider {
 				`${RoutesSegments.HOME_BUDGET_APP_HOST}/currencyRates`
 			)
 			.pipe(
-				map((r) => r.payload),
+				map((r) => r.payload.map(gr => new NationalBankCurrencyRateGroup(gr))),
 				retry(3),
 				take(1)
 			);
@@ -66,7 +67,7 @@ export class NationalBankCurrencyProvider implements BankCurrencyProvider {
 				`${RoutesSegments.HOME_BUDGET_APP_HOST}/currencyRates/today`
 			)
 			.pipe(
-				map((response) => response.payload),
+				map((r) => r.payload.map(gr => new NationalBankCurrencyRateGroup(gr))),
 				retry(3),
 				take(1)
 			);
