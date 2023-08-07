@@ -6,7 +6,7 @@ import {
 } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, take } from 'rxjs';
 
 import { DialogContainer } from 'app/modules/shared/models/dialog-container';
 
@@ -45,8 +45,8 @@ export class DateRangeDialogComponent {
 
 		this.dialogRef.close(this.dialogFg.value);
 		
-		this.dialogRef.beforeClosed().subscribe(() => {
-			this.isLoading$.next(false);
+		this.dialogRef.afterClosed().pipe(take(1)).subscribe(() => {
+			this.isLoading$.next(true);
 		});
 	}
 }

@@ -96,7 +96,7 @@ export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
 
 					const rates = data(
 						tableOptions.selectedItem.currencyId
-					).currencyRates;
+					)?.currencyRates;
 
 					const lineChartOptions: LineChartOptions = ({
 						height: this.chartHeight,
