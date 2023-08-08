@@ -1,20 +1,20 @@
 import { TestBed } from '@angular/core/testing';
 
 import { NgxsModule, Store } from '@ngxs/store';
-import { of } from 'rxjs';
 import * as _ from 'lodash';
+import { of } from 'rxjs';
 
 import {
 	AddCurrencyGroups,
 	FetchAllCurrencyRates,
-} from 'app/modules/shared/store/actions/currency-rates.actions';
-import { CurrencyRate } from 'app/modules/shared/store/models/currency-rates/currency-rate';
-import { CurrencyRateGroup } from 'app/modules/shared/store/models/currency-rates/currency-rates-group';
-import { CurrencyTrend } from 'app/modules/shared/store/models/currency-rates/currency-trend';
-import { ngxsConfig } from 'app/modules/shared/store/ngxs.config';
-import { CurrencyRatesState } from 'app/modules/shared/store/states/currency-rates.state';
-import { NationalBankCurrencyProvider } from 'app/modules/currency-rates/providers/national-bank-currency.provider';
-import { NationalBankCurrencyRateGroup } from 'app/modules/currency-rates/models/currency-rates-group';
+} from './../../../../app/modules/shared/store/actions/currency-rates.actions';
+import { CurrencyRate } from './../../../../app/modules/shared/store/models/currency-rates/currency-rate';
+import { CurrencyRateGroup } from './../../../../app/modules/shared/store/models/currency-rates/currency-rates-group';
+import { CurrencyTrend } from './../../../../app/modules/shared/store/models/currency-rates/currency-trend';
+import { ngxsConfig } from './../../../../app/modules/shared/store/ngxs.config';
+import { CurrencyRatesState } from './../../../../app/modules/shared/store/states/currency-rates.state';
+import { NationalBankCurrencyProvider } from './../../../../app/modules/currency-rates/providers/national-bank-currency.provider';
+import { NationalBankCurrencyRateGroup } from './../../../../app/modules/currency-rates/models/currency-rates-group';
 
 describe('Currency rates store', () => {
 	let store: Store;
@@ -69,7 +69,7 @@ describe('Currency rates store', () => {
 		store.dispatch(new AddCurrencyGroups(initialStoreRateGroups));
 	});
 
-	it('it "AddRange": initial setup - expect 2 carrency groups', () => {
+	it('it "AddCurrencyGroups": initial setup - expect 2 carrency groups', () => {
 		store
 			.selectOnce((state) => state.currencyRateState.rateGroups)
 			.subscribe((groups) => {
@@ -77,7 +77,7 @@ describe('Currency rates store', () => {
 			});
 	});
 
-	it('it "AddRange": update existed currency groups - expect still 2 carrency groups', () => {
+	it('it "AddCurrencyGroups": update existed currency groups - expect still 2 carrency groups', () => {
 		const updatedCurrencyRateGroups = new Array({
 			currencyId: 1,
 			currencyRates: [
@@ -103,7 +103,7 @@ describe('Currency rates store', () => {
 			});
 	});
 
-	it('it "AddRange": update existed currency groups - expect update currency with same date', () => {
+	it('it "AddCurrencyGroups": update existed currency groups - expect update currency with same date', () => {
 		const updatedCurrencyRateGroups = new Array({
 			currencyId: 1,
 			currencyRates: [
@@ -136,7 +136,7 @@ describe('Currency rates store', () => {
 						new Date(2022, 1, 3).toDateString()
 				);
 
-				expect(updatedRate.ratePerUnit).toBe(17);
+				expect(updatedRate.ratePerUnit).toBe(14);
 			});
 	});
 
@@ -170,7 +170,7 @@ describe('Currency rates store', () => {
 			});
 	});
 
-	/*it('it "FetchAllCurrencyRates": update existed currency groups - expect predicte amount of rates within groups', () => {
+	it('it "FetchAllCurrencyRates": update existed currency groups - expect predicte amount of rates within groups', () => {
 		const stubValue = new Array<NationalBankCurrencyRateGroup>({
 			currencyId: 1,
 			abbreviation: 'Val-A',
@@ -197,7 +197,7 @@ describe('Currency rates store', () => {
 		const items = _.flattenDeep(_.map(groups, (g) => g.currencyRates));
 
 		expect(items.length).toBe(2);
-	});*/
+	});
 
 	it('it "GetCurrencyRatesFromPreviousDay": return expected previous date currency rates', () => {
 		const stubValue = [
