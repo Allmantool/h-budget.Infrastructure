@@ -161,12 +161,12 @@ describe('Currency rates store', () => {
 
 		store
 			.selectOnce((state) => state.currencyRateState.rateGroups)
-			.subscribe((groups) => {
+			.subscribe((groups: CurrencyRateGroup[]) => {
 				const items = _.flattenDeep(
 					_.map(groups, (g) => g.currencyRates)
 				);
 
-				expect(items.length).toBe(4);
+				expect(items.length).toBe(5);
 			});
 	});
 
@@ -174,7 +174,9 @@ describe('Currency rates store', () => {
 		const stubValue = new Array<NationalBankCurrencyRateGroup>({
 			currencyId: 1,
 			abbreviation: 'Val-A',
-			currencyRates: [
+			name: 'test-name',
+			scale: 2,
+			rateValues: [
 				{
 					ratePerUnit: 14,
 					currencyTrend: CurrencyTrend.notChanged,
@@ -186,7 +188,7 @@ describe('Currency rates store', () => {
 					updateDate: new Date(2022, 1, 4),
 				} as CurrencyRate,
 			],
-		} as NationalBankCurrencyRateGroup);
+		});
 
 		currencyRateProviderSpy.getCurrencies.and.returnValue(of(stubValue));
 		store.dispatch(new FetchAllCurrencyRates());
@@ -194,6 +196,7 @@ describe('Currency rates store', () => {
 		const groups = store.selectSnapshot(
 			(state) => state.currencyRateState.rateGroups
 		);
+
 		const items = _.flattenDeep(_.map(groups, (g) => g.currencyRates));
 
 		expect(items.length).toBe(2);
