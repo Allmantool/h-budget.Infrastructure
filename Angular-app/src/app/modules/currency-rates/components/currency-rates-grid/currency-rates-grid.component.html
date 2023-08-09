@@ -34,10 +34,10 @@
 		<caption>
 			Currency rates grid
 		</caption>
+
 		<ng-container matColumnDef="select">
 			<th mat-header-cell *matHeaderCellDef>
 				<mat-checkbox
-					(change)="$event ? masterToggle() : null"
 					[checked]="todayRatesTableSelection.hasValue() && isAllSelected()"
 					[indeterminate]="todayRatesTableSelection.hasValue() && !isAllSelected()"
 					[disabled]="true"

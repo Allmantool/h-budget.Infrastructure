@@ -17,15 +17,12 @@ import { UnifiedCurrencyRates } from '../../models/unified-currency-rates';
 import { NationalBankCurrencyProvider } from '../../providers/national-bank-currency.provider';
 import { CurrencyRate } from '../../../shared/store/models/currency-rates/currency-rate';
 import {
-	AddCurrencyGroups,
-	SetActiveCurrency,
 	SetCurrencyDateRange,
 } from '../../../shared/store/actions/currency-rates.actions';
 import { CurrencyRatesState } from '../../../shared/store/states/currency-rates.state';
 import { CurrencyTrend } from './../../../shared/store/models/currency-rates/currency-trend';
 import { CurrencyTableOptions } from './../../../shared/store/models/currency-rates/currency-table-options';
 import { NationalBankCurrencyRateGroup } from '../../models/currency-rates-group';
-import { CurrencyRateGroup } from './../../../shared/store/models/currency-rates/currency-rates-group';
 import { RatesDialogService } from './../../services/rates-dialog.service'
 import { CurrencyRatesGridService } from '../../services/currency-rates-grid.service';
 
@@ -95,6 +92,7 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 			.pipe(take(1))
 			.subscribe(([tableOptions, rateGroups]) => {
 				this.todayRatesTableSelection = this.currencyRatesGridService.GetTableSelection(rateGroups, tableOptions.selectedItem.currencyId)
+				this.masterToggle(tableOptions.selectedItem.currencyId);
 			});
 
 		if (getRatesSub$) {
@@ -106,34 +104,12 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 	}
 
 	public isAllSelected(): boolean {
-		const selectedTableItem = this.todayRatesTableSelection.selected;
-		const selectedRate = _.first(selectedTableItem);
-
-		if (_.isNil(selectedRate) || _.isNil(selectedRate?.currencyId)) {
-			return false;
-		}
-
-		console.log('Current currencyId: ' + selectedRate?.currencyId);
-
-		if (
-			!_.isNil(selectedRate.currencyId) &&
-			!_.isNil(selectedRate.abbreviation)
-		) {
-			this.store.dispatch(
-				new SetActiveCurrency(
-					selectedRate.currencyId,
-					selectedRate.abbreviation
-				)
-			);
-		}
-
-		return (
-			selectedTableItem.length ===
-			this.todayRatesTableDataSource.data.length
-		);
+		return this.currencyRatesGridService.isAllCheckboxesSelected(
+			this.todayRatesTableSelection.selected,
+			this.todayRatesTableDataSource.data.length);
 	}
 
-	public masterToggle(): void {
+	public masterToggle(selectedCurrencyId: number): void {
 		const isAllSelected: boolean = this.isAllSelected();
 
 		if (
@@ -153,7 +129,7 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 			);
 		} else {
 			this.todayRatesTableSelection.select(
-				...this.todayRatesTableDataSource.data
+				...this.todayRatesTableDataSource.data.filter(i => i.currencyId === selectedCurrencyId)
 			);
 		}
 	}
@@ -163,7 +139,8 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 			.getTodayCurrencies()
 			.pipe(take(1))
 			.subscribe((todayRatesGroups) => {
-				this.upddateCurrencyStateStore(todayRatesGroups);
+				this.currencyRatesGridService.syncWithRatesStore(todayRatesGroups);
+
 				this.todayCurrencyRateGroups$.next(todayRatesGroups);
 			});
 
@@ -181,46 +158,6 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 	public setDateRange(monthsAmount: number): void {
 		this.store.dispatch(
 			new SetCurrencyDateRange(monthsAmount)
-		);
-	}
-
-	private upddateCurrencyStateStore(
-		todayRates: NationalBankCurrencyRateGroup[]
-	): void {
-		this.store.dispatch(
-			new AddCurrencyGroups(this.mapToCurrencyRateGroups(todayRates))
-		);
-	}
-
-	private getTrend(todayDayRate?: number, previousDayRate?: number): string {
-		if (_.isNil(todayDayRate) || _.isNil(previousDayRate)) {
-			return CurrencyTrend.notChanged;
-		}
-
-		if (todayDayRate === previousDayRate) {
-			return CurrencyTrend.notChanged;
-		}
-
-		if (todayDayRate > previousDayRate) {
-			return CurrencyTrend.up;
-		}
-
-		return CurrencyTrend.down;
-	}
-
-	private mapToCurrencyRateGroups(
-		todayRatesGroups: NationalBankCurrencyRateGroup[]
-	): CurrencyRateGroup[] {
-		return _.map(
-			todayRatesGroups,
-			(rg) =>
-				({
-					currencyId: rg.currencyId,
-                    name: rg.name,
-                    abbreviation: rg.abbreviation,
-                    scale: rg.scale,
-					currencyRates: rg.rateValues,
-				} as CurrencyRateGroup)
 		);
 	}
 }
