@@ -27,6 +27,7 @@ import { CurrencyTableOptions } from './../../../shared/store/models/currency-ra
 import { NationalBankCurrencyRateGroup } from '../../models/currency-rates-group';
 import { CurrencyRateGroup } from './../../../shared/store/models/currency-rates/currency-rates-group';
 import { RatesDialogService } from './../../services/rates-dialog.service'
+import { CurrencyRatesGridService } from '../../services/currency-rates-grid.service';
 
 @Component({
 	selector: 'app-currency-rates-grid',
@@ -71,7 +72,8 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 	constructor(
 		private currencyRateProvider: NationalBankCurrencyProvider,
 		private store: Store,
-        private ratesDialogService: RatesDialogService
+        private ratesDialogService: RatesDialogService,
+        private currencyRatesGridService: CurrencyRatesGridService
 	) {}
 
 	ngOnDestroy(): void {
@@ -79,29 +81,20 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnInit(): void {
+
 		const getRatesSub$ = this.todayCurrencyRateGroups$
 			.pipe(take(1))
-			.subscribe(
-				(rates) =>
-					(this.todayRatesTableDataSource =
-						new MatTableDataSource<UnifiedCurrencyRates>(rates))
+			.subscribe((rateGroups: NationalBankCurrencyRateGroup[]) =>
+                this.todayRatesTableDataSource = this.currencyRatesGridService.GetDataSource(rateGroups)
 			);
 
 		const getTableOptions$ = combineLatest([
 			this.currencyTableOptions$,
 			this.todayCurrencyRateGroups$,
 		])
-			.pipe()
-			.subscribe(([tableOptions, todayRates]) => {
-				this.todayRatesTableSelection =
-					new SelectionModel<UnifiedCurrencyRates>(
-						false,
-						todayRates.filter(
-							(i) =>
-								i.currencyId ==
-								tableOptions.selectedItem.currencyId
-						)
-					);
+			.pipe(take(1))
+			.subscribe(([tableOptions, rateGroups]) => {
+				this.todayRatesTableSelection = this.currencyRatesGridService.GetTableSelection(rateGroups, tableOptions.selectedItem.currencyId)
 			});
 
 		if (getRatesSub$) {

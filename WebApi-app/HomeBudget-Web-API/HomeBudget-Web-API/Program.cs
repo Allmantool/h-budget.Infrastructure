@@ -64,6 +64,7 @@ var webApp = webAppBuilder.Build();
 
 webApp.SetUpBaseApplication(services, environment, configuration);
 
+// webApp.UseHttpsRedirection();
 var executionAppName = typeof(Program).Assembly.GetName().Name;
 
 try

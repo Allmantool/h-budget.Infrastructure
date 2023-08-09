@@ -11,10 +11,8 @@ export class UnifiedCurrencyRates {
 		this.name = rate.name;
 		this.officialRate = rate.officialRate;
 		this.updateDate = rate.updateDate;
-		this.ratePerUnit =
-			rate.officialRate && rate.scale
-				? _.round(rate.officialRate / rate.scale, 4)
-				: undefined;
+
+		this.ratePerUnit = this.calculateRatePerUnit(rate);
 		this.currencyTrend = CurrencyTrend.notChanged;
 	}
 
@@ -27,4 +25,16 @@ export class UnifiedCurrencyRates {
 	ratePerUnit?: number;
 	currencyTrend?: string;
 	rateDiff?: string;
+
+	private calculateRatePerUnit(
+		rate: Partial<NationalBankCurrencyRate>
+	): number | undefined {
+		if (this.ratePerUnit) {
+			return this.ratePerUnit;
+		}
+
+		return rate.officialRate && rate.scale
+			? _.round(rate.officialRate / rate.scale, 4)
+			: undefined;
+	}
 }
