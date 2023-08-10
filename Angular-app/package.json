@@ -3,19 +3,19 @@
   "version": "0.57",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --watch --open",
-    "build": "ng build",
-    "build-prod": "ng build --configuration production",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test --code-coverage",
-    "test-headless-ci-only": "ng test --browsers ChromiumNoSandbox",
-    "lint": "ng lint --fix",
+    "start": "nx serve --watch --open",
+    "build": "nx build",
+    "build-prod": "nx build --configuration production",
+    "watch": "nx build --watch --configuration development",
+    "test": "nx test --code-coverage",
+    "test-headless-ci-only": "nx test --browsers ChromiumNoSandbox",
+    "lint": "nx lint --fix",
     "lint-css": "stylelint src/**/*.css",
     "prettier": "prettier --write src/**/*.{js,ts,css}",
     "eslint": "eslint --cache --fix --ext .js,.jsx,.ts,.tsx src",
     "eslint:dump": "eslint --print-config ./.eslintrc.json",
     "sonar-scanner": "sonar-scanner",
-    "test-headless": "ng test --watch=false --code-coverage --source-map=false --browsers ChromiumNoSandbox"
+    "test-headless": "nx test --watch=false --code-coverage --source-map=false --browsers ChromiumNoSandbox"
   },
   "husky": {
     "hooks": {
