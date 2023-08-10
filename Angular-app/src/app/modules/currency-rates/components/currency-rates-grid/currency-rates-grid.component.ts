@@ -97,7 +97,6 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 			.pipe(take(1))
 			.subscribe(([tableOptions, rateGroups]) => {
 				this.todayRatesTableSelection = this.currencyRatesGridService.GetTableSelection(rateGroups, tableOptions.selectedItem.currencyId)
-				this.masterToggle(tableOptions.selectedItem.currencyId);
 				this.selectedCurrencyPertionOption = tableOptions.selectedDateRange.diffInMonths;
 			});
 
@@ -135,7 +134,7 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 			);
 		} else {
 			this.todayRatesTableSelection.select(
-				...this.todayRatesTableDataSource.data.filter(i => i.currencyId === selectedCurrencyId)
+				...this.todayRatesTableDataSource.data.filter(i => i?.currencyId as number === selectedCurrencyId)
 			);
 		}
 	}
@@ -150,11 +149,13 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 				this.todayCurrencyRateGroups$.next(todayRatesGroups);
 			});
 
-		combineLatest([this.previousDayRates$, this.todayCurrencyRateGroups$])
+		combineLatest([this.previousDayRates$, this.todayCurrencyRateGroups$, this.currencyTableOptions$])
 			.pipe(take(1))
-			.subscribe(([previousDayRates, todayRateGroups]) => {
+			.subscribe(([previousDayRates, todayRateGroups, tableOptions]) => {
 				const dataSource = this.currencyRatesGridService.enrichWithTrend(previousDayRates, todayRateGroups);
 				this.todayRatesTableDataSource = dataSource;
+
+				this.masterToggle(tableOptions.selectedItem.currencyId);
 			});
 	}
 
