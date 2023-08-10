@@ -13,7 +13,7 @@ export class UnifiedCurrencyRates {
 		this.updateDate = rate.updateDate;
 
 		this.ratePerUnit = rate.ratePerUnit;
-		this.currencyTrend = CurrencyTrend.notChanged;
+		this.currencyTrend = rate.currencyTrend ?? CurrencyTrend.notChanged;
 	}
 
 	currencyId?: number;

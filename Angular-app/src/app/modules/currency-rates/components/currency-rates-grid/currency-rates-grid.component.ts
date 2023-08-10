@@ -26,6 +26,7 @@ import { NationalBankCurrencyRateGroup } from '../../models/currency-rates-group
 import { RatesDialogService } from './../../services/rates-dialog.service'
 import { CurrencyRatesGridService } from '../../services/currency-rates-grid.service';
 import { RatesGridDefaultOptions } from 'app/modules/shared/constants/rates-grid-default-options';
+import { PreviousDayCurrencyRate } from 'app/modules/shared/store/models/currency-rates/previous-day-currency-rate';
 
 @Component({
 	selector: 'app-currency-rates-grid',
@@ -35,10 +36,12 @@ import { RatesGridDefaultOptions } from 'app/modules/shared/constants/rates-grid
 })
 export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 	@Select(CurrencyRatesState.getRates) rates$!: Observable<CurrencyRate[]>;
+
 	@Select(CurrencyRatesState.getCurrencyTableOptions)
 	currencyTableOptions$!: Observable<CurrencyTableOptions>;
+
 	@Select(CurrencyRatesState.getCurrencyRatesFromPreviousDay)
-	previousDayRates$!: Observable<CurrencyRate[]>;
+	previousDayRates$!: Observable<PreviousDayCurrencyRate[]>;
 
 	public trendRateLookup: { [trendDirection: string]: string } = {
 		[CurrencyTrend.up]: 'chartreuse',
@@ -80,11 +83,11 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnInit(): void {
-		
+
 		const getRatesSub$ = this.todayCurrencyRateGroups$
 			.pipe(take(1))
-			.subscribe((rateGroups: NationalBankCurrencyRateGroup[]) =>
-				this.todayRatesTableDataSource = this.currencyRatesGridService.GetDataSource(rateGroups)
+			.subscribe((todayRateGroups: NationalBankCurrencyRateGroup[]) =>
+				this.todayRatesTableDataSource = this.currencyRatesGridService.GetDataSource(todayRateGroups)
 			);
 
 		const getTableOptions$ = combineLatest([
@@ -149,8 +152,8 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 
 		combineLatest([this.previousDayRates$, this.todayCurrencyRateGroups$])
 			.pipe(take(1))
-			.subscribe(([previousDayRates, todayRates]) => {
-				todayRates.forEach((tr) => { });
+			.subscribe(([previousDayRates, todayRateGroups]) => {
+				this.todayRatesTableDataSource = this.currencyRatesGridService.enrichWithTrend(previousDayRates, todayRateGroups);
 			});
 	}
 
