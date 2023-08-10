@@ -18,6 +18,7 @@ import { CurrencyTableItem } from './../models/currency-rates/currency-table-ite
 import { CurrencyTableOptions } from './../models/currency-rates/currency-table-options';
 import { CurrencyRateGroup } from '../models/currency-rates/currency-rates-group';
 import { CurrencyDateRange } from '../models/currency-rates/currency-date-range';
+import { RatesGridDefaultOptions } from '../../constants/rates-grid-default-options';
 
 export interface ICurrencyRatesStateModel {
 	rateGroups: CurrencyRateGroup[];
@@ -30,12 +31,13 @@ export interface ICurrencyRatesStateModel {
 		rateGroups: [],
 		tableOptions: {
 			selectedItem: {
-				currencyId: RatesCodes.USA,
-				abbreviation: 'USA',
+				currencyId: RatesGridDefaultOptions.CURRENCY_ID,
+				abbreviation: RatesGridDefaultOptions.CURRENCY_ABBREVIATION,
 			} as CurrencyTableItem,
 			selectedDateRange: {
-				start: addMonths(new Date(), -3),
-				end: new Date()
+				start: addMonths(new Date(), -RatesGridDefaultOptions.PERIOD_IN_MONTHS_AMMOUNT),
+				end: new Date(),
+				diffInMonths: RatesGridDefaultOptions.PERIOD_IN_MONTHS_AMMOUNT
 			} as CurrencyDateRange
 		} as CurrencyTableOptions,
 	},
@@ -179,7 +181,8 @@ export class CurrencyRatesState {
 				selectedItem: getState().tableOptions.selectedItem,
 				selectedDateRange: {
 					start: addMonths(new Date(), -amountOfMonths),
-					end: new Date()
+					end: new Date(),
+					diffInMonths: amountOfMonths
 				} as CurrencyDateRange,
 			} as CurrencyTableOptions,
 		});

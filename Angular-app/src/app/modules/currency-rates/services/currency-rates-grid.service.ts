@@ -74,7 +74,7 @@ export class CurrencyRatesGridService {
             abbreviation: rg.abbreviation,
             scale: rg.scale,
             name: rg.name,
-            officialRate: todayRate?.ratePerUnit,
+            ratePerUnit: todayRate?.ratePerUnit,
             updateDate: todayRate?.updateDate,
         });
     }

@@ -25,6 +25,7 @@ import { CurrencyTableOptions } from './../../../shared/store/models/currency-ra
 import { NationalBankCurrencyRateGroup } from '../../models/currency-rates-group';
 import { RatesDialogService } from './../../services/rates-dialog.service'
 import { CurrencyRatesGridService } from '../../services/currency-rates-grid.service';
+import { RatesGridDefaultOptions } from 'app/modules/shared/constants/rates-grid-default-options';
 
 @Component({
 	selector: 'app-currency-rates-grid',
@@ -44,11 +45,12 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 		[CurrencyTrend.down]: 'crimson',
 	};
 
+	public selectedCurrencyPertionOption: number = RatesGridDefaultOptions.PERIOD_IN_MONTHS_AMMOUNT;
+
 	public todayCurrencyRateGroups$: Subject<NationalBankCurrencyRateGroup[]> =
 		new Subject<NationalBankCurrencyRateGroup[]>();
 
-	public todayRatesTableDataSource =
-		new MatTableDataSource<UnifiedCurrencyRates>([]);
+	public todayRatesTableDataSource = new MatTableDataSource<UnifiedCurrencyRates>([]);
 	public todayRatesTableSelection = new SelectionModel<UnifiedCurrencyRates>(
 		false,
 		[]
@@ -69,20 +71,20 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 	constructor(
 		private currencyRateProvider: NationalBankCurrencyProvider,
 		private store: Store,
-        private ratesDialogService: RatesDialogService,
-        private currencyRatesGridService: CurrencyRatesGridService
-	) {}
+		private ratesDialogService: RatesDialogService,
+		private currencyRatesGridService: CurrencyRatesGridService
+	) { }
 
 	ngOnDestroy(): void {
 		this.subs.forEach((s) => s.unsubscribe());
 	}
 
 	ngOnInit(): void {
-
+		
 		const getRatesSub$ = this.todayCurrencyRateGroups$
 			.pipe(take(1))
 			.subscribe((rateGroups: NationalBankCurrencyRateGroup[]) =>
-                this.todayRatesTableDataSource = this.currencyRatesGridService.GetDataSource(rateGroups)
+				this.todayRatesTableDataSource = this.currencyRatesGridService.GetDataSource(rateGroups)
 			);
 
 		const getTableOptions$ = combineLatest([
@@ -93,6 +95,7 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 			.subscribe(([tableOptions, rateGroups]) => {
 				this.todayRatesTableSelection = this.currencyRatesGridService.GetTableSelection(rateGroups, tableOptions.selectedItem.currencyId)
 				this.masterToggle(tableOptions.selectedItem.currencyId);
+				this.selectedCurrencyPertionOption = tableOptions.selectedDateRange.diffInMonths;
 			});
 
 		if (getRatesSub$) {
@@ -147,12 +150,12 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 		combineLatest([this.previousDayRates$, this.todayCurrencyRateGroups$])
 			.pipe(take(1))
 			.subscribe(([previousDayRates, todayRates]) => {
-				todayRates.forEach((tr) => {});
+				todayRates.forEach((tr) => { });
 			});
 	}
 
 	public openGetCurrencyRatesDialog(): void {
-        this.ratesDialogService.openLoadRatesForPeriod();
+		this.ratesDialogService.openLoadRatesForPeriod();
 	}
 
 	public setDateRange(monthsAmount: number): void {
