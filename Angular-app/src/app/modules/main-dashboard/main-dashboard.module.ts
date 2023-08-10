@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { NgxsModule } from '@ngxs/store';
+import { RouterLink } from '@angular/router';
 
 import { AppSharedModule } from './../shared/shared.module';
 import { CurrencyRatesState } from '../shared/store/states/currency-rates.state';
@@ -13,6 +14,7 @@ import { MainDashboardCartComponent } from './components/dashboard-item/main-das
 		NgxsModule.forFeature([CurrencyRatesState]),
 		MainDashboardRoutingModule,
 		AppSharedModule,
+		RouterLink
 	],
 	providers: [],
 	bootstrap: [],

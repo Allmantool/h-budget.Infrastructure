@@ -1,4 +1,4 @@
-import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { PreloadAllModules, Routes, provideRouter, withDebugTracing, withPreloading } from '@angular/router';
 import { NgModule } from '@angular/core';
 
 import { PageNotFoundComponent } from './../shared/components/page-not-found/page-not-found.component';
@@ -14,12 +14,8 @@ const routes: Routes = [
 ];
 
 @NgModule({
-	imports: [
-		RouterModule.forRoot(routes, {
-			preloadingStrategy: PreloadAllModules,
-			enableTracing: true,
-		}),
-	],
-	exports: [RouterModule],
+	imports: [],
+	exports: [],
+	providers: [provideRouter(routes, withPreloading(PreloadAllModules), withDebugTracing())]
 })
-export class AppBootsrapRoutingModule {}
+export class AppBootsrapRoutingModule { }

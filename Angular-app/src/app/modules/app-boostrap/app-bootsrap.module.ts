@@ -3,6 +3,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 
 import { NgxsModule } from '@ngxs/store';
 import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
@@ -24,6 +25,7 @@ import { ngxsConfig } from './../shared/store/ngxs.config';
 		BrowserModule,
 		BrowserAnimationsModule,
 		AppBootsrapRoutingModule,
+		RouterOutlet
 	],
 	providers: [],
 	bootstrap: [AppRootComponent],

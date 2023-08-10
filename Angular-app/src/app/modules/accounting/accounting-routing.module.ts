@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes, provideRouter, withDebugTracing } from '@angular/router';
 
 import {
 	AccountingCrudComponent,
@@ -16,7 +16,8 @@ const routes: Routes = [
 ];
 
 @NgModule({
-	imports: [RouterModule.forChild(routes)],
-	exports: [RouterModule],
+	imports: [],
+	exports: [],
+	providers: [provideRouter(routes, withDebugTracing())]
 })
 export class AccountingRoutingModule {}
