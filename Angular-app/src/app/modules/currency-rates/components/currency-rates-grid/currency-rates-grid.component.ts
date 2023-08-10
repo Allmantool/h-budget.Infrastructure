@@ -25,8 +25,8 @@ import { CurrencyTableOptions } from './../../../shared/store/models/currency-ra
 import { NationalBankCurrencyRateGroup } from '../../models/currency-rates-group';
 import { RatesDialogService } from './../../services/rates-dialog.service'
 import { CurrencyRatesGridService } from '../../services/currency-rates-grid.service';
-import { RatesGridDefaultOptions } from 'app/modules/shared/constants/rates-grid-default-options';
-import { PreviousDayCurrencyRate } from 'app/modules/shared/store/models/currency-rates/previous-day-currency-rate';
+import { RatesGridDefaultOptions } from './../../../shared/constants/rates-grid-default-options';
+import { PreviousDayCurrencyRate } from './../../../shared/store/models/currency-rates/previous-day-currency-rate';
 
 @Component({
 	selector: 'app-currency-rates-grid',
@@ -44,7 +44,7 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 	previousDayRates$!: Observable<PreviousDayCurrencyRate[]>;
 
 	public trendRateLookup: { [trendDirection: string]: string } = {
-		[CurrencyTrend.up]: 'chartreuse',
+		[CurrencyTrend.up]: 'LimeGreen',
 		[CurrencyTrend.down]: 'crimson',
 	};
 
@@ -153,7 +153,8 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 		combineLatest([this.previousDayRates$, this.todayCurrencyRateGroups$])
 			.pipe(take(1))
 			.subscribe(([previousDayRates, todayRateGroups]) => {
-				this.todayRatesTableDataSource = this.currencyRatesGridService.enrichWithTrend(previousDayRates, todayRateGroups);
+				const dataSource = this.currencyRatesGridService.enrichWithTrend(previousDayRates, todayRateGroups);
+				this.todayRatesTableDataSource = dataSource;
 			});
 	}
 

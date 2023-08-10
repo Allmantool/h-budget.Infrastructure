@@ -12,6 +12,7 @@ import { CurrencyRateGroup } from './../../shared/store/models/currency-rates/cu
 import { CurrencyTrend } from './../../shared/store/models/currency-rates/currency-trend';
 import { PreviousDayCurrencyRate } from './../../shared/store/models/currency-rates/previous-day-currency-rate';
 import { CurrencyRate } from './../../shared/store/models/currency-rates/currency-rate';
+import { RatesGridDefaultOptions } from './../../shared/constants/rates-grid-default-options';
 
 @Injectable({
 	providedIn: 'root',
@@ -77,11 +78,22 @@ export class CurrencyRatesGridService {
 			rg.rateValues = _.map(rg.rateValues, todayRate => <CurrencyRate>{
 				ratePerUnit: todayRate.ratePerUnit,
 				updateDate: todayRate.updateDate,
-				currencyTrend: this.getTrend(todayRate.ratePerUnit, previousDayRate?.ratePerUnit)
+				currencyTrend: this.getTrend(todayRate.ratePerUnit, previousDayRate?.ratePerUnit),
+				rateDiff: this.getRateDiff(previousDayRate?.ratePerUnit as number, todayRate.ratePerUnit)
 			})
 		});
 
 		return this.GetDataSource(todayRateGroups);
+	}
+
+	private getRateDiff(previousDayRate: number, todayRate: number): string {
+		if (_.isNil(previousDayRate)) {
+			return 'N/A';
+		}
+
+		const diffAsPercentage = _.divide(_.subtract(todayRate, previousDayRate), previousDayRate) * 100;
+
+		return _.round(diffAsPercentage, RatesGridDefaultOptions.RATE_DIFF_PRECISION).toString();
 	}
 
 	private getTrend(todayDayRate?: number, previousDayRate?: number): string {
@@ -108,6 +120,7 @@ export class CurrencyRatesGridService {
 			abbreviation: rg.abbreviation,
 			scale: rg.scale,
 			name: rg.name,
+			rateDiff: todayRate?.rateDiff,
 			ratePerUnit: todayRate?.ratePerUnit,
 			updateDate: todayRate?.updateDate,
 			currencyTrend: todayRate?.currencyTrend

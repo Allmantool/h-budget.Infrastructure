@@ -11,7 +11,7 @@ export class UnifiedCurrencyRates {
 		this.name = rate.name;
 		this.officialRate = rate.officialRate;
 		this.updateDate = rate.updateDate;
-
+		this.rateDiff = rate.rateDiff;
 		this.ratePerUnit = rate.ratePerUnit;
 		this.currencyTrend = rate.currencyTrend ?? CurrencyTrend.notChanged;
 	}

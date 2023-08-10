@@ -16,4 +16,5 @@ export class NationalBankCurrencyRate {
 	name?: string;
 	officialRate?: number;
 	currencyTrend?: string;
+	rateDiff?: string;
 }
