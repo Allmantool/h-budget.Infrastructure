@@ -72,7 +72,7 @@ export class CurrencyRatesState {
 			.map((rg: CurrencyRateGroup) => {
 				const orderedRates = _.orderBy(rg.currencyRates, r => r.updateDate, ['desc']);
 
-				const previousDayRates = orderedRates[1];
+				const previousDayRates = orderedRates[1] ?? orderedRates[0];
 
 				return <PreviousDayCurrencyRate>{
 					currencyId: rg.currencyId,

@@ -203,26 +203,35 @@ describe('Currency rates store', () => {
 	});
 
 	it('it "GetCurrencyRatesFromPreviousDay": return expected previous date currency rates', () => {
-		const stubValue = [
+		const stubValue: CurrencyRateGroup[] = [
 			{
-				ratePerUnit: 14,
-				currencyTrend: CurrencyTrend.notChanged,
-				updateDate: new Date(2022, 1, 1),
-			} as CurrencyRate,
-			{
-				ratePerUnit: 16,
-				currencyTrend: CurrencyTrend.notChanged,
-				updateDate: new Date(2022, 1, 2),
-			} as CurrencyRate,
-			{
-				ratePerUnit: 16,
-				currencyTrend: CurrencyTrend.notChanged,
-				updateDate: new Date(2022, 1, 4),
-			} as CurrencyRate,
+				currencyId: 1,
+				abbreviation: 'abbreviaion-1',
+				name: 'name-1',
+				scale: 100,
+				currencyRates: [
+					{
+						ratePerUnit: 14,
+						currencyTrend: CurrencyTrend.notChanged,
+						updateDate: new Date(2022, 1, 1),
+					} as CurrencyRate,
+					{
+						ratePerUnit: 16,
+						currencyTrend: CurrencyTrend.notChanged,
+						updateDate: new Date(2022, 1, 2),
+					} as CurrencyRate,
+					{
+						ratePerUnit: 16,
+						currencyTrend: CurrencyTrend.notChanged,
+						updateDate: new Date(2022, 1, 4),
+					} as CurrencyRate
+				]
+			},
 		];
 
 		const previousDayRates =
 			CurrencyRatesState.getCurrencyRatesFromPreviousDay(stubValue);
+
 		const previousDate = _.first(previousDayRates)?.updateDate;
 
 		expect(previousDate?.getDate()).toBe(2);
