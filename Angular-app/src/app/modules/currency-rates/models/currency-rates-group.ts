@@ -1,4 +1,4 @@
-import { CurrencyRate } from 'app/modules/shared/store/models/currency-rates/currency-rate';
+import { CurrencyRate } from './../../shared/store/models/currency-rates/currency-rate';
 
 export class NationalBankCurrencyRateGroup {
 	constructor(currencyRates: Partial<NationalBankCurrencyRateGroup>) {
@@ -11,7 +11,8 @@ export class NationalBankCurrencyRateGroup {
 			return <CurrencyRate>{
 				updateDate: new Date(rv.updateDate),
 				ratePerUnit: rv.ratePerUnit,
-				currencyTrend: rv.currencyTrend
+				currencyTrend: rv.currencyTrend,
+				rateDiff: rv.rateDiff
 			}
 		});
 	}

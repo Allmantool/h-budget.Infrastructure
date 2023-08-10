@@ -7,15 +7,19 @@
 		Get today currency rates
 	</button>
 
-	<mat-button-toggle-group mat-raised-button value="3" (change)="setDateRange($event.value)" aria-label="Font Style">
-		<mat-button-toggle value="1">1 Month</mat-button-toggle>
-		<mat-button-toggle value="3">3 Months</mat-button-toggle>
-		<mat-button-toggle value="6">6 Months</mat-button-toggle>
-		<mat-button-toggle value="12">1 Year</mat-button-toggle>
-		<mat-button-toggle value="24">2 Years</mat-button-toggle>
-		<mat-button-toggle value="36">3 Years</mat-button-toggle>
-		<mat-button-toggle value="60">5 Years</mat-button-toggle>
-	  </mat-button-toggle-group>
+	<ng-container>
+		<mat-button-toggle-group aria-label="Font Style" mat-raised-button 
+		value="{{ selectedCurrencyPertionOption }}"
+		(change)="setDateRange($event.value)">
+			<mat-button-toggle value="1">1 Month</mat-button-toggle>
+			<mat-button-toggle value="3">3 Months</mat-button-toggle>
+			<mat-button-toggle value="6">6 Months</mat-button-toggle>
+			<mat-button-toggle value="12">1 Year</mat-button-toggle>
+			<mat-button-toggle value="24">2 Years</mat-button-toggle>
+			<mat-button-toggle value="36">3 Years</mat-button-toggle>
+			<mat-button-toggle value="60">5 Years</mat-button-toggle>
+		</mat-button-toggle-group>
+	</ng-container>
 
 	<button mat-raised-button (click)="openGetCurrencyRatesDialog()">
 		Get currency rates for date range
@@ -28,16 +32,16 @@
 >
 	<table
 		mat-table
-		[dataSource]="todayCurrencyRateGroups"
+		[dataSource]="todayRatesTableDataSource"
 		class="mat-elevation-z8"
 	>
 		<caption>
 			Currency rates grid
 		</caption>
+
 		<ng-container matColumnDef="select">
 			<th mat-header-cell *matHeaderCellDef>
 				<mat-checkbox
-					(change)="$event ? masterToggle() : null"
 					[checked]="todayRatesTableSelection.hasValue() && isAllSelected()"
 					[indeterminate]="todayRatesTableSelection.hasValue() && !isAllSelected()"
 					[disabled]="true"
