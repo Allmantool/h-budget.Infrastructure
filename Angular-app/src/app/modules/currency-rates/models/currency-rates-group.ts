@@ -2,7 +2,7 @@ import { CurrencyRate } from './../../shared/store/models/currency-rates/currenc
 
 export class NationalBankCurrencyRateGroup {
 	constructor(currencyRates: Partial<NationalBankCurrencyRateGroup>) {
-		this.currencyId = currencyRates.currencyId,
+		this.currencyId = currencyRates.currencyId;
 		this.abbreviation = currencyRates.abbreviation;
 		this.scale = currencyRates.scale;
 		this.name = currencyRates.name;

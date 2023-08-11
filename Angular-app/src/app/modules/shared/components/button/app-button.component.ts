@@ -8,8 +8,4 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 })
 export class AppButtonComponent {
 	@Input() public title: string = '';
-
-	constructor() {
-		// This is intentional
-	}
 }

@@ -9,7 +9,7 @@ namespace HomeBudget.Components.CurrencyRates.MapperProfileConfigurations
 {
     internal class CurrencyRateMappingProfiler : Profile
     {
-        private const int RatesPrecision = 4;
+        private const int RatesPrecision = 5;
 
         public CurrencyRateMappingProfiler()
         {

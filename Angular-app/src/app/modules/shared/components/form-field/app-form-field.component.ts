@@ -43,8 +43,6 @@ export class AppFormFieldComponent implements ControlValueAccessor {
 		string | number | undefined
 	>();
 
-	constructor() {}
-
 	writeValue(value: any): void {
 		this.data$.next(value);
 	}

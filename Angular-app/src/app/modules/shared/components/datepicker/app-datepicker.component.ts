@@ -39,10 +39,6 @@ export class DatepickerComponent implements ControlValueAccessor {
 	public data$: BehaviorSubject<Date | null> =
 		new BehaviorSubject<Date | null>(null);
 
-	constructor() {
-		// This is intentional
-	}
-
 	writeValue(value: Date | null): void {
 		this.data$.next(value);
 	}
@@ -59,7 +55,7 @@ export class DatepickerComponent implements ControlValueAccessor {
 		this.disabled = isDisabled;
 	}
 
-	updateValue(event: MatDatepickerInputEvent<Date, String>) {
+	updateValue(event: MatDatepickerInputEvent<Date, string>) {
 		this.data$.next(event.value);
 
 		this.onChanged(this.data$.value);

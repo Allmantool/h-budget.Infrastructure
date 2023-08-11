@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MatDialogConfig } from '@angular/material/dialog';
 
-import * as _ from 'lodash';
 import { take, Subject } from 'rxjs';
 import { Store } from '@ngxs/store';
 
