@@ -4,6 +4,8 @@ import { MatDialogConfig } from '@angular/material/dialog';
 import { take, Subject } from 'rxjs';
 import { Store } from '@ngxs/store';
 
+import * as _ from 'lodash';
+
 import { NationalBankCurrencyRateGroup } from '../models/currency-rates-group';
 import { NationalBankCurrencyProvider } from '../providers/national-bank-currency.provider';
 import { DialogContainer } from '../../shared/models/dialog-container';
