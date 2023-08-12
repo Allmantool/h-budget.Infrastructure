@@ -11,6 +11,7 @@ import {
 import { BehaviorSubject } from 'rxjs';
 
 import { InputTypes } from '../../models/input-types';
+import { FormInput } from '../../types/form-input.type';
 
 @Component({
 	selector: 'app-form-field',
@@ -27,11 +28,11 @@ import { InputTypes } from '../../models/input-types';
 })
 export class AppFormFieldComponent implements ControlValueAccessor {
 	private onTouched!: Function;
-	private onChanged!: (value: string | number | undefined) => {};
+	private onChanged!: (value: FormInput) => {};
 
 	private disabled = false;
 
-	public data$ = new BehaviorSubject<string | number | undefined>(undefined);
+	public data$ = new BehaviorSubject<FormInput>(undefined);
 
 	@Input() public fieldType: string = InputTypes.INPUT;
 
