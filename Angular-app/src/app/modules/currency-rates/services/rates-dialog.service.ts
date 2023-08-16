@@ -6,18 +6,16 @@ import { Store } from '@ngxs/store';
 
 import * as _ from 'lodash';
 
-import { NationalBankCurrencyRateGroup } from '../models/currency-rates-group';
-import { NationalBankCurrencyProvider } from '../providers/national-bank-currency.provider';
+import { CurrencyRateGroupModel } from '../../../../domain/models/rates/currency-rates-group.model';
+import { NationalBankCurrencyProvider } from '../../../../data/providers/rates/national-bank-currency.provider';
 import { DialogContainer } from '../../shared/models/dialog-container';
-import { DialogDaysRangePayload } from './../../shared/models/dialog-dates-range-payload';
+import { DaysRangePayload } from '../../../../domain/models/dates-range-payload.model';
 import { AddCurrencyGroups } from './../../shared/store/actions/currency-rates.actions';
 import { DateRangeDialogComponent } from './../../shared/components/dialog/dates-rage/dates-range-dialog.component';
 import { DialogProvider } from './../../shared/providers/dialog-provider';
 import { CurrencyRateGroup } from './../../shared/store/models/currency-rates/currency-rates-group';
 
-@Injectable({
-	providedIn: 'root',
-})
+@Injectable()
 export class RatesDialogService {
 	constructor(
 		private dialogProvider: DialogProvider,
@@ -28,7 +26,7 @@ export class RatesDialogService {
 	public openLoadRatesForPeriod(): void {
 		const config = new MatDialogConfig<DialogContainer>();
 
-		const onGetRatesForPeriod = (payload: DialogDaysRangePayload) => {
+		const onGetRatesForPeriod = (payload: DaysRangePayload) => {
 			if (_.isNil(payload)) {
 				return;
 			}
@@ -60,7 +58,7 @@ export class RatesDialogService {
 	}
 
 	private mapToCurrencyRateGroups(
-		todayRatesGroups: NationalBankCurrencyRateGroup[]
+		todayRatesGroups: CurrencyRateGroupModel[]
 	): CurrencyRateGroup[] {
 		return _.map(
 			todayRatesGroups,

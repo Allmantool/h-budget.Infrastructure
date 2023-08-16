@@ -13,8 +13,8 @@ import { CurrencyRateGroup } from './../../../../app/modules/shared/store/models
 import { CurrencyTrend } from './../../../../app/modules/shared/store/models/currency-rates/currency-trend';
 import { ngxsConfig } from './../../../../app/modules/shared/store/ngxs.config';
 import { CurrencyRatesState } from './../../../../app/modules/shared/store/states/currency-rates.state';
-import { NationalBankCurrencyProvider } from './../../../../app/modules/currency-rates/providers/national-bank-currency.provider';
-import { NationalBankCurrencyRateGroup } from './../../../../app/modules/currency-rates/models/currency-rates-group';
+import { NationalBankCurrencyProvider } from '../../../../data/providers/rates/national-bank-currency.provider';
+import { CurrencyRateGroupModel } from '../../../../domain/models/currency-rates-group.model';
 
 describe('Currency rates store', () => {
 	let store: Store;
@@ -171,7 +171,7 @@ describe('Currency rates store', () => {
 	});
 
 	it('it "FetchAllCurrencyRates": update existed currency groups - expect predicte amount of rates within groups', () => {
-		const stubValue = new Array<NationalBankCurrencyRateGroup>({
+		const stubValue = new Array<CurrencyRateGroupModel>({
 			currencyId: 1,
 			abbreviation: 'Val-A',
 			name: 'test-name',

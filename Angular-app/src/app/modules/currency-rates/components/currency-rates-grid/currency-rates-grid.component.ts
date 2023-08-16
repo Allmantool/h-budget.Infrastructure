@@ -14,7 +14,7 @@ import { take } from 'rxjs/operators';
 import * as _ from 'lodash';
 
 import { UnifiedCurrencyRates } from '../../models/unified-currency-rates';
-import { NationalBankCurrencyProvider } from '../../providers/national-bank-currency.provider';
+import { NationalBankCurrencyProvider } from '../../../../../data/providers/rates/national-bank-currency.provider';
 import { CurrencyRate } from '../../../shared/store/models/currency-rates/currency-rate';
 import {
 	SetCurrencyDateRange,
@@ -22,7 +22,7 @@ import {
 import { CurrencyRatesState } from '../../../shared/store/states/currency-rates.state';
 import { CurrencyTrend } from './../../../shared/store/models/currency-rates/currency-trend';
 import { CurrencyTableOptions } from './../../../shared/store/models/currency-rates/currency-table-options';
-import { NationalBankCurrencyRateGroup } from '../../models/currency-rates-group';
+import { CurrencyRateGroupModel } from '../../../../../domain/models/rates/currency-rates-group.model';
 import { RatesDialogService } from './../../services/rates-dialog.service'
 import { CurrencyRatesGridService } from '../../services/currency-rates-grid.service';
 import { RatesGridDefaultOptions } from './../../../shared/constants/rates-grid-default-options';
@@ -50,8 +50,8 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 
 	public selectedCurrencyPertionOption: number = RatesGridDefaultOptions.PERIOD_IN_MONTHS_AMMOUNT;
 
-	public todayCurrencyRateGroups$: Subject<NationalBankCurrencyRateGroup[]> =
-		new Subject<NationalBankCurrencyRateGroup[]>();
+	public todayCurrencyRateGroups$: Subject<CurrencyRateGroupModel[]> =
+		new Subject<CurrencyRateGroupModel[]>();
 
 	public todayRatesTableDataSource = new MatTableDataSource<UnifiedCurrencyRates>([]);
 	public todayRatesTableSelection = new SelectionModel<UnifiedCurrencyRates>(
@@ -86,7 +86,7 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 
 		const getRatesSub$ = this.todayCurrencyRateGroups$
 			.pipe(take(1))
-			.subscribe((todayRateGroups: NationalBankCurrencyRateGroup[]) =>
+			.subscribe((todayRateGroups: CurrencyRateGroupModel[]) =>
 				this.todayRatesTableDataSource = this.currencyRatesGridService.GetDataSource(todayRateGroups)
 			);
 

@@ -1,5 +1,5 @@
-export class CurrencyRateValue {
-	constructor(currencyRates: Partial<CurrencyRateValue>) {
+export class CurrencyRateValueModel {
+	constructor(currencyRates: Partial<CurrencyRateValueModel>) {
 		this.updateDate = currencyRates.updateDate;
 		this.officialRate = currencyRates.officialRate;
 		this.ratePerUnit = currencyRates.ratePerUnit;

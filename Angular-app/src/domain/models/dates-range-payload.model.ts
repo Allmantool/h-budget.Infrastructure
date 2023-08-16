@@ -1,4 +1,4 @@
-export class DialogDaysRangePayload {
+export class DaysRangePayload {
 	startDate!: Date;
 	endDate!: Date;
 }

@@ -5,15 +5,13 @@ import { State, Action, StateContext, Selector } from '@ngxs/store';
 import { tap, take } from 'rxjs/operators';
 import * as _ from 'lodash';
 
-import { RatesCodes } from '../../constants/rates-codes';
 import {
 	AddCurrencyGroups,
 	FetchAllCurrencyRates,
 	SetActiveCurrency,
 	SetCurrencyDateRange,
 } from '../actions/currency-rates.actions';
-import { CurrencyRate } from '../models/currency-rates/currency-rate';
-import { NationalBankCurrencyProvider } from './../../../currency-rates/providers/national-bank-currency.provider';
+import { NationalBankCurrencyProvider } from '../../../../../data/providers/rates/national-bank-currency.provider';
 import { CurrencyTableItem } from './../models/currency-rates/currency-table-item';
 import { CurrencyTableOptions } from './../models/currency-rates/currency-table-options';
 import { CurrencyRateGroup } from '../models/currency-rates/currency-rates-group';

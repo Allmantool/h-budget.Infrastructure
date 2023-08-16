@@ -6,7 +6,7 @@ import { Store } from '@ngxs/store';
 import * as _ from 'lodash';
 
 import { UnifiedCurrencyRates } from '../models/unified-currency-rates';
-import { NationalBankCurrencyRateGroup } from '../models/currency-rates-group';
+import { CurrencyRateGroupModel } from '../../../../domain/models/rates/currency-rates-group.model';
 import { AddCurrencyGroups, SetActiveCurrency } from './../../shared/store/actions/currency-rates.actions';
 import { CurrencyRateGroup } from './../../shared/store/models/currency-rates/currency-rates-group';
 import { CurrencyTrend } from './../../shared/store/models/currency-rates/currency-trend';
@@ -23,22 +23,22 @@ export class CurrencyRatesGridService {
 	}
 
 	public GetDataSource(
-		rateGroups: NationalBankCurrencyRateGroup[]
+		rateGroups: CurrencyRateGroupModel[]
 	): MatTableDataSource<UnifiedCurrencyRates> {
 		const rates: UnifiedCurrencyRates[] = _.map(rateGroups, (rg) => this.mapToCurrencyRate(rg));
 
 		return new MatTableDataSource<UnifiedCurrencyRates>(rates);
 	}
 
-	public GetTableSelection(rateGroups: NationalBankCurrencyRateGroup[], currencyId: number): SelectionModel<UnifiedCurrencyRates> {
+	public GetTableSelection(rateGroups: CurrencyRateGroupModel[], currencyId: number): SelectionModel<UnifiedCurrencyRates> {
 
-		const selectedGroups = _.filter(rateGroups, (rg: NationalBankCurrencyRateGroup) => rg.currencyId === currencyId);
+		const selectedGroups = _.filter(rateGroups, (rg: CurrencyRateGroupModel) => rg.currencyId === currencyId);
 		const selectedValues = _.map(selectedGroups, gr => this.mapToCurrencyRate(gr));
 
 		return new SelectionModel<UnifiedCurrencyRates>(false, selectedValues);
 	}
 
-	public syncWithRatesStore(todayRatesGroups: NationalBankCurrencyRateGroup[]): void {
+	public syncWithRatesStore(todayRatesGroups: CurrencyRateGroupModel[]): void {
 		this.store.dispatch(
 			new AddCurrencyGroups(this.mapToCurrencyRateGroups(todayRatesGroups))
 		);
@@ -71,7 +71,7 @@ export class CurrencyRatesGridService {
 
 	public enrichWithTrend(
 		previousDayRates: PreviousDayCurrencyRate[],
-		todayRateGroups: NationalBankCurrencyRateGroup[]): MatTableDataSource<UnifiedCurrencyRates> {
+		todayRateGroups: CurrencyRateGroupModel[]): MatTableDataSource<UnifiedCurrencyRates> {
 		todayRateGroups.forEach((rg) => {
 			const previousDayRate = _.find(previousDayRates, r => r.currencyId === rg.currencyId);
 
@@ -79,7 +79,7 @@ export class CurrencyRatesGridService {
 				ratePerUnit: todayRate.ratePerUnit,
 				updateDate: todayRate.updateDate,
 				currencyTrend: this.getTrend(todayRate.ratePerUnit, previousDayRate?.ratePerUnit),
-				rateDiff: this.getRateDiff(previousDayRate?.ratePerUnit as number, todayRate.ratePerUnit)
+				rateDiff: this.getRateDiff(previousDayRate?.ratePerUnit as number, 0 /* todayRate.ratePerUnit */)
 			})
 		});
 
@@ -112,7 +112,7 @@ export class CurrencyRatesGridService {
 		return CurrencyTrend.down;
 	}
 
-	private mapToCurrencyRate(rg: NationalBankCurrencyRateGroup): UnifiedCurrencyRates {
+	private mapToCurrencyRate(rg: CurrencyRateGroupModel): UnifiedCurrencyRates {
 		const todayRate = _.first(rg.rateValues);
 
 		return new UnifiedCurrencyRates({
@@ -120,15 +120,15 @@ export class CurrencyRatesGridService {
 			abbreviation: rg.abbreviation,
 			scale: rg.scale,
 			name: rg.name,
-			rateDiff: todayRate?.rateDiff,
+			rateDiff:  undefined /*todayRate?.rateDiff */,
 			ratePerUnit: todayRate?.ratePerUnit,
 			updateDate: todayRate?.updateDate,
-			currencyTrend: todayRate?.currencyTrend
+			currencyTrend: undefined /* todayRate?.currencyTrend*/
 		});
 	}
 
 	private mapToCurrencyRateGroups(
-		todayRatesGroups: NationalBankCurrencyRateGroup[]
+		todayRatesGroups: CurrencyRateGroupModel[]
 	): CurrencyRateGroup[] {
 		return _.map(
 			todayRatesGroups,
