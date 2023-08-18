@@ -8,7 +8,7 @@ const routes: Routes = [
 	{
 		path: 'dashboard',
 		loadChildren: () =>
-			import('../main-dashboard').then((m) => m.MainDashboardModule),
+			import('../../../presentation/main-dashboard').then((m) => m.MainDashboardModule),
 	},
 	{ path: '**', component: PageNotFoundComponent },
 ];

@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { NgxsModule } from '@ngxs/store';
 
-import { AppSharedModule } from './../shared/shared.module';
 import {
 	AccountingRoutingModule,
 	AccountingGridComponent,
 	AccountingCrudComponent,
 } from '../accounting';
-import { AccountingState } from './../shared/store/states/accounting.state';
+import { AppSharedModule } from 'app/modules/shared';
+import { AccountingState } from 'app/modules/shared/store/states/accounting.state';
 
 @NgModule({
 	declarations: [AccountingGridComponent, AccountingCrudComponent],

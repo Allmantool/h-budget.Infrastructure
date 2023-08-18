@@ -16,11 +16,11 @@ import { filter } from 'rxjs/operators';
 import * as _ from 'lodash';
 
 import { AccountingGridRecord } from '../../models/accounting-grid-record';
-import { AccountingState } from './../../../shared/store/states/accounting.state';
-import { AccountingTableOptions } from './../../../shared/store/models/accounting/accounting-table-options';
 import { OperationType } from '../../models/operation-type';
 import { OperationCategory } from './../../models/operation-category';
-import { Edit } from './../../../shared/store/actions/accounting.actions';
+import { AccountingState } from 'app/modules/shared/store/states/accounting.state';
+import { AccountingTableOptions } from 'app/modules/shared/store/models/accounting/accounting-table-options';
+import { Edit } from 'app/modules/shared/store/actions/accounting.actions';
 
 @Component({
 	selector: 'accounting-crud',
@@ -56,6 +56,7 @@ export class AccountingCrudComponent implements OnInit, OnDestroy {
 
 	@Select(AccountingState.getAccountingTableOptions)
 	accountingTableOptions$!: Observable<AccountingTableOptions>;
+
 	@Select(AccountingState.getAccountingRecords)
 	accountingRecords$!: Observable<AccountingGridRecord[]>;
 

@@ -25,13 +25,13 @@ import {
 } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
-import { FetchAllCurrencyRates } from './../../../shared/store/actions/currency-rates.actions';
-import { CurrencyTableOptions } from './../../../shared/store/models/currency-rates/currency-table-options';
-import { CurrencyRatesState } from './../../../shared/store/states/currency-rates.state';
 import { UnifiedCurrencyRates } from './../../models/unified-currency-rates';
-import { CurrencyRateGroup } from './../../../shared/store/models/currency-rates/currency-rates-group';
 import { LineChartService } from '../../services/line-chart.service';
 import { LineChartOptions } from '../../models/line-chart-options';
+import { CurrencyRatesState } from 'app/modules/shared/store/states/currency-rates.state';
+import { CurrencyTableOptions } from 'app/modules/shared/store/models/currency-rates/currency-table-options';
+import { CurrencyRateGroup } from 'app/modules/shared/store/models/currency-rates/currency-rates-group';
+import { FetchAllCurrencyRates } from 'app/modules/shared/store/actions/currency-rates.actions';
 
 export type ChartOptions = {
 	series: ApexAxisChartSeries;

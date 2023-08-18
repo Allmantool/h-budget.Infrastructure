@@ -6,13 +6,13 @@ import { Store } from '@ngxs/store';
 import * as _ from 'lodash';
 
 import { UnifiedCurrencyRates } from '../models/unified-currency-rates';
-import { CurrencyRateGroupModel } from '../../../../domain/models/rates/currency-rates-group.model';
-import { AddCurrencyGroups, SetActiveCurrency } from './../../shared/store/actions/currency-rates.actions';
-import { CurrencyRateGroup } from './../../shared/store/models/currency-rates/currency-rates-group';
-import { CurrencyTrend } from './../../shared/store/models/currency-rates/currency-trend';
-import { PreviousDayCurrencyRate } from './../../shared/store/models/currency-rates/previous-day-currency-rate';
-import { CurrencyRate } from './../../shared/store/models/currency-rates/currency-rate';
-import { RatesGridDefaultOptions } from './../../shared/constants/rates-grid-default-options';
+import { CurrencyRateGroupModel } from 'domain/models/rates/currency-rates-group.model';
+import { AddCurrencyGroups, SetActiveCurrency } from 'app/modules/shared/store/actions/currency-rates.actions';
+import { PreviousDayCurrencyRate } from 'app/modules/shared/store/models/currency-rates/previous-day-currency-rate';
+import { CurrencyRate } from 'app/modules/shared/store/models/currency-rates/currency-rate';
+import { RatesGridDefaultOptions } from 'app/modules/shared/constants/rates-grid-default-options';
+import { CurrencyTrend } from 'app/modules/shared/store/models/currency-rates/currency-trend';
+import { CurrencyRateGroup } from 'app/modules/shared/store/models/currency-rates/currency-rates-group';
 
 @Injectable({
 	providedIn: 'root',

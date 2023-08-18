@@ -3,10 +3,10 @@ import { Injectable } from "@angular/core";
 import { format } from "date-fns";
 import * as _ from "lodash";
 
-import { CurrencyTableOptions } from "./../../shared/store/models/currency-rates/currency-table-options";
 import { ChartOptions } from "../components/currency-rates-line-chart/currency-rates-line-chart.component";
-import { CurrencyRate } from "./../../shared/store/models/currency-rates/currency-rate";
 import { LineChartOptions } from "../models/line-chart-options";
+import { CurrencyRate } from "app/modules/shared/store/models/currency-rates/currency-rate";
+import { CurrencyTableOptions } from "app/modules/shared/store/models/currency-rates/currency-table-options";
 
 @Injectable({
     providedIn: 'root',

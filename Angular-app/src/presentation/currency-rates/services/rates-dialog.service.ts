@@ -6,14 +6,14 @@ import { Store } from '@ngxs/store';
 
 import * as _ from 'lodash';
 
-import { CurrencyRateGroupModel } from '../../../../domain/models/rates/currency-rates-group.model';
-import { NationalBankCurrencyProvider } from '../../../../data/providers/rates/national-bank-currency.provider';
-import { DialogContainer } from '../../shared/models/dialog-container';
-import { DaysRangePayload } from '../../../../domain/models/dates-range-payload.model';
-import { AddCurrencyGroups } from './../../shared/store/actions/currency-rates.actions';
-import { DateRangeDialogComponent } from './../../shared/components/dialog/dates-rage/dates-range-dialog.component';
-import { DialogProvider } from './../../shared/providers/dialog-provider';
-import { CurrencyRateGroup } from './../../shared/store/models/currency-rates/currency-rates-group';
+import { NationalBankCurrencyProvider } from 'data/providers/rates/national-bank-currency.provider';
+import { DaysRangePayload } from 'domain/models/dates-range-payload.model';
+import { AddCurrencyGroups } from 'app/modules/shared/store/actions/currency-rates.actions';
+import { DialogContainer } from 'app/modules/shared/models/dialog-container';
+import { DateRangeDialogComponent } from 'app/modules/shared/components/dialog/dates-rage/dates-range-dialog.component';
+import { DialogProvider } from 'app/modules/shared/providers/dialog-provider';
+import { CurrencyRateGroupModel } from 'domain/models/rates/currency-rates-group.model';
+import { CurrencyRateGroup } from 'app/modules/shared/store/models/currency-rates/currency-rates-group';
 
 @Injectable()
 export class RatesDialogService {

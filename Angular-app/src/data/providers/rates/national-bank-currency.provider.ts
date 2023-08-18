@@ -6,7 +6,6 @@ import { Observable } from 'rxjs';
 import { map, retry, take, tap } from 'rxjs/operators';
 import { format } from 'date-fns';
 
-import { UnifiedCurrencyRates } from '../../../app/modules/currency-rates/models/unified-currency-rates';
 import { BankCurrencyProvider } from '../../../domain/providers/rates/bank-currency.provider';
 import { RoutesSegments } from '../../../app/modules/shared/constants/routes-segments';
 import { Result } from '../../../core/result';
@@ -14,6 +13,7 @@ import { DaysRangePayload } from '../../../domain/models/dates-range-payload.mod
 import { CurrencyRateGroupModel } from '../../../domain/models/rates/currency-rates-group.model';
 import { RatesMappingProfile } from './mappers/rates-mapping.profiler';
 import { RatesGroupEntity } from './entities/rates-group.entity';
+import { UnifiedCurrencyRates } from 'presentation/currency-rates/models/unified-currency-rates';
 
 @Injectable()
 export class NationalBankCurrencyProvider implements BankCurrencyProvider {

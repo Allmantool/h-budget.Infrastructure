@@ -9,13 +9,13 @@ import {
 	CurrencyRatesGridComponent,
 	CurrencyRatesLineChartComponent,
 } from '../currency-rates';
-import { AppSharedModule } from '../shared';
-import { AppCoreModule } from './../core/core.module';
 import { LineChartService } from './services/line-chart.service';
 import { RatesMappingProfile } from 'data/providers/rates/mappers/rates-mapping.profiler';
 import { NationalBankCurrencyProvider } from 'data/providers/rates/national-bank-currency.provider';
-import { CurrencyRatesState } from '../shared/store/states/currency-rates.state';
 import { RatesDialogService } from './services/rates-dialog.service';
+import { AppCoreModule } from 'app/modules/core';
+import { AppSharedModule } from 'app/modules/shared/shared.module';
+import { CurrencyRatesState } from 'app/modules/shared/store/states/currency-rates.state';
 
 @NgModule({
 	declarations: [

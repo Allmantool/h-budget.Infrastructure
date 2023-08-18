@@ -14,19 +14,17 @@ import { take } from 'rxjs/operators';
 import * as _ from 'lodash';
 
 import { UnifiedCurrencyRates } from '../../models/unified-currency-rates';
-import { NationalBankCurrencyProvider } from '../../../../../data/providers/rates/national-bank-currency.provider';
-import { CurrencyRate } from '../../../shared/store/models/currency-rates/currency-rate';
-import {
-	SetCurrencyDateRange,
-} from '../../../shared/store/actions/currency-rates.actions';
-import { CurrencyRatesState } from '../../../shared/store/states/currency-rates.state';
-import { CurrencyTrend } from './../../../shared/store/models/currency-rates/currency-trend';
-import { CurrencyTableOptions } from './../../../shared/store/models/currency-rates/currency-table-options';
-import { CurrencyRateGroupModel } from '../../../../../domain/models/rates/currency-rates-group.model';
 import { RatesDialogService } from './../../services/rates-dialog.service'
 import { CurrencyRatesGridService } from '../../services/currency-rates-grid.service';
-import { RatesGridDefaultOptions } from './../../../shared/constants/rates-grid-default-options';
-import { PreviousDayCurrencyRate } from './../../../shared/store/models/currency-rates/previous-day-currency-rate';
+import { CurrencyRatesState } from 'app/modules/shared/store/states/currency-rates.state';
+import { PreviousDayCurrencyRate } from 'app/modules/shared/store/models/currency-rates/previous-day-currency-rate';
+import { CurrencyRateGroupModel } from 'domain/models/rates/currency-rates-group.model';
+import { SetCurrencyDateRange } from 'app/modules/shared/store/actions/currency-rates.actions';
+import { NationalBankCurrencyProvider } from 'data/providers/rates/national-bank-currency.provider';
+import { RatesGridDefaultOptions } from 'app/modules/shared/constants/rates-grid-default-options';
+import { CurrencyTrend } from 'app/modules/shared/store/models/currency-rates/currency-trend';
+import { CurrencyRate } from 'app/modules/shared/store/models/currency-rates/currency-rate';
+import { CurrencyTableOptions } from 'app/modules/shared/store/models/currency-rates/currency-table-options';
 
 @Component({
 	selector: 'app-currency-rates-grid',
@@ -37,8 +35,10 @@ import { PreviousDayCurrencyRate } from './../../../shared/store/models/currency
 export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 	@Select(CurrencyRatesState.getRates) rates$!: Observable<CurrencyRate[]>;
 
+
 	@Select(CurrencyRatesState.getCurrencyTableOptions)
 	currencyTableOptions$!: Observable<CurrencyTableOptions>;
+
 
 	@Select(CurrencyRatesState.getCurrencyRatesFromPreviousDay)
 	previousDayRates$!: Observable<PreviousDayCurrencyRate[]>;
