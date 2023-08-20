@@ -7,14 +7,14 @@ import { CurrencyRateGroupModel } from "domain/models/rates/currency-rates-group
 import { RateValueEntity } from "../entities/rate-value.entity";
 import { CurrencyRateValueModel } from "domain/models/rates/currency-rate-value.model";
 
-export class RatesMappingProfile extends Profile {
+export class DataRatesMappingProfile extends Profile {
     static readonly RatesGroupEntityToDomain = new MappingPair<RatesGroupEntity, CurrencyRateGroupModel>();
     static readonly RateValueEntityToDomain = new MappingPair<RateValueEntity, CurrencyRateValueModel>();
 
     constructor() {
         super();
 
-        this.createAutoMap(RatesMappingProfile.RateValueEntityToDomain, {
+        this.createAutoMap(DataRatesMappingProfile.RateValueEntityToDomain, {
             officialRate: opt => {
                 opt.preCondition(src => !_.isNil(src.officialRate));
                 opt.mapFrom(src => src.officialRate);
@@ -29,7 +29,7 @@ export class RatesMappingProfile extends Profile {
             }
         });
 
-        this.createAutoMap(RatesMappingProfile.RatesGroupEntityToDomain, {
+        this.createAutoMap(DataRatesMappingProfile.RatesGroupEntityToDomain, {
             currencyId: opt => {
                 opt.preCondition(src => !_.isNil(src.currencyId));
                 opt.mapFrom(src => src.currencyId);
@@ -46,7 +46,7 @@ export class RatesMappingProfile extends Profile {
                 opt.preCondition(src => !_.isNil(src.abbreviation));
                 opt.mapFrom(src => src.abbreviation);
             },
-            rateValues: opt => opt.mapFromUsing(src => src.rateValues, RatesMappingProfile.RateValueEntityToDomain)
+            rateValues: opt => opt.mapFromUsing(src => src.rateValues, DataRatesMappingProfile.RateValueEntityToDomain)
         });
     }
 }

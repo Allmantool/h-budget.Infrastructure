@@ -25,7 +25,7 @@ import {
 } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
-import { UnifiedCurrencyRates } from './../../models/unified-currency-rates';
+import { CurrencyGridRateModel } from '../../models/currency-grid-rate.model';
 import { LineChartService } from '../../services/line-chart.service';
 import { LineChartOptions } from '../../models/line-chart-options';
 import { CurrencyRatesState } from 'app/modules/shared/store/states/currency-rates.state';
@@ -62,8 +62,8 @@ export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
 	public isChartInitialized$: BehaviorSubject<boolean> =
 		new BehaviorSubject<boolean>(false);
 
-	public currencyRates$: Subject<UnifiedCurrencyRates[]> = new Subject<
-		UnifiedCurrencyRates[]
+	public currencyRates$: Subject<CurrencyGridRateModel[]> = new Subject<
+		CurrencyGridRateModel[]
 	>();
 
 	private subs: Subscription[] = [];

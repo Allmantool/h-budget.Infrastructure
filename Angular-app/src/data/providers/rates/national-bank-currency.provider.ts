@@ -11,9 +11,9 @@ import { RoutesSegments } from '../../../app/modules/shared/constants/routes-seg
 import { Result } from '../../../core/result';
 import { DaysRangePayload } from '../../../domain/models/dates-range-payload.model';
 import { CurrencyRateGroupModel } from '../../../domain/models/rates/currency-rates-group.model';
-import { RatesMappingProfile } from './mappers/rates-mapping.profiler';
+import { DataRatesMappingProfile } from './mappers/data-rates-mapping.profiler';
 import { RatesGroupEntity } from './entities/rates-group.entity';
-import { UnifiedCurrencyRates } from 'presentation/currency-rates/models/unified-currency-rates';
+import { CurrencyGridRateModel } from 'presentation/currency-rates/models/currency-grid-rate.model';
 
 @Injectable()
 export class NationalBankCurrencyProvider implements BankCurrencyProvider {
@@ -29,14 +29,14 @@ export class NationalBankCurrencyProvider implements BankCurrencyProvider {
 				`${RoutesSegments.HOME_BUDGET_APP_HOST}/currencyRates/period/${format(payload.startDate, 'yyyy-MM-dd')}/${format(payload.endDate, 'yyyy-MM-dd')}`,
 			)
 			.pipe(
-				map((responseResult) => this.mapper?.map(RatesMappingProfile.RatesGroupEntityToDomain, responseResult.payload)),
+				map((responseResult) => this.mapper?.map(DataRatesMappingProfile.RatesGroupEntityToDomain, responseResult.payload)),
 				retry(3),
 				take(1)
 			);
 	}
 
 	public saveCurrencies(
-		rates: UnifiedCurrencyRates[]
+		rates: CurrencyGridRateModel[]
 	): Observable<Result<number>> {
 		return this.http
 			.post<Result<number>>(
@@ -59,7 +59,7 @@ export class NationalBankCurrencyProvider implements BankCurrencyProvider {
 				`${RoutesSegments.HOME_BUDGET_APP_HOST}/currencyRates`
 			)
 			.pipe(
-				map((responseResult) => this.mapper?.map(RatesMappingProfile.RatesGroupEntityToDomain, responseResult.payload)),
+				map((responseResult) => this.mapper?.map(DataRatesMappingProfile.RatesGroupEntityToDomain, responseResult.payload)),
 				retry(3),
 				take(1)
 			);
@@ -71,7 +71,7 @@ export class NationalBankCurrencyProvider implements BankCurrencyProvider {
 				`${RoutesSegments.HOME_BUDGET_APP_HOST}/currencyRates/today`
 			)
 			.pipe(
-				map((responseResult) => this.mapper?.map(RatesMappingProfile.RatesGroupEntityToDomain, responseResult.payload)),
+				map((responseResult) => this.mapper?.map(DataRatesMappingProfile.RatesGroupEntityToDomain, responseResult.payload)),
 				retry(3),
 				take(1)
 			);

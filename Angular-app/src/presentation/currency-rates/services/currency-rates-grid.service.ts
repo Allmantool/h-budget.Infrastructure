@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { SelectionModel } from '@angular/cdk/collections';
-import { Store } from '@ngxs/store';
 
+import { Mapper } from '@dynamic-mapper/angular';
+import { Store } from '@ngxs/store';
 import * as _ from 'lodash';
 
-import { UnifiedCurrencyRates } from '../models/unified-currency-rates';
+import { CurrencyGridRateModel } from '../models/currency-grid-rate.model';
 import { CurrencyRateGroupModel } from 'domain/models/rates/currency-rates-group.model';
 import { AddCurrencyGroups, SetActiveCurrency } from 'app/modules/shared/store/actions/currency-rates.actions';
 import { PreviousDayCurrencyRate } from 'app/modules/shared/store/models/currency-rates/previous-day-currency-rate';
@@ -13,29 +14,32 @@ import { CurrencyRate } from 'app/modules/shared/store/models/currency-rates/cur
 import { RatesGridDefaultOptions } from 'app/modules/shared/constants/rates-grid-default-options';
 import { CurrencyTrend } from 'app/modules/shared/store/models/currency-rates/currency-trend';
 import { CurrencyRateGroup } from 'app/modules/shared/store/models/currency-rates/currency-rates-group';
+import { PresentationRatesMappingProfile } from '../mappers/presentation-rates-mapping.profiler';
 
-@Injectable({
-	providedIn: 'root',
-})
+@Injectable()
 export class CurrencyRatesGridService {
 
-	constructor(private store: Store) {
+	constructor(
+		private mapper: Mapper,
+		private store: Store) {
 	}
 
 	public GetDataSource(
 		rateGroups: CurrencyRateGroupModel[]
-	): MatTableDataSource<UnifiedCurrencyRates> {
-		const rates: UnifiedCurrencyRates[] = _.map(rateGroups, (rg) => this.mapToCurrencyRate(rg));
+	): MatTableDataSource<CurrencyGridRateModel> {
 
-		return new MatTableDataSource<UnifiedCurrencyRates>(rates);
+		const source = this.mapper.map(PresentationRatesMappingProfile.CurrencyRateGroupModelToGridRates, rateGroups);
+
+		return new MatTableDataSource<CurrencyGridRateModel>(source);
 	}
 
-	public GetTableSelection(rateGroups: CurrencyRateGroupModel[], currencyId: number): SelectionModel<UnifiedCurrencyRates> {
+	public GetTableSelection(rateGroups: CurrencyRateGroupModel[], currencyId: number): SelectionModel<CurrencyGridRateModel> {
 
 		const selectedGroups = _.filter(rateGroups, (rg: CurrencyRateGroupModel) => rg.currencyId === currencyId);
-		const selectedValues = _.map(selectedGroups, gr => this.mapToCurrencyRate(gr));
 
-		return new SelectionModel<UnifiedCurrencyRates>(false, selectedValues);
+		const source = this.mapper.map(PresentationRatesMappingProfile.CurrencyRateGroupModelToGridRates, selectedGroups);
+
+		return new SelectionModel<CurrencyGridRateModel>(false, source);
 	}
 
 	public syncWithRatesStore(todayRatesGroups: CurrencyRateGroupModel[]): void {
@@ -44,7 +48,7 @@ export class CurrencyRatesGridService {
 		);
 	}
 
-	public isAllCheckboxesSelected(selectedItems: UnifiedCurrencyRates[], supportedCurrenciesAmount: number): boolean {
+	public isAllCheckboxesSelected(selectedItems: CurrencyGridRateModel[], supportedCurrenciesAmount: number): boolean {
 		const selectedTableItem = selectedItems;
 		const selectedRate = _.first(selectedTableItem);
 
@@ -71,7 +75,8 @@ export class CurrencyRatesGridService {
 
 	public enrichWithTrend(
 		previousDayRates: PreviousDayCurrencyRate[],
-		todayRateGroups: CurrencyRateGroupModel[]): MatTableDataSource<UnifiedCurrencyRates> {
+		todayRateGroups: CurrencyRateGroupModel[]): MatTableDataSource<CurrencyGridRateModel> {
+
 		todayRateGroups.forEach((rg) => {
 			const previousDayRate = _.find(previousDayRates, r => r.currencyId === rg.currencyId);
 
@@ -79,7 +84,7 @@ export class CurrencyRatesGridService {
 				ratePerUnit: todayRate.ratePerUnit,
 				updateDate: todayRate.updateDate,
 				currencyTrend: this.getTrend(todayRate.ratePerUnit, previousDayRate?.ratePerUnit),
-				rateDiff: this.getRateDiff(previousDayRate?.ratePerUnit as number, 0 /* todayRate.ratePerUnit */)
+				rateDiff: this.getRateDiff(previousDayRate?.ratePerUnit as number, todayRate.ratePerUnit ?? 0 )
 			})
 		});
 
@@ -110,21 +115,6 @@ export class CurrencyRatesGridService {
 		}
 
 		return CurrencyTrend.down;
-	}
-
-	private mapToCurrencyRate(rg: CurrencyRateGroupModel): UnifiedCurrencyRates {
-		const todayRate = _.first(rg.rateValues);
-
-		return new UnifiedCurrencyRates({
-			currencyId: rg.currencyId,
-			abbreviation: rg.abbreviation,
-			scale: rg.scale,
-			name: rg.name,
-			rateDiff:  undefined /*todayRate?.rateDiff */,
-			ratePerUnit: todayRate?.ratePerUnit,
-			updateDate: todayRate?.updateDate,
-			currencyTrend: undefined /* todayRate?.currencyTrend*/
-		});
 	}
 
 	private mapToCurrencyRateGroups(

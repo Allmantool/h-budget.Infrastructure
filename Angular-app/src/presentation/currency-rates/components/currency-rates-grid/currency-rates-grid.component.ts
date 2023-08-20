@@ -13,7 +13,7 @@ import { take } from 'rxjs/operators';
 
 import * as _ from 'lodash';
 
-import { UnifiedCurrencyRates } from '../../models/unified-currency-rates';
+import { CurrencyGridRateModel } from '../../models/currency-grid-rate.model';
 import { RatesDialogService } from './../../services/rates-dialog.service'
 import { CurrencyRatesGridService } from '../../services/currency-rates-grid.service';
 import { CurrencyRatesState } from 'app/modules/shared/store/states/currency-rates.state';
@@ -22,7 +22,6 @@ import { CurrencyRateGroupModel } from 'domain/models/rates/currency-rates-group
 import { SetCurrencyDateRange } from 'app/modules/shared/store/actions/currency-rates.actions';
 import { NationalBankCurrencyProvider } from 'data/providers/rates/national-bank-currency.provider';
 import { RatesGridDefaultOptions } from 'app/modules/shared/constants/rates-grid-default-options';
-import { CurrencyTrend } from 'app/modules/shared/store/models/currency-rates/currency-trend';
 import { CurrencyRate } from 'app/modules/shared/store/models/currency-rates/currency-rate';
 import { CurrencyTableOptions } from 'app/modules/shared/store/models/currency-rates/currency-table-options';
 import { RatesGridColumnOptions } from 'presentation/currency-rates/constants/rates-grid-options';
@@ -44,18 +43,13 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 	@Select(CurrencyRatesState.getCurrencyRatesFromPreviousDay)
 	previousDayRates$!: Observable<PreviousDayCurrencyRate[]>;
 
-	public trendRateLookup: { [trendDirection: string]: string } = {
-		[CurrencyTrend.up]: 'LimeGreen',
-		[CurrencyTrend.down]: 'crimson',
-	};
-
 	public selectedCurrencyPertionOption: number = RatesGridDefaultOptions.PERIOD_IN_MONTHS_AMMOUNT;
 
 	public todayCurrencyRateGroups$: Subject<CurrencyRateGroupModel[]> =
 		new Subject<CurrencyRateGroupModel[]>();
 
-	public todayRatesTableDataSource = new MatTableDataSource<UnifiedCurrencyRates>([]);
-	public todayRatesTableSelection = new SelectionModel<UnifiedCurrencyRates>(
+	public todayRatesTableDataSource = new MatTableDataSource<CurrencyGridRateModel>([]);
+	public todayRatesTableSelection = new SelectionModel<CurrencyGridRateModel>(
 		false,
 		[]
 	);
@@ -117,7 +111,7 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 			return;
 		}
 
-		const currencyRatesForselectByDefault: UnifiedCurrencyRates =
+		const currencyRatesForselectByDefault: CurrencyGridRateModel =
 			this.todayRatesTableDataSource.data[0];
 
 		if (isAllSelected) {

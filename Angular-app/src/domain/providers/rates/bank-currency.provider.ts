@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { Result } from '../../../core/result';
 import { CurrencyRateGroupModel } from '../../models/rates/currency-rates-group.model';
 import { DaysRangePayload } from '../../models/dates-range-payload.model';
-import { UnifiedCurrencyRates } from 'presentation/currency-rates/models/unified-currency-rates';
+import { CurrencyGridRateModel } from 'presentation/currency-rates/models/currency-grid-rate.model';
 
 export interface BankCurrencyProvider {
 	getCurrenciesForSpecifiedPeriod(
@@ -12,5 +12,5 @@ export interface BankCurrencyProvider {
 	): Observable<CurrencyRateGroupModel[]>;
 	getTodayCurrencies(): Observable<CurrencyRateGroupModel[]>;
 	getCurrencies(): Observable<CurrencyRateGroupModel[]>;
-	saveCurrencies(rates: UnifiedCurrencyRates[]): Observable<Result<number>>;
+	saveCurrencies(rates: CurrencyGridRateModel[]): Observable<Result<number>>;
 }
