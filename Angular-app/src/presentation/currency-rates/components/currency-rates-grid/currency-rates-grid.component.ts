@@ -25,6 +25,7 @@ import { RatesGridDefaultOptions } from 'app/modules/shared/constants/rates-grid
 import { CurrencyTrend } from 'app/modules/shared/store/models/currency-rates/currency-trend';
 import { CurrencyRate } from 'app/modules/shared/store/models/currency-rates/currency-rate';
 import { CurrencyTableOptions } from 'app/modules/shared/store/models/currency-rates/currency-table-options';
+import { RatesGridColumnOptions } from 'presentation/currency-rates/constants/rates-grid-options';
 
 @Component({
 	selector: 'app-currency-rates-grid',
@@ -59,15 +60,7 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 		[]
 	);
 
-	public displayedColumns: string[] = [
-		'select',
-		'id',
-		'abbreviation',
-		'name',
-		'ratePerUnit',
-		'percentageDiff',
-		'updateDate',
-	];
+	public ratesGridColumnOptions: typeof RatesGridColumnOptions = RatesGridColumnOptions;
 
 	private subs: Subscription[] = [];
 
@@ -75,7 +68,7 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 		private currencyRateProvider: NationalBankCurrencyProvider,
 		private store: Store,
 		private ratesDialogService: RatesDialogService,
-		private currencyRatesGridService: CurrencyRatesGridService
+		private currencyRatesGridService: CurrencyRatesGridService,
 	) { }
 
 	ngOnDestroy(): void {
