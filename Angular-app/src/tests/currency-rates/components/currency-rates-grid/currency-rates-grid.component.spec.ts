@@ -2,8 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { NgxsModule, Store } from '@ngxs/store';
 
-import { CurrencyRatesGridComponent } from 'app/modules/currency-rates';
-import { NationalBankCurrencyProvider } from 'app/modules/currency-rates/providers/national-bank-currency.provider';
+import { NationalBankCurrencyProvider } from 'data/providers/rates/national-bank-currency.provider';
 import { AppSharedModule } from 'app/modules/shared';
 import { DialogProvider } from 'app/modules/shared/providers/dialog-provider';
 import { ngxsConfig } from 'app/modules/shared/store/ngxs.config';

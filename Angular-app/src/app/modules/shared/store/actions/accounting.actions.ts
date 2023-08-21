@@ -1,6 +1,6 @@
 import { Guid } from 'typescript-guid';
 
-import { AccountingGridRecord } from 'app/modules/accounting/models/accounting-grid-record';
+import { AccountingGridRecord } from 'presentation/accounting/models/accounting-grid-record';
 
 export class Add {
 	static readonly type = '[Accounting] Add';
