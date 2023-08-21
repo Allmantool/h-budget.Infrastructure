@@ -5,14 +5,12 @@ import * as _ from "lodash";
 
 import { ChartOptions } from "../components/currency-rates-line-chart/currency-rates-line-chart.component";
 import { LineChartOptions } from "../models/line-chart-options";
-import { CurrencyRate } from "app/modules/shared/store/models/currency-rates/currency-rate";
 import { CurrencyTableOptions } from "app/modules/shared/store/models/currency-rates/currency-table-options";
+import { CurrencyRateValueModel } from "domain/models/rates/currency-rate-value.model";
 
-@Injectable({
-    providedIn: 'root',
-})
+@Injectable()
 export class LineChartService {
-    public getChartOptions(rates: CurrencyRate[], tableOptions: CurrencyTableOptions, options: LineChartOptions): ChartOptions {
+    public getChartOptions(rates: CurrencyRateValueModel[], tableOptions: CurrencyTableOptions, options: LineChartOptions): ChartOptions {
 
         const ratesFilterByDateRange = _.sortBy(rates, i => i.updateDate)
 
@@ -20,7 +18,7 @@ export class LineChartService {
 
         const ratesForPeriod = _.filter(
             ratesFilterByDateRange,
-            r => r.updateDate >= selectedDateRange.start && r.updateDate <= selectedDateRange.end);
+            r => r.updateDate! >= selectedDateRange.start && r.updateDate! <= selectedDateRange.end);
 
         const abbreviation = tableOptions.selectedItem.abbreviation;
 
@@ -40,7 +38,7 @@ export class LineChartService {
                 text: abbreviation,
             },
             xaxis: {
-                categories: _.map(ratesForPeriod, (r) => format(r.updateDate, options.dateFormat)),
+                categories: _.map(ratesForPeriod, (r) => format(r.updateDate!, options.dateFormat)),
             },
         };
     }

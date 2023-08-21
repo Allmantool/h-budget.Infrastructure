@@ -12,8 +12,6 @@ import { AddCurrencyGroups } from 'app/modules/shared/store/actions/currency-rat
 import { DialogContainer } from 'app/modules/shared/models/dialog-container';
 import { DateRangeDialogComponent } from 'app/modules/shared/components/dialog/dates-rage/dates-range-dialog.component';
 import { DialogProvider } from 'app/modules/shared/providers/dialog-provider';
-import { CurrencyRateGroupModel } from 'domain/models/rates/currency-rates-group.model';
-import { CurrencyRateGroup } from 'app/modules/shared/store/models/currency-rates/currency-rates-group';
 
 @Injectable()
 export class RatesDialogService {
@@ -36,14 +34,14 @@ export class RatesDialogService {
 			this.currencyRateProvider
 				.getCurrenciesForSpecifiedPeriod(payload)
 				.pipe(take(1))
-				.subscribe((unifiedRates) => {
+				.subscribe((rateGroups) => {
 					this.store.dispatch(
 						new AddCurrencyGroups(
-							this.mapToCurrencyRateGroups(unifiedRates)
+							rateGroups
 						)
 					);
 
-                    ratesAmountForPeriodSubject.next(unifiedRates?.length);
+                    ratesAmountForPeriodSubject.next(rateGroups?.length);
 				});
 
                 return ratesAmountForPeriodSubject;
@@ -55,18 +53,5 @@ export class RatesDialogService {
 		} as DialogContainer;
 
 		this.dialogProvider.openDialog(DateRangeDialogComponent, config);
-	}
-
-	private mapToCurrencyRateGroups(
-		todayRatesGroups: CurrencyRateGroupModel[]
-	): CurrencyRateGroup[] {
-		return _.map(
-			todayRatesGroups,
-			(rg) =>
-				({
-					currencyId: rg.currencyId,
-					currencyRates: rg.rateValues,
-				}) as CurrencyRateGroup
-		);
 	}
 }

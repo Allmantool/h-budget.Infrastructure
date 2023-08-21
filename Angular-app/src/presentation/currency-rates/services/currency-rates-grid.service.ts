@@ -12,7 +12,6 @@ import { AddCurrencyGroups, SetActiveCurrency } from 'app/modules/shared/store/a
 import { PreviousDayCurrencyRate } from 'app/modules/shared/store/models/currency-rates/previous-day-currency-rate';
 import { RatesGridDefaultOptions } from 'app/modules/shared/constants/rates-grid-default-options';
 import { CurrencyTrend } from 'app/modules/shared/store/models/currency-rates/currency-trend';
-import { CurrencyRateGroup } from 'app/modules/shared/store/models/currency-rates/currency-rates-group';
 import { PresentationRatesMappingProfile } from '../mappers/presentation-rates-mapping.profiler';
 
 @Injectable()
@@ -43,7 +42,7 @@ export class CurrencyRatesGridService {
 
 	public syncWithRatesStore(todayRatesGroups: CurrencyRateGroupModel[]): void {
 		this.store.dispatch(
-			new AddCurrencyGroups(this.mapToCurrencyRateGroups(todayRatesGroups))
+			new AddCurrencyGroups(todayRatesGroups)
 		);
 	}
 
@@ -113,21 +112,5 @@ export class CurrencyRatesGridService {
 		}
 
 		return CurrencyTrend.down;
-	}
-
-	private mapToCurrencyRateGroups(
-		todayRatesGroups: CurrencyRateGroupModel[]
-	): CurrencyRateGroup[] {
-		return _.map(
-			todayRatesGroups,
-			(rg) =>
-			({
-				currencyId: rg.currencyId,
-				name: rg.name,
-				abbreviation: rg.abbreviation,
-				scale: rg.scale,
-				currencyRates: rg.rateValues,
-			} as CurrencyRateGroup)
-		);
 	}
 }

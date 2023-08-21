@@ -14,13 +14,14 @@ import {
 import { NationalBankCurrencyProvider } from '../../../../../data/providers/rates/national-bank-currency.provider';
 import { CurrencyTableItem } from './../models/currency-rates/currency-table-item';
 import { CurrencyTableOptions } from './../models/currency-rates/currency-table-options';
-import { CurrencyRateGroup } from '../models/currency-rates/currency-rates-group';
 import { CurrencyDateRange } from '../models/currency-rates/currency-date-range';
 import { RatesGridDefaultOptions } from '../../constants/rates-grid-default-options';
 import { PreviousDayCurrencyRate } from '../models/currency-rates/previous-day-currency-rate';
+import { CurrencyRateValueModel } from 'domain/models/rates/currency-rate-value.model';
+import { CurrencyRateGroupModel } from 'domain/models/rates/currency-rates-group.model';
 
 export interface ICurrencyRatesStateModel {
-	rateGroups: CurrencyRateGroup[];
+	rateGroups: CurrencyRateGroupModel[];
 	tableOptions: CurrencyTableOptions;
 }
 
@@ -46,29 +47,30 @@ export class CurrencyRatesState {
 	constructor(private currencyRateProvider: NationalBankCurrencyProvider) { }
 
 	@Selector([CurrencyRatesState])
-	static getRates(state: ICurrencyRatesStateModel): CurrencyRateGroup[] {
+	static getRates(state: ICurrencyRatesStateModel): CurrencyRateGroupModel[] {
 		return state.rateGroups;
 	}
 
 	@Selector([CurrencyRatesState])
 	static getCurrencyRatesGroupByCurrencyId(
 		state: ICurrencyRatesStateModel
-	): (id: number) => CurrencyRateGroup {
+	): (id: number) => CurrencyRateGroupModel {
+		
 		return (id: number) =>
 			_.find(
 				state.rateGroups,
 				(r) => r.currencyId === id
-			) as CurrencyRateGroup;
+			) as CurrencyRateGroupModel;
 	}
 
 	@Selector([CurrencyRatesState.getRates])
 	static getCurrencyRatesFromPreviousDay(
-		rateGroups: CurrencyRateGroup[]
+		rateGroups: CurrencyRateGroupModel[]
 	): PreviousDayCurrencyRate[] {
 
 		const previousDayRates = _.chain(rateGroups)
-			.map((rg: CurrencyRateGroup) => {
-				const orderedRates = _.orderBy(rg.currencyRates, r => r.updateDate, ['desc']);
+			.map((rg: CurrencyRateGroupModel) => {
+				const orderedRates = _.orderBy(rg.rateValues, r => r.updateDate, ['desc']);
 
 				const previousDayRates = orderedRates[1] ?? orderedRates[0];
 
@@ -102,8 +104,8 @@ export class CurrencyRatesState {
 							name: rg.name,
 							abbreviation: rg.abbreviation,
 							scale: rg.scale,
-							currencyRates: _.orderBy(rg.rateValues, i => i.updateDate),
-						} as CurrencyRateGroup)
+							rateValues: _.orderBy(rg.rateValues, i => i.updateDate),
+						} as CurrencyRateGroupModel)
 					),
 				})
 			)
@@ -119,22 +121,18 @@ export class CurrencyRatesState {
 
 		const upToDateCurrencyGroups = ratesFromTheState.map((cg) => {
 
-			const addingRates = addedRateGroups.find(
+			const addingRates: CurrencyRateValueModel[] = addedRateGroups.find(
 				(i) => i.currencyId == cg.currencyId
-			)?.currencyRates;
+			)?.rateValues!;
 
-			const ratesForUpdate = _.differenceWith(
-				addingRates,
-				cg.currencyRates,
-				_.isEqual
-			);
+			const ratesForUpdate = _.differenceWith(addingRates, cg.rateValues!, _.isEqual);
 
 			if (_.isNil(ratesForUpdate) || _.isEmpty(ratesForUpdate)) {
 				return cg;
 			}
 
 			const notUpdatedOrNewRates = _.filter(
-				cg.currencyRates,
+				cg.rateValues,
 				(cgRate) =>
 					!_.some(
 						addingRates,
@@ -149,7 +147,7 @@ export class CurrencyRatesState {
 				ratesForUpdate
 			);
 
-			updatedCarrencyGroup.currencyRates = _.orderBy(upToDateRates, r => r.updateDate);
+			updatedCarrencyGroup.rateValues = _.orderBy(upToDateRates, r => r.updateDate);
 
 			return updatedCarrencyGroup;
 		});

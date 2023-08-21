@@ -22,9 +22,9 @@ import { CurrencyRateGroupModel } from 'domain/models/rates/currency-rates-group
 import { SetCurrencyDateRange } from 'app/modules/shared/store/actions/currency-rates.actions';
 import { NationalBankCurrencyProvider } from 'data/providers/rates/national-bank-currency.provider';
 import { RatesGridDefaultOptions } from 'app/modules/shared/constants/rates-grid-default-options';
-import { CurrencyRate } from 'app/modules/shared/store/models/currency-rates/currency-rate';
 import { CurrencyTableOptions } from 'app/modules/shared/store/models/currency-rates/currency-table-options';
 import { RatesGridColumnOptions } from 'presentation/currency-rates/constants/rates-grid-options';
+import { CurrencyRateValueModel } from 'domain/models/rates/currency-rate-value.model';
 
 @Component({
 	selector: 'app-currency-rates-grid',
@@ -33,7 +33,7 @@ import { RatesGridColumnOptions } from 'presentation/currency-rates/constants/ra
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
-	@Select(CurrencyRatesState.getRates) rates$!: Observable<CurrencyRate[]>;
+	@Select(CurrencyRatesState.getRates) rates$!: Observable<CurrencyRateValueModel[]>;
 
 
 	@Select(CurrencyRatesState.getCurrencyTableOptions)

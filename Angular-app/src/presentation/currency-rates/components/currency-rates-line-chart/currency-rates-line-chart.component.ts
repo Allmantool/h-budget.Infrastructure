@@ -30,8 +30,8 @@ import { LineChartService } from '../../services/line-chart.service';
 import { LineChartOptions } from '../../models/line-chart-options';
 import { CurrencyRatesState } from 'app/modules/shared/store/states/currency-rates.state';
 import { CurrencyTableOptions } from 'app/modules/shared/store/models/currency-rates/currency-table-options';
-import { CurrencyRateGroup } from 'app/modules/shared/store/models/currency-rates/currency-rates-group';
 import { FetchAllCurrencyRates } from 'app/modules/shared/store/actions/currency-rates.actions';
+import { CurrencyRateGroupModel } from 'domain/models/rates/currency-rates-group.model';
 
 export type ChartOptions = {
 	series: ApexAxisChartSeries;
@@ -48,7 +48,7 @@ export type ChartOptions = {
 })
 export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
 	@Select(CurrencyRatesState.getCurrencyRatesGroupByCurrencyId)
-	ratesGroup$!: Observable<(id: number) => CurrencyRateGroup>;
+	ratesGroup$!: Observable<(id: number) => CurrencyRateGroupModel>;
 
 	@Select(CurrencyRatesState.getCurrencyTableOptions)
 	currencyTableOptions$!: Observable<CurrencyTableOptions>;
@@ -84,19 +84,21 @@ export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
 			combineLatest([this.ratesGroup$, this.currencyTableOptions$])
 				.pipe(
 					filter(
-						([getCurrencies, tableOptions]) =>
-							!_.isEmpty(
-								getCurrencies(
-									tableOptions.selectedItem.currencyId
-								)?.currencyRates
-							)
+						([getCurrencies, tableOptions]) => {
+
+							const rateValues = getCurrencies(
+								tableOptions.selectedItem.currencyId
+							)?.rateValues
+
+							return !_.isEmpty(rateValues)
+						}
 					)
 				)
 				.subscribe(([data, tableOptions]) => {
 
-					const rates = data(
+					const rateValues = data(
 						tableOptions.selectedItem.currencyId
-					)?.currencyRates;
+					)?.rateValues;
 
 					const lineChartOptions: LineChartOptions = ({
 						height: this.chartHeight,
@@ -105,7 +107,7 @@ export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
 						type: 'area'
 					});
 
-					this.chartOptions = this.linechartService.getChartOptions(rates, tableOptions, lineChartOptions);
+					this.chartOptions = this.linechartService.getChartOptions(rateValues ?? [], tableOptions, lineChartOptions);
 
 					this.isChartInitialized$.next(true);
 				})
