@@ -17,19 +17,31 @@ import { CurrencyGridRateModel } from 'presentation/currency-rates/models/curren
 
 @Injectable()
 export class NationalBankCurrencyProvider implements BankCurrencyProvider {
-
-	constructor(private readonly http: HttpClient, private readonly mapper: Mapper) { }
+	constructor(
+		private readonly http: HttpClient,
+		private readonly mapper: Mapper
+	) {}
 
 	public getCurrenciesForSpecifiedPeriod(
 		payload: DaysRangePayload
 	): Observable<CurrencyRateGroupModel[]> {
-
 		return this.http
 			.get<Result<RatesGroupEntity[]>>(
-				`${RoutesSegments.HOME_BUDGET_APP_HOST}/currencyRates/period/${format(payload.startDate, 'yyyy-MM-dd')}/${format(payload.endDate, 'yyyy-MM-dd')}`,
+				`${
+					RoutesSegments.HOME_BUDGET_APP_HOST
+				}/currencyRates/period/${format(
+					payload.startDate,
+					'yyyy-MM-dd'
+				)}/${format(payload.endDate, 'yyyy-MM-dd')}`
 			)
 			.pipe(
-				map((responseResult) => this.mapper?.map(DataRatesMappingProfile.RatesGroupEntityToDomain, responseResult.payload)),
+				map(
+					(responseResult) =>
+						this.mapper?.map(
+							DataRatesMappingProfile.RatesGroupEntityToDomain,
+							responseResult.payload
+						)
+				),
 				retry(3),
 				take(1)
 			);
@@ -59,7 +71,13 @@ export class NationalBankCurrencyProvider implements BankCurrencyProvider {
 				`${RoutesSegments.HOME_BUDGET_APP_HOST}/currencyRates`
 			)
 			.pipe(
-				map((responseResult) => this.mapper?.map(DataRatesMappingProfile.RatesGroupEntityToDomain, responseResult.payload)),
+				map(
+					(responseResult) =>
+						this.mapper?.map(
+							DataRatesMappingProfile.RatesGroupEntityToDomain,
+							responseResult.payload
+						)
+				),
 				retry(3),
 				take(1)
 			);
@@ -71,7 +89,13 @@ export class NationalBankCurrencyProvider implements BankCurrencyProvider {
 				`${RoutesSegments.HOME_BUDGET_APP_HOST}/currencyRates/today`
 			)
 			.pipe(
-				map((responseResult) => this.mapper?.map(DataRatesMappingProfile.RatesGroupEntityToDomain, responseResult.payload)),
+				map(
+					(responseResult) =>
+						this.mapper?.map(
+							DataRatesMappingProfile.RatesGroupEntityToDomain,
+							responseResult.payload
+						)
+				),
 				retry(3),
 				take(1)
 			);

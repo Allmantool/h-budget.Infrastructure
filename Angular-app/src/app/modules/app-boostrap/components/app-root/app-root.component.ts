@@ -8,7 +8,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppRootComponent {
-	constructor(private route: ActivatedRoute, private router: Router) {}
+	constructor(
+		private route: ActivatedRoute,
+		private router: Router
+	) {}
 
 	public navigateToDashboard(): void {
 		this.router.navigate(['/'], { relativeTo: this.route });

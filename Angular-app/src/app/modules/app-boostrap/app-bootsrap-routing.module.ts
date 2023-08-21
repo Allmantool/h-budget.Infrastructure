@@ -1,4 +1,10 @@
-import { PreloadAllModules, Routes, provideRouter, withDebugTracing, withPreloading } from '@angular/router';
+import {
+	PreloadAllModules,
+	Routes,
+	provideRouter,
+	withDebugTracing,
+	withPreloading,
+} from '@angular/router';
 import { NgModule } from '@angular/core';
 
 import { PageNotFoundComponent } from './../shared/components/page-not-found/page-not-found.component';
@@ -8,7 +14,9 @@ const routes: Routes = [
 	{
 		path: 'dashboard',
 		loadChildren: () =>
-			import('../../../presentation/main-dashboard').then((m) => m.MainDashboardModule),
+			import('../../../presentation/main-dashboard').then(
+				(m) => m.MainDashboardModule
+			),
 	},
 	{ path: '**', component: PageNotFoundComponent },
 ];
@@ -16,6 +24,12 @@ const routes: Routes = [
 @NgModule({
 	imports: [],
 	exports: [],
-	providers: [provideRouter(routes, withPreloading(PreloadAllModules), withDebugTracing())]
+	providers: [
+		provideRouter(
+			routes,
+			withPreloading(PreloadAllModules),
+			withDebugTracing()
+		),
+	],
 })
-export class AppBootsrapRoutingModule { }
+export class AppBootsrapRoutingModule {}

@@ -1,6 +1,6 @@
-import * as _ from "lodash";
+import * as _ from 'lodash';
 
-import { CurrencyRateValueModel } from "./currency-rate-value.model";
+import { CurrencyRateValueModel } from './currency-rate-value.model';
 
 export class CurrencyRateGroupModel {
 	constructor(currencyRates: Partial<CurrencyRateGroupModel>) {
@@ -9,11 +9,13 @@ export class CurrencyRateGroupModel {
 		this.scale = currencyRates.scale;
 		this.name = currencyRates.name;
 
-		this.rateValues = currencyRates.rateValues?.map(rv => {
+		this.rateValues = currencyRates.rateValues?.map((rv) => {
 			return <CurrencyRateValueModel>{
-				updateDate: !_.isNil(rv.updateDate) ? new Date(rv.updateDate) : rv.updateDate,
+				updateDate: !_.isNil(rv.updateDate)
+					? new Date(rv.updateDate)
+					: rv.updateDate,
 				ratePerUnit: rv.ratePerUnit,
-			}
+			};
 		});
 	}
 	currencyId?: number;

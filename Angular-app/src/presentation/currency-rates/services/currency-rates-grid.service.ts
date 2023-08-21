@@ -8,7 +8,10 @@ import * as _ from 'lodash';
 
 import { CurrencyGridRateModel } from '../models/currency-grid-rate.model';
 import { CurrencyRateGroupModel } from 'domain/models/rates/currency-rates-group.model';
-import { AddCurrencyGroups, SetActiveCurrency } from 'app/modules/shared/store/actions/currency-rates.actions';
+import {
+	AddCurrencyGroups,
+	SetActiveCurrency,
+} from 'app/modules/shared/store/actions/currency-rates.actions';
 import { PreviousDayCurrencyRate } from 'app/modules/shared/store/models/currency-rates/previous-day-currency-rate';
 import { RatesGridDefaultOptions } from 'app/modules/shared/constants/rates-grid-default-options';
 import { CurrencyTrend } from 'app/modules/shared/store/models/currency-rates/currency-trend';
@@ -16,37 +19,49 @@ import { PresentationRatesMappingProfile } from '../mappers/presentation-rates-m
 
 @Injectable()
 export class CurrencyRatesGridService {
-
 	constructor(
 		private mapper: Mapper,
-		private store: Store) {
-	}
+		private store: Store
+	) {}
 
 	public GetDataSource(
 		rateGroups: CurrencyRateGroupModel[]
 	): MatTableDataSource<CurrencyGridRateModel> {
-
-		const source = this.mapper.map(PresentationRatesMappingProfile.CurrencyRateGroupModelToGridRates, rateGroups);
+		const source = this.mapper.map(
+			PresentationRatesMappingProfile.CurrencyRateGroupModelToGridRates,
+			rateGroups
+		);
 
 		return new MatTableDataSource<CurrencyGridRateModel>(source);
 	}
 
-	public GetTableSelection(rateGroups: CurrencyRateGroupModel[], currencyId: number): SelectionModel<CurrencyGridRateModel> {
+	public GetTableSelection(
+		rateGroups: CurrencyRateGroupModel[],
+		currencyId: number
+	): SelectionModel<CurrencyGridRateModel> {
+		const selectedGroups = _.filter(
+			rateGroups,
+			(rg: CurrencyRateGroupModel) => rg.currencyId === currencyId
+		);
 
-		const selectedGroups = _.filter(rateGroups, (rg: CurrencyRateGroupModel) => rg.currencyId === currencyId);
-
-		const source = this.mapper.map(PresentationRatesMappingProfile.CurrencyRateGroupModelToGridRates, selectedGroups);
+		const source = this.mapper.map(
+			PresentationRatesMappingProfile.CurrencyRateGroupModelToGridRates,
+			selectedGroups
+		);
 
 		return new SelectionModel<CurrencyGridRateModel>(false, source);
 	}
 
-	public syncWithRatesStore(todayRatesGroups: CurrencyRateGroupModel[]): void {
-		this.store.dispatch(
-			new AddCurrencyGroups(todayRatesGroups)
-		);
+	public syncWithRatesStore(
+		todayRatesGroups: CurrencyRateGroupModel[]
+	): void {
+		this.store.dispatch(new AddCurrencyGroups(todayRatesGroups));
 	}
 
-	public isAllCheckboxesSelected(selectedItems: CurrencyGridRateModel[], supportedCurrenciesAmount: number): boolean {
+	public isAllCheckboxesSelected(
+		selectedItems: CurrencyGridRateModel[],
+		supportedCurrenciesAmount: number
+	): boolean {
 		const selectedTableItem = selectedItems;
 		const selectedRate = _.first(selectedTableItem);
 
@@ -68,21 +83,33 @@ export class CurrencyRatesGridService {
 			);
 		}
 
-		return selectedTableItem.length === supportedCurrenciesAmount
+		return selectedTableItem.length === supportedCurrenciesAmount;
 	}
 
 	public enrichWithTrend(
 		previousDayRates: PreviousDayCurrencyRate[],
-		todayRateGroups: CurrencyRateGroupModel[]): MatTableDataSource<CurrencyGridRateModel> {
-
-		const gridRates: CurrencyGridRateModel[] = this.mapper.map(PresentationRatesMappingProfile.CurrencyRateGroupModelToGridRates, todayRateGroups);
+		todayRateGroups: CurrencyRateGroupModel[]
+	): MatTableDataSource<CurrencyGridRateModel> {
+		const gridRates: CurrencyGridRateModel[] = this.mapper.map(
+			PresentationRatesMappingProfile.CurrencyRateGroupModelToGridRates,
+			todayRateGroups
+		);
 
 		gridRates.forEach((gridRateREcord) => {
-			const previousDayRate = _.find(previousDayRates, r => r.currencyId === gridRateREcord.currencyId);
+			const previousDayRate = _.find(
+				previousDayRates,
+				(r) => r.currencyId === gridRateREcord.currencyId
+			);
 			const previousDayRatePerUnit = previousDayRate?.ratePerUnit;
 
-			gridRateREcord.currencyTrend = this.getTrend(gridRateREcord.ratePerUnit, previousDayRatePerUnit);
-			gridRateREcord.rateDiff = this.getRateDiff(previousDayRatePerUnit as number, gridRateREcord.ratePerUnit ?? 0)
+			gridRateREcord.currencyTrend = this.getTrend(
+				gridRateREcord.ratePerUnit,
+				previousDayRatePerUnit
+			);
+			gridRateREcord.rateDiff = this.getRateDiff(
+				previousDayRatePerUnit as number,
+				gridRateREcord.ratePerUnit ?? 0
+			);
 		});
 
 		return new MatTableDataSource<CurrencyGridRateModel>(gridRates);
@@ -93,9 +120,14 @@ export class CurrencyRatesGridService {
 			return 'N/A';
 		}
 
-		const diffAsPercentage = _.divide(_.subtract(todayRate, previousDayRate), previousDayRate) * 100;
+		const diffAsPercentage =
+			_.divide(_.subtract(todayRate, previousDayRate), previousDayRate) *
+			100;
 
-		return _.round(diffAsPercentage, RatesGridDefaultOptions.RATE_DIFF_PRECISION).toString();
+		return _.round(
+			diffAsPercentage,
+			RatesGridDefaultOptions.RATE_DIFF_PRECISION
+		).toString();
 	}
 
 	private getTrend(todayDayRate?: number, previousDayRate?: number): string {

@@ -60,7 +60,10 @@ export class AccountingCrudComponent implements OnInit, OnDestroy {
 	@Select(AccountingState.getAccountingRecords)
 	accountingRecords$!: Observable<AccountingGridRecord[]>;
 
-	constructor(fb: UntypedFormBuilder, private store: Store) {
+	constructor(
+		fb: UntypedFormBuilder,
+		private store: Store
+	) {
 		this.crudRecordFg = fb.group({
 			id: new UntypedFormControl(),
 			operationDate: new UntypedFormControl(),

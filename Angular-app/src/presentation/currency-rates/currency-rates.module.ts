@@ -30,14 +30,17 @@ import { PresentationRatesMappingProfile } from './mappers/presentation-rates-ma
 		AppSharedModule,
 		AppCoreModule,
 		NgxsModule.forFeature([CurrencyRatesState]),
-		MapperModule.withProfiles([DataRatesMappingProfile, PresentationRatesMappingProfile])
+		MapperModule.withProfiles([
+			DataRatesMappingProfile,
+			PresentationRatesMappingProfile,
+		]),
 	],
 	providers: [
 		LineChartService,
 		RatesDialogService,
 		NationalBankCurrencyProvider,
-		CurrencyRatesGridService
+		CurrencyRatesGridService,
 	],
 	bootstrap: [],
 })
-export class CurrencyRatesModule { }
+export class CurrencyRatesModule {}

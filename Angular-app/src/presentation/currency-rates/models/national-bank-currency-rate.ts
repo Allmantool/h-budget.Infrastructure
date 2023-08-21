@@ -5,7 +5,7 @@ export class NationalBankCurrencyRate {
 		this.scale = currencyRates.scale;
 		this.name = currencyRates.name;
 		this.officialRate = currencyRates.officialRate;
-		this.currencyTrend = currencyRates.currencyTrend
+		this.currencyTrend = currencyRates.currencyTrend;
 	}
 
 	currencyId?: number;

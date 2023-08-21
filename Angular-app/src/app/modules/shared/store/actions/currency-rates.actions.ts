@@ -1,4 +1,4 @@
-import { CurrencyRateGroupModel } from "domain/models/rates/currency-rates-group.model";
+import { CurrencyRateGroupModel } from 'domain/models/rates/currency-rates-group.model';
 
 export class Add {
 	static readonly type = '[CURR-RATE-GROUP] Add currency group';
@@ -21,7 +21,10 @@ export class FetchAllCurrencyRates {
 
 export class SetActiveCurrency {
 	static readonly type = '[CURR-TABLE-OPTIONS] Set active currency';
-	constructor(public id: number, public label: string) {}
+	constructor(
+		public id: number,
+		public label: string
+	) {}
 }
 
 export class SetCurrencyDateRange {

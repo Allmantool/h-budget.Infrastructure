@@ -30,6 +30,6 @@ describe('AppComponent', () => {
 		const compiled = fixture.nativeElement;
 		const titleSpan = compiled.querySelector('.content');
 
-		expect(titleSpan.children.length).toBe(2)
+		expect(titleSpan.children.length).toBe(2);
 	});
 });

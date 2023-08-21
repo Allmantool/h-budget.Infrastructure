@@ -29,22 +29,18 @@ export class RatesDialogService {
 				return;
 			}
 
-            const ratesAmountForPeriodSubject = new Subject<number>();
+			const ratesAmountForPeriodSubject = new Subject<number>();
 
 			this.currencyRateProvider
 				.getCurrenciesForSpecifiedPeriod(payload)
 				.pipe(take(1))
 				.subscribe((rateGroups) => {
-					this.store.dispatch(
-						new AddCurrencyGroups(
-							rateGroups
-						)
-					);
+					this.store.dispatch(new AddCurrencyGroups(rateGroups));
 
-                    ratesAmountForPeriodSubject.next(rateGroups?.length);
+					ratesAmountForPeriodSubject.next(rateGroups?.length);
 				});
 
-                return ratesAmountForPeriodSubject;
+			return ratesAmountForPeriodSubject;
 		};
 
 		config.data = {

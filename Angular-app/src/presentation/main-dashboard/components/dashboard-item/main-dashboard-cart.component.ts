@@ -14,7 +14,10 @@ export class MainDashboardCartComponent {
 	@Input() navigateLink: string = '';
 	@Input() imagePath: string = '';
 
-	constructor(private route: ActivatedRoute, private router: Router) {}
+	constructor(
+		private route: ActivatedRoute,
+		private router: Router
+	) {}
 
 	public navigate(): void {
 		this.router.navigate([this.navigateLink], { relativeTo: this.route });

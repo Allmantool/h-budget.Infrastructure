@@ -23,6 +23,6 @@ const routes: Routes = [
 @NgModule({
 	imports: [],
 	exports: [],
-	providers: [provideRouter(routes, withDebugTracing())]
+	providers: [provideRouter(routes, withDebugTracing())],
 })
-export class MainDashboardRoutingModule { }
+export class MainDashboardRoutingModule {}

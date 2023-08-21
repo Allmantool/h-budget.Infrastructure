@@ -10,7 +10,10 @@ import { Observable, Subscription, BehaviorSubject } from 'rxjs';
 import { Guid } from 'typescript-guid';
 
 import { AccountingState } from 'app/modules/shared/store/states/accounting.state';
-import { AddRange, SetActive } from 'app/modules/shared/store/actions/accounting.actions';
+import {
+	AddRange,
+	SetActive,
+} from 'app/modules/shared/store/actions/accounting.actions';
 import { AccountingGridRecord } from 'presentation/accounting/models/accounting-grid-record';
 
 @Component({

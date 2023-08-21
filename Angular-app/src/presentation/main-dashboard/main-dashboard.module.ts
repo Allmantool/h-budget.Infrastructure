@@ -8,11 +8,7 @@ import { AppSharedModule } from 'app/modules/shared';
 
 @NgModule({
 	declarations: [MainDashboardComponent, MainDashboardCartComponent],
-	imports: [
-		MainDashboardRoutingModule,
-		AppSharedModule,
-		RouterLink
-	],
+	imports: [MainDashboardRoutingModule, AppSharedModule, RouterLink],
 	providers: [],
 	bootstrap: [],
 })

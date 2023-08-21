@@ -1,4 +1,4 @@
-import { RateValueEntity } from "./rate-value.entity";
+import { RateValueEntity } from './rate-value.entity';
 
 export interface RatesGroupEntity {
 	currencyId?: number;

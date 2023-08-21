@@ -1,5 +1,5 @@
 export interface RateValueEntity {
-    officialRate: number;
-    ratePerUnit: number;
-    updateDate: Date;
+	officialRate: number;
+	ratePerUnit: number;
+	updateDate: Date;
 }

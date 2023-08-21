@@ -68,7 +68,10 @@ export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
 
 	private subs: Subscription[] = [];
 
-	constructor(private store: Store, private linechartService: LineChartService) { }
+	constructor(
+		private store: Store,
+		private linechartService: LineChartService
+	) {}
 
 	ngOnDestroy(): void {
 		this.subs.forEach((s) => s.unsubscribe());
@@ -83,31 +86,31 @@ export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
 		this.subs.push(
 			combineLatest([this.ratesGroup$, this.currencyTableOptions$])
 				.pipe(
-					filter(
-						([getCurrencies, tableOptions]) => {
+					filter(([getCurrencies, tableOptions]) => {
+						const rateValues = getCurrencies(
+							tableOptions.selectedItem.currencyId
+						)?.rateValues;
 
-							const rateValues = getCurrencies(
-								tableOptions.selectedItem.currencyId
-							)?.rateValues
-
-							return !_.isEmpty(rateValues)
-						}
-					)
+						return !_.isEmpty(rateValues);
+					})
 				)
 				.subscribe(([data, tableOptions]) => {
-
 					const rateValues = data(
 						tableOptions.selectedItem.currencyId
 					)?.rateValues;
 
-					const lineChartOptions: LineChartOptions = ({
+					const lineChartOptions: LineChartOptions = {
 						height: this.chartHeight,
 						width: this.chartWidth,
 						dateFormat: 'dd MMM yy',
-						type: 'area'
-					});
+						type: 'area',
+					};
 
-					this.chartOptions = this.linechartService.getChartOptions(rateValues ?? [], tableOptions, lineChartOptions);
+					this.chartOptions = this.linechartService.getChartOptions(
+						rateValues ?? [],
+						tableOptions,
+						lineChartOptions
+					);
 
 					this.isChartInitialized$.next(true);
 				})

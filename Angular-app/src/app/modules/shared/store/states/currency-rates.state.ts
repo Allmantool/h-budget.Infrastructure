@@ -35,16 +35,19 @@ export interface ICurrencyRatesStateModel {
 				abbreviation: RatesGridDefaultOptions.CURRENCY_ABBREVIATION,
 			} as CurrencyTableItem,
 			selectedDateRange: {
-				start: addMonths(new Date(), -RatesGridDefaultOptions.PERIOD_IN_MONTHS_AMMOUNT),
+				start: addMonths(
+					new Date(),
+					-RatesGridDefaultOptions.PERIOD_IN_MONTHS_AMMOUNT
+				),
 				end: new Date(),
-				diffInMonths: RatesGridDefaultOptions.PERIOD_IN_MONTHS_AMMOUNT
-			} as CurrencyDateRange
+				diffInMonths: RatesGridDefaultOptions.PERIOD_IN_MONTHS_AMMOUNT,
+			} as CurrencyDateRange,
 		} as CurrencyTableOptions,
 	},
 })
 @Injectable()
 export class CurrencyRatesState {
-	constructor(private currencyRateProvider: NationalBankCurrencyProvider) { }
+	constructor(private currencyRateProvider: NationalBankCurrencyProvider) {}
 
 	@Selector([CurrencyRatesState])
 	static getRates(state: ICurrencyRatesStateModel): CurrencyRateGroupModel[] {
@@ -55,7 +58,6 @@ export class CurrencyRatesState {
 	static getCurrencyRatesGroupByCurrencyId(
 		state: ICurrencyRatesStateModel
 	): (id: number) => CurrencyRateGroupModel {
-		
 		return (id: number) =>
 			_.find(
 				state.rateGroups,
@@ -67,17 +69,20 @@ export class CurrencyRatesState {
 	static getCurrencyRatesFromPreviousDay(
 		rateGroups: CurrencyRateGroupModel[]
 	): PreviousDayCurrencyRate[] {
-
 		const previousDayRates = _.chain(rateGroups)
 			.map((rg: CurrencyRateGroupModel) => {
-				const orderedRates = _.orderBy(rg.rateValues, r => r.updateDate, ['desc']);
+				const orderedRates = _.orderBy(
+					rg.rateValues,
+					(r) => r.updateDate,
+					['desc']
+				);
 
 				const previousDayRates = orderedRates[1] ?? orderedRates[0];
 
 				return <PreviousDayCurrencyRate>{
 					currencyId: rg.currencyId,
 					ratePerUnit: previousDayRates?.ratePerUnit,
-					updateDate: previousDayRates?.updateDate
+					updateDate: previousDayRates?.updateDate,
 				};
 			})
 			.value();
@@ -99,13 +104,16 @@ export class CurrencyRatesState {
 					rateGroups: _.map(
 						currencyRateGroups,
 						(rg) =>
-						({
-							currencyId: rg.currencyId,
-							name: rg.name,
-							abbreviation: rg.abbreviation,
-							scale: rg.scale,
-							rateValues: _.orderBy(rg.rateValues, i => i.updateDate),
-						} as CurrencyRateGroupModel)
+							({
+								currencyId: rg.currencyId,
+								name: rg.name,
+								abbreviation: rg.abbreviation,
+								scale: rg.scale,
+								rateValues: _.orderBy(
+									rg.rateValues,
+									(i) => i.updateDate
+								),
+							}) as CurrencyRateGroupModel
 					),
 				})
 			)
@@ -120,12 +128,15 @@ export class CurrencyRatesState {
 		const ratesFromTheState = getState().rateGroups;
 
 		const upToDateCurrencyGroups = ratesFromTheState.map((cg) => {
-
 			const addingRates: CurrencyRateValueModel[] = addedRateGroups.find(
 				(i) => i.currencyId == cg.currencyId
 			)?.rateValues!;
 
-			const ratesForUpdate = _.differenceWith(addingRates, cg.rateValues!, _.isEqual);
+			const ratesForUpdate = _.differenceWith(
+				addingRates,
+				cg.rateValues!,
+				_.isEqual
+			);
 
 			if (_.isNil(ratesForUpdate) || _.isEmpty(ratesForUpdate)) {
 				return cg;
@@ -147,7 +158,10 @@ export class CurrencyRatesState {
 				ratesForUpdate
 			);
 
-			updatedCarrencyGroup.rateValues = _.orderBy(upToDateRates, r => r.updateDate);
+			updatedCarrencyGroup.rateValues = _.orderBy(
+				upToDateRates,
+				(r) => r.updateDate
+			);
 
 			return updatedCarrencyGroup;
 		});
@@ -186,7 +200,7 @@ export class CurrencyRatesState {
 				selectedDateRange: {
 					start: addMonths(new Date(), -amountOfMonths),
 					end: new Date(),
-					diffInMonths: amountOfMonths
+					diffInMonths: amountOfMonths,
 				} as CurrencyDateRange,
 			} as CurrencyTableOptions,
 		});

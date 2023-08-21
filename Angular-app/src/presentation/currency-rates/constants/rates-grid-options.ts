@@ -1,4 +1,4 @@
-import { CurrencyTrend } from "app/modules/shared/store/models/currency-rates/currency-trend";
+import { CurrencyTrend } from 'app/modules/shared/store/models/currency-rates/currency-trend';
 
 export class RatesGridColumnOptions {
 	public static SELECT: string = 'select';
@@ -19,7 +19,9 @@ export class RatesGridColumnOptions {
 		[RatesGridColumnOptions.UPDATE_DATE, 'Last update date'],
 	]);
 
-	public static NAMES: string[] = [...RatesGridColumnOptions.DESCRIPTIONS.keys()]
+	public static NAMES: string[] = [
+		...RatesGridColumnOptions.DESCRIPTIONS.keys(),
+	];
 
 	public static TRENDS: { [trendDirection: string]: string } = {
 		[CurrencyTrend.up]: 'LimeGreen',

@@ -1,40 +1,49 @@
-import { TestBed } from "@angular/core/testing";
-import { Store } from "@ngxs/store";
+import { TestBed } from '@angular/core/testing';
+import { Store } from '@ngxs/store';
 
-import { RatesDialogService } from "./rates-dialog.service";
-import { DialogProvider } from "app/modules/shared/providers/dialog-provider";
-import { NationalBankCurrencyProvider } from "data/providers/rates/national-bank-currency.provider";
+import { RatesDialogService } from './rates-dialog.service';
+import { DialogProvider } from 'app/modules/shared/providers/dialog-provider';
+import { NationalBankCurrencyProvider } from 'data/providers/rates/national-bank-currency.provider';
 
 describe('Rate dialog service', () => {
+	let nationalBankCurrencyProviderSpy: jasmine.SpyObj<NationalBankCurrencyProvider>;
+	let storerSpy: jasmine.SpyObj<Store>;
+	let dialogProviderSpy: jasmine.SpyObj<DialogProvider>;
 
-    let nationalBankCurrencyProviderSpy: jasmine.SpyObj<NationalBankCurrencyProvider>;
-    let storerSpy: jasmine.SpyObj<Store>;
-    let dialogProviderSpy: jasmine.SpyObj<DialogProvider>;
+	let sut: RatesDialogService;
 
-    let sut: RatesDialogService;
+	beforeEach(() => {
+		TestBed.configureTestingModule({
+			providers: [
+				RatesDialogService,
+				{ provide: DialogProvider, useValue: dialogProviderSpy },
+				{ provide: Store, useValue: storerSpy },
+				{
+					provide: NationalBankCurrencyProvider,
+					useValue: nationalBankCurrencyProviderSpy,
+				},
+			],
+		});
 
-    beforeEach(() => {
+		const sut = TestBed.inject(RatesDialogService);
+	});
 
-        TestBed.configureTestingModule({
-            providers: [
-                RatesDialogService,
-                { provide: DialogProvider, useValue: dialogProviderSpy },
-                { provide: Store, useValue: storerSpy },
-                { provide: NationalBankCurrencyProvider, useValue: nationalBankCurrencyProviderSpy },
-            ]
-        });
+	it('should use ValueService', () => {
+		const dialogProviderSpy = jasmine.createSpyObj('DialogProvider', [
+			'openDialog',
+		]);
+		const currencyRateProviderSpy = jasmine.createSpyObj(
+			'NationalBankCurrencyProvider',
+			['getCurrenciesForSpecifiedPeriod']
+		);
+		const storeSpy = jasmine.createSpyObj('Store', ['dispatch']);
 
-        let sut = TestBed.inject(RatesDialogService);
-    });
+		const rateService = new RatesDialogService(
+			dialogProviderSpy,
+			currencyRateProviderSpy,
+			storeSpy
+		);
 
-    it('should use ValueService', () => {
-
-        const dialogProviderSpy = jasmine.createSpyObj('DialogProvider', ['openDialog']);
-        const currencyRateProviderSpy = jasmine.createSpyObj('NationalBankCurrencyProvider', ['getCurrenciesForSpecifiedPeriod']);
-        const storeSpy = jasmine.createSpyObj('Store', ['dispatch']);
-
-        let rateService = new RatesDialogService(dialogProviderSpy, currencyRateProviderSpy, storeSpy);
-
-        expect(rateService.openLoadRatesForPeriod());
-    });
+		expect(rateService.openLoadRatesForPeriod());
+	});
 });

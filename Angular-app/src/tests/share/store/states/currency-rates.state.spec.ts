@@ -196,7 +196,9 @@ describe('Currency rates store', () => {
 			(state) => state.currencyRateState.rateGroups
 		);
 
-		const items = _.flattenDeep(_.map(groups, (g: CurrencyRateGroupModel) => g.rateValues!));
+		const items = _.flattenDeep(
+			_.map(groups, (g: CurrencyRateGroupModel) => g.rateValues!)
+		);
 
 		expect(items.length).toBe(2);
 	});
@@ -223,8 +225,8 @@ describe('Currency rates store', () => {
 						ratePerUnit: 16,
 						currencyTrend: CurrencyTrend.notChanged,
 						updateDate: new Date(2022, 1, 4),
-					} as CurrencyRateValueModel
-				]
+					} as CurrencyRateValueModel,
+				],
 			},
 		];
 

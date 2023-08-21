@@ -25,7 +25,7 @@ import { ngxsConfig } from './../shared/store/ngxs.config';
 		BrowserModule,
 		BrowserAnimationsModule,
 		AppBootsrapRoutingModule,
-		RouterOutlet
+		RouterOutlet,
 	],
 	providers: [],
 	bootstrap: [AppRootComponent],

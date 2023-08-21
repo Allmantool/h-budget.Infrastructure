@@ -124,6 +124,9 @@ jobs:
       - name: Upload & Install UI dependencies
         run: |
           npm ci
+          npm i -g npm-check-updates
+          ncu -u
+          npm install
 
       - name: Keep up minor UI dependencies up to date
         run: |
