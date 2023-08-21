@@ -10,7 +10,6 @@ import { CurrencyGridRateModel } from '../models/currency-grid-rate.model';
 import { CurrencyRateGroupModel } from 'domain/models/rates/currency-rates-group.model';
 import { AddCurrencyGroups, SetActiveCurrency } from 'app/modules/shared/store/actions/currency-rates.actions';
 import { PreviousDayCurrencyRate } from 'app/modules/shared/store/models/currency-rates/previous-day-currency-rate';
-import { CurrencyRate } from 'app/modules/shared/store/models/currency-rates/currency-rate';
 import { RatesGridDefaultOptions } from 'app/modules/shared/constants/rates-grid-default-options';
 import { CurrencyTrend } from 'app/modules/shared/store/models/currency-rates/currency-trend';
 import { CurrencyRateGroup } from 'app/modules/shared/store/models/currency-rates/currency-rates-group';
@@ -77,18 +76,17 @@ export class CurrencyRatesGridService {
 		previousDayRates: PreviousDayCurrencyRate[],
 		todayRateGroups: CurrencyRateGroupModel[]): MatTableDataSource<CurrencyGridRateModel> {
 
-		todayRateGroups.forEach((rg) => {
-			const previousDayRate = _.find(previousDayRates, r => r.currencyId === rg.currencyId);
+		const gridRates: CurrencyGridRateModel[] = this.mapper.map(PresentationRatesMappingProfile.CurrencyRateGroupModelToGridRates, todayRateGroups);
 
-			rg.rateValues = _.map(rg.rateValues, todayRate => <CurrencyRate>{
-				ratePerUnit: todayRate.ratePerUnit,
-				updateDate: todayRate.updateDate,
-				currencyTrend: this.getTrend(todayRate.ratePerUnit, previousDayRate?.ratePerUnit),
-				rateDiff: this.getRateDiff(previousDayRate?.ratePerUnit as number, todayRate.ratePerUnit ?? 0 )
-			})
+		gridRates.forEach((gridRateREcord) => {
+			const previousDayRate = _.find(previousDayRates, r => r.currencyId === gridRateREcord.currencyId);
+			const previousDayRatePerUnit = previousDayRate?.ratePerUnit;
+
+			gridRateREcord.currencyTrend = this.getTrend(gridRateREcord.ratePerUnit, previousDayRatePerUnit);
+			gridRateREcord.rateDiff = this.getRateDiff(previousDayRatePerUnit as number, gridRateREcord.ratePerUnit ?? 0)
 		});
 
-		return this.GetDataSource(todayRateGroups);
+		return new MatTableDataSource<CurrencyGridRateModel>(gridRates);
 	}
 
 	private getRateDiff(previousDayRate: number, todayRate: number): string {

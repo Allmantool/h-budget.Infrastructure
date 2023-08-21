@@ -43,10 +43,10 @@ export class PresentationRatesMappingProfile extends Profile {
                 opt.mapFrom(src => _.first(src.rateValues)?.ratePerUnit);
             },
             currencyTrend: opt => {
-                opt.mapFrom(src => CurrencyTrend.notChanged);
+                opt.mapFrom(() => CurrencyTrend.notChanged);
             },
             rateDiff: opt => {
-                opt.mapFrom(src => '0');
+                opt.mapFrom(() => '0');
             }
         });
     }
