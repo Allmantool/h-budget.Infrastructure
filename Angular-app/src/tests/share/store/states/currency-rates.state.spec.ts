@@ -130,13 +130,13 @@ describe('Currency rates store', () => {
 					(g) => g.currencyId == 1
 				);
 				const updatedRate = _.find(
-					updatedRateGroup.currencyRates,
+					updatedRateGroup.rateValues,
 					(r) =>
 						r.updateDate.toDateString() ===
 						new Date(2022, 1, 3).toDateString()
 				);
 
-				expect(updatedRate.ratePerUnit).toBe(14);
+				expect(updatedRate?.ratePerUnit).toBe(14);
 			});
 	});
 
@@ -163,7 +163,7 @@ describe('Currency rates store', () => {
 			.selectOnce((state) => state.currencyRateState.rateGroups)
 			.subscribe((groups: CurrencyRateGroupModel[]) => {
 				const items = _.flattenDeep(
-					_.map(groups, (g) => g.currencyRates)
+					_.map(groups, (g) => g.rateValues!)
 				);
 
 				expect(items.length).toBe(5);
@@ -197,7 +197,7 @@ describe('Currency rates store', () => {
 			(state) => state.currencyRateState.rateGroups
 		);
 
-		const items = _.flattenDeep(_.map(groups, (g) => g.currencyRates));
+		const items = _.flattenDeep(_.map(groups, (g: CurrencyRateGroupModel) => g.rateValues!));
 
 		expect(items.length).toBe(2);
 	});
