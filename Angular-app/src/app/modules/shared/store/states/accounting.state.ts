@@ -4,8 +4,8 @@ import { Action, Selector, State, StateContext } from '@ngxs/store';
 import * as _ from 'lodash';
 
 import { AccountingTableOptions } from './../models/accounting/accounting-table-options';
-import { AccountingGridRecord } from './../../../accounting/models/accounting-grid-record';
 import { Add, AddRange, Edit, SetActive } from '../actions/accounting.actions';
+import { AccountingGridRecord } from 'presentation/accounting/models/accounting-grid-record';
 
 export interface IAccountingStateModel {
 	operationRecords: AccountingGridRecord[];

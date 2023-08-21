@@ -8,45 +8,45 @@ import {
 	AddCurrencyGroups,
 	FetchAllCurrencyRates,
 } from './../../../../app/modules/shared/store/actions/currency-rates.actions';
-import { CurrencyRate } from './../../../../app/modules/shared/store/models/currency-rates/currency-rate';
-import { CurrencyRateGroup } from './../../../../app/modules/shared/store/models/currency-rates/currency-rates-group';
 import { CurrencyTrend } from './../../../../app/modules/shared/store/models/currency-rates/currency-trend';
 import { ngxsConfig } from './../../../../app/modules/shared/store/ngxs.config';
 import { CurrencyRatesState } from './../../../../app/modules/shared/store/states/currency-rates.state';
-import { NationalBankCurrencyProvider } from './../../../../app/modules/currency-rates/providers/national-bank-currency.provider';
-import { NationalBankCurrencyRateGroup } from './../../../../app/modules/currency-rates/models/currency-rates-group';
+import { NationalBankCurrencyProvider } from '../../../../data/providers/rates/national-bank-currency.provider';
+import { CurrencyRateGroupModel } from 'domain/models/rates/currency-rates-group.model';
+import { CurrencyRateValueModel } from 'domain/models/rates/currency-rate-value.model';
+
 
 describe('Currency rates store', () => {
 	let store: Store;
 	let currencyRateProviderSpy: any;
 
-	const initialStoreRateGroups: CurrencyRateGroup[] =
-		new Array<CurrencyRateGroup>(
+	const initialStoreRateGroups: CurrencyRateGroupModel[] =
+		new Array<CurrencyRateGroupModel>(
 			{
 				currencyId: 1,
-				currencyRates: [
+				rateValues: [
 					{
 						ratePerUnit: 14,
 						currencyTrend: CurrencyTrend.notChanged,
 						updateDate: new Date(2022, 1, 3),
-					} as CurrencyRate,
+					} as CurrencyRateValueModel,
 					{
 						ratePerUnit: 16,
 						currencyTrend: CurrencyTrend.notChanged,
 						updateDate: new Date(2022, 1, 4),
-					} as CurrencyRate,
+					} as CurrencyRateValueModel,
 				],
-			} as CurrencyRateGroup,
+			} as CurrencyRateGroupModel,
 			{
 				currencyId: 2,
-				currencyRates: [
+				rateValues: [
 					{
 						ratePerUnit: 12,
 						currencyTrend: CurrencyTrend.up,
 						updateDate: new Date(2022, 4, 4),
-					} as CurrencyRate,
+					} as CurrencyRateValueModel,
 				],
-			} as CurrencyRateGroup
+			} as CurrencyRateGroupModel
 		);
 
 	beforeEach(() => {
@@ -80,19 +80,19 @@ describe('Currency rates store', () => {
 	it('it "AddCurrencyGroups": update existed currency groups - expect still 2 carrency groups', () => {
 		const updatedCurrencyRateGroups = new Array({
 			currencyId: 1,
-			currencyRates: [
+			rateValues: [
 				{
 					ratePerUnit: 17,
 					currencyTrend: CurrencyTrend.up,
 					updateDate: new Date(2022, 1, 3),
-				} as CurrencyRate,
+				} as CurrencyRateValueModel,
 				{
 					ratePerUnit: 8,
 					currencyTrend: CurrencyTrend.up,
 					updateDate: new Date(2022, 2, 3),
-				} as CurrencyRate,
+				} as CurrencyRateValueModel,
 			],
-		} as CurrencyRateGroup);
+		} as CurrencyRateGroupModel);
 
 		store.dispatch(new AddCurrencyGroups(updatedCurrencyRateGroups));
 
@@ -106,19 +106,19 @@ describe('Currency rates store', () => {
 	it('it "AddCurrencyGroups": update existed currency groups - expect update currency with same date', () => {
 		const updatedCurrencyRateGroups = new Array({
 			currencyId: 1,
-			currencyRates: [
+			rateValues: [
 				{
 					ratePerUnit: 17,
 					currencyTrend: CurrencyTrend.up,
 					updateDate: new Date(2022, 1, 3),
-				} as CurrencyRate,
+				} as CurrencyRateValueModel,
 				{
 					ratePerUnit: 8,
 					currencyTrend: CurrencyTrend.up,
 					updateDate: new Date(2022, 2, 3),
-				} as CurrencyRate,
+				} as CurrencyRateValueModel,
 			],
-		} as CurrencyRateGroup);
+		} as CurrencyRateGroupModel);
 
 		store.dispatch(new AddCurrencyGroups(updatedCurrencyRateGroups));
 
@@ -130,40 +130,40 @@ describe('Currency rates store', () => {
 					(g) => g.currencyId == 1
 				);
 				const updatedRate = _.find(
-					updatedRateGroup.currencyRates,
+					updatedRateGroup.rateValues,
 					(r) =>
 						r.updateDate.toDateString() ===
 						new Date(2022, 1, 3).toDateString()
 				);
 
-				expect(updatedRate.ratePerUnit).toBe(14);
+				expect(updatedRate?.ratePerUnit).toBe(14);
 			});
 	});
 
 	it('it "AddRange": update existed currency groups - expect predicte amount of rates within groups', () => {
 		const updatedCurrencyRateGroups = new Array({
 			currencyId: 1,
-			currencyRates: [
+			rateValues: [
 				{
 					ratePerUnit: 17,
 					currencyTrend: CurrencyTrend.up,
 					updateDate: new Date(2022, 1, 3),
-				} as CurrencyRate,
+				} as CurrencyRateValueModel,
 				{
 					ratePerUnit: 8,
 					currencyTrend: CurrencyTrend.up,
 					updateDate: new Date(2022, 2, 3),
-				} as CurrencyRate,
+				} as CurrencyRateValueModel,
 			],
-		} as CurrencyRateGroup);
+		} as CurrencyRateGroupModel);
 
 		store.dispatch(new AddCurrencyGroups(updatedCurrencyRateGroups));
 
 		store
 			.selectOnce((state) => state.currencyRateState.rateGroups)
-			.subscribe((groups: CurrencyRateGroup[]) => {
+			.subscribe((groups: CurrencyRateGroupModel[]) => {
 				const items = _.flattenDeep(
-					_.map(groups, (g) => g.currencyRates)
+					_.map(groups, (g) => g.rateValues!)
 				);
 
 				expect(items.length).toBe(5);
@@ -171,7 +171,7 @@ describe('Currency rates store', () => {
 	});
 
 	it('it "FetchAllCurrencyRates": update existed currency groups - expect predicte amount of rates within groups', () => {
-		const stubValue = new Array<NationalBankCurrencyRateGroup>({
+		const stubValue = new Array<CurrencyRateGroupModel>({
 			currencyId: 1,
 			abbreviation: 'Val-A',
 			name: 'test-name',
@@ -181,12 +181,12 @@ describe('Currency rates store', () => {
 					ratePerUnit: 14,
 					currencyTrend: CurrencyTrend.notChanged,
 					updateDate: new Date(2022, 1, 3),
-				} as CurrencyRate,
+				} as CurrencyRateValueModel,
 				{
 					ratePerUnit: 16,
 					currencyTrend: CurrencyTrend.notChanged,
 					updateDate: new Date(2022, 1, 4),
-				} as CurrencyRate,
+				} as CurrencyRateValueModel,
 			],
 		});
 
@@ -197,34 +197,34 @@ describe('Currency rates store', () => {
 			(state) => state.currencyRateState.rateGroups
 		);
 
-		const items = _.flattenDeep(_.map(groups, (g) => g.currencyRates));
+		const items = _.flattenDeep(_.map(groups, (g: CurrencyRateGroupModel) => g.rateValues!));
 
 		expect(items.length).toBe(2);
 	});
 
 	it('it "GetCurrencyRatesFromPreviousDay": return expected previous date currency rates', () => {
-		const stubValue: CurrencyRateGroup[] = [
+		const stubValue: CurrencyRateGroupModel[] = [
 			{
 				currencyId: 1,
 				abbreviation: 'abbreviaion-1',
 				name: 'name-1',
 				scale: 100,
-				currencyRates: [
+				rateValues: [
 					{
 						ratePerUnit: 14,
 						currencyTrend: CurrencyTrend.notChanged,
 						updateDate: new Date(2022, 1, 1),
-					} as CurrencyRate,
+					} as CurrencyRateValueModel,
 					{
 						ratePerUnit: 16,
 						currencyTrend: CurrencyTrend.notChanged,
 						updateDate: new Date(2022, 1, 2),
-					} as CurrencyRate,
+					} as CurrencyRateValueModel,
 					{
 						ratePerUnit: 16,
 						currencyTrend: CurrencyTrend.notChanged,
 						updateDate: new Date(2022, 1, 4),
-					} as CurrencyRate
+					} as CurrencyRateValueModel
 				]
 			},
 		];
