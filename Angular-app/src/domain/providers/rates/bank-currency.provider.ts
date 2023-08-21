@@ -1,4 +1,3 @@
-
 import { Observable } from 'rxjs';
 
 import { Result } from '../../../core/result';

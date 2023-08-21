@@ -2,7 +2,6 @@ import * as _ from "lodash";
 
 import { CurrencyRateValueModel } from "./currency-rate-value.model";
 
-
 export class CurrencyRateGroupModel {
 	constructor(currencyRates: Partial<CurrencyRateGroupModel>) {
 		this.currencyId = currencyRates.currencyId;

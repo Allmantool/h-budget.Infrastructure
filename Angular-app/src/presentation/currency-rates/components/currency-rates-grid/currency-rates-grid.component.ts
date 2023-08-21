@@ -35,7 +35,6 @@ import { CurrencyRateValueModel } from 'domain/models/rates/currency-rate-value.
 export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 	@Select(CurrencyRatesState.getRates) rates$!: Observable<CurrencyRateValueModel[]>;
 
-
 	@Select(CurrencyRatesState.getCurrencyTableOptions)
 	currencyTableOptions$!: Observable<CurrencyTableOptions>;
 
@@ -59,10 +58,10 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 	private subs: Subscription[] = [];
 
 	constructor(
-		private currencyRateProvider: NationalBankCurrencyProvider,
-		private store: Store,
-		private ratesDialogService: RatesDialogService,
-		private currencyRatesGridService: CurrencyRatesGridService,
+		private readonly currencyRateProvider: NationalBankCurrencyProvider,
+		private readonly store: Store,
+		private readonly ratesDialogService: RatesDialogService,
+		private readonly currencyRatesGridService: CurrencyRatesGridService,
 	) { }
 
 	ngOnDestroy(): void {
