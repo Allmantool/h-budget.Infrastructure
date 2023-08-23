@@ -36,8 +36,8 @@ namespace HomeBudget.Components.CurrencyRates.Tests
         {
             var request = new GetCurrencyRatesForPeriodRequest
             {
-                StartDate = new DateTime(2022, 11, 27),
-                EndDate = new DateTime(2022, 12, 25)
+                StartDate = new DateOnly(2022, 11, 27),
+                EndDate = new DateOnly(2022, 12, 25)
             };
 
             _ = await _sut.GetRatesForPeriodAsync(request.StartDate, request.EndDate);

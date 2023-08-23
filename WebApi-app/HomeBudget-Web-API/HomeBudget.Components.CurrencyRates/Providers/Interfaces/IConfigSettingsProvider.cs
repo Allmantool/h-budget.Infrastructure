@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+
 using HomeBudget.Components.CurrencyRates.Models;
 
 namespace HomeBudget.Components.CurrencyRates.Providers.Interfaces

@@ -10,7 +10,6 @@ using HomeBudget.Components.CurrencyRates.Extensions;
 using HomeBudget.Components.CurrencyRates.Models;
 using HomeBudget.Components.CurrencyRates.Providers.Interfaces;
 using HomeBudget.Components.CurrencyRates.Services.Interfaces;
-using HomeBudget.Core.Constants;
 using HomeBudget.Core.Extensions;
 using HomeBudget.Core.Models;
 using HomeBudget.Core.Services;
@@ -19,24 +18,21 @@ namespace HomeBudget.Components.CurrencyRates.Services
 {
     internal class CurrencyRatesService : BaseService, ICurrencyRatesService
     {
-        private readonly ConfigSettings _configSettings;
         private readonly IMapper _mapper;
-        private readonly INationalBankApiClient _nationalBankApiClient;
         private readonly ICurrencyRatesReadProvider _currencyRatesReadProvider;
         private readonly ICurrencyRatesWriteProvider _currencyRatesWriteProvider;
+        private readonly INationalBankRatesProvider _nationalBankRatesProvider;
 
         public CurrencyRatesService(
             IMapper mapper,
-            ConfigSettings configSettings,
-            INationalBankApiClient nationalBankApiClient,
             ICurrencyRatesReadProvider currencyRatesReadProvider,
-            ICurrencyRatesWriteProvider currencyRatesWriteProvider)
+            ICurrencyRatesWriteProvider currencyRatesWriteProvider,
+            INationalBankRatesProvider nationalBankRatesProvider)
         {
             _mapper = mapper;
-            _configSettings = configSettings;
-            _nationalBankApiClient = nationalBankApiClient;
             _currencyRatesReadProvider = currencyRatesReadProvider;
             _currencyRatesWriteProvider = currencyRatesWriteProvider;
+            _nationalBankRatesProvider = nationalBankRatesProvider;
         }
 
         public async Task<Result<IReadOnlyCollection<CurrencyRateGrouped>>> GetRatesAsync()
@@ -48,18 +44,18 @@ namespace HomeBudget.Components.CurrencyRates.Services
             return Succeeded(groupedCurrencyRates);
         }
 
-        public async Task<Result<IReadOnlyCollection<CurrencyRateGrouped>>> GetRatesForPeriodAsync(DateTime startDate, DateTime endDate)
+        public async Task<Result<IReadOnlyCollection<CurrencyRateGrouped>>> GetRatesForPeriodAsync(DateOnly startDate, DateOnly endDate)
         {
             var todayRatesResponse = await GetTodayRatesAsync();
 
-            var tasks = todayRatesResponse.Payload.Select(rate => _nationalBankApiClient
-                .GetRatesForPeriodAsync(
-                    rate.CurrencyId,
-                    startDate.ToString(DateFormats.NationalBankExternalApi),
-                    endDate.ToString(DateFormats.NationalBankExternalApi)));
+            var shortRates = await _nationalBankRatesProvider.GetRatesForPeriodAsync(
+                todayRatesResponse.Payload.Select(r => r.CurrencyId),
+                new PeriodRange
+                {
+                    StartDate = startDate,
+                    EndDate = endDate
+                });
 
-            var shortRatesGroups = await Task.WhenAll(tasks);
-            var shortRates = shortRatesGroups.SelectMany(i => i);
             var ratesFromApiCall = _mapper.Map<IReadOnlyCollection<CurrencyRate>>(shortRates);
 
             foreach (var rate in ratesFromApiCall)
@@ -85,13 +81,7 @@ namespace HomeBudget.Components.CurrencyRates.Services
 
         public async Task<Result<IReadOnlyCollection<CurrencyRateGrouped>>> GetTodayRatesAsync()
         {
-            var activeCurrencyAbbreviations = _configSettings
-                .ActiveNationalBankCurrencies
-                .Select(i => i.Abbreviation);
-
-            var todayRatesFromApi = await _nationalBankApiClient.GetTodayRatesAsync();
-            var activeCurrencyRates = todayRatesFromApi
-                .Where(r => activeCurrencyAbbreviations.Contains(r.Abbreviation, StringComparer.OrdinalIgnoreCase));
+            var activeCurrencyRates = await _nationalBankRatesProvider.GetTodayActiveRatesAsync();
 
             var ratesFromApiCall = _mapper.Map<IReadOnlyCollection<CurrencyRate>>(activeCurrencyRates);
 

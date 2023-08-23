@@ -8,7 +8,7 @@ using NUnit.Framework;
 using HomeBudget.Components.CurrencyRates.Providers;
 using HomeBudget.DataAccess.Interfaces;
 
-namespace HomeBudget.Components.CurrencyRates.Tests
+namespace HomeBudget.Components.CurrencyRates.Tests.Providers
 {
     [TestFixture]
     public class ConfigSettingsProviderTests

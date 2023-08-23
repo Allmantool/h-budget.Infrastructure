@@ -34,7 +34,7 @@ namespace HomeBudget.Components.CurrencyRates.Tests
                 RatePerUnit = 0m,
                 Abbreviation = string.Empty,
                 CurrencyId = 2,
-                UpdateDate = new DateTime(2022, 12, 26),
+                UpdateDate = new DateOnly(2022, 12, 26),
                 Name = string.Empty,
                 OfficialRate = 0m,
                 Scale = 0

@@ -16,6 +16,6 @@ namespace HomeBudget_Web_API.Models
 
         public decimal RatePerUnit { get; set; }
 
-        public DateTime UpdateDate { get; set; }
+        public DateOnly UpdateDate { get; set; }
     }
 }

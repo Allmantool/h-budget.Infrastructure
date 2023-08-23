@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 using HomeBudget.Components.CurrencyRates.Models;
 using HomeBudget.Components.CurrencyRates.Providers.Interfaces;
+using HomeBudget.Core.Constants;
 using HomeBudget.DataAccess.Interfaces;
 
 namespace HomeBudget.Components.CurrencyRates.Providers
@@ -25,7 +26,7 @@ namespace HomeBudget.Components.CurrencyRates.Providers
             _ratesAbbreviationPredicate = $"[Abbreviation] IN ({abbreviations})";
         }
 
-        public Task<IReadOnlyCollection<CurrencyRate>> GetRatesForPeriodAsync(DateTime startDate, DateTime endDate)
+        public Task<IReadOnlyCollection<CurrencyRate>> GetRatesForPeriodAsync(DateOnly startDate, DateOnly endDate)
         {
             var query = "SELECT * " +
                           "FROM [CurrencyRates] WITH (NOLOCK) " +
@@ -36,8 +37,8 @@ namespace HomeBudget.Components.CurrencyRates.Providers
                 query,
                 new
                 {
-                    StartDate = startDate.ToShortDateString(),
-                    EndDate = endDate.ToShortDateString()
+                    StartDate = startDate.ToString(DateFormats.MsSqlDayOnlyFormat),
+                    EndDate = endDate.ToString(DateFormats.MsSqlDayOnlyFormat)
                 });
         }
 
@@ -61,7 +62,7 @@ namespace HomeBudget.Components.CurrencyRates.Providers
                 query,
                 new
                 {
-                    Today = DateTime.Now.ToShortDateString()
+                    Today = DateOnly.FromDateTime(DateTime.Now).ToString(DateFormats.MsSqlDayOnlyFormat)
                 });
         }
     }

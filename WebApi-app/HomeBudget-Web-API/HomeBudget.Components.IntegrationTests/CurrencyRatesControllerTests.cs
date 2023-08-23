@@ -90,7 +90,7 @@ namespace HomeBudget.Components.IntegrationTests
                         Name = "Доллар США",
                         OfficialRate = 2.7286m,
                         RatePerUnit = 2.7286m,
-                        UpdateDate = new DateTime(2023, 1, 8)
+                        UpdateDate = new DateOnly(2023, 1, 8)
                     }
                 }
             };

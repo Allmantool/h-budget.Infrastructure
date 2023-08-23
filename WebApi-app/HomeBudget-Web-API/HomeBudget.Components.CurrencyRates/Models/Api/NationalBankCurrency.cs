@@ -21,9 +21,9 @@ namespace HomeBudget.Components.CurrencyRates.Models.Api
         public int Scale { get; set; }
 
         [JsonProperty(PropertyName = "Cur_DateStart")]
-        public DateTime DateStart { get; set; }
+        public DateOnly DateStart { get; set; }
 
         [JsonProperty(PropertyName = "Cur_DateEnd")]
-        public DateTime DateEnd { get; set; }
+        public DateOnly DateEnd { get; set; }
     }
 }
