@@ -2,6 +2,7 @@
 **/.dockerignore
 **/.env
 **/.git
+**/.gitignore
 **/.*ignore
 **/.project
 **/.settings
@@ -18,8 +19,11 @@
 **/node_modules
 **/npm-debug.log
 **/obj
+**/obj/*
 **/secrets.dev.yaml
 **/values.dev.yaml
 LICENSE
 **/*.md
 **/docker-compose*.yml
+bin/
+obj/
