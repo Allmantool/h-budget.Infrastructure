@@ -3,7 +3,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
 
+using AutoMapper;
+
 using HomeBudget.Components.CurrencyRates.Models;
+using HomeBudget.Components.CurrencyRates.Models.DbEntities;
 using HomeBudget.Components.CurrencyRates.Providers.Interfaces;
 using HomeBudget.DataAccess.Interfaces;
 
@@ -13,9 +16,16 @@ namespace HomeBudget.Components.CurrencyRates.Providers
     {
         private const int MaxRatePerAnOperation = 300;
 
+        private readonly IMapper _mapper;
         private readonly IBaseWriteRepository _writeRepository;
 
-        public CurrencyRatesWriteProvider(IBaseWriteRepository writeRepository) => _writeRepository = writeRepository;
+        public CurrencyRatesWriteProvider(
+            IMapper mapper,
+            IBaseWriteRepository writeRepository)
+        {
+            _mapper = mapper;
+            _writeRepository = writeRepository;
+        }
 
         public async Task<int> UpsertRatesWithSaveAsync(IReadOnlyCollection<CurrencyRate> rates)
         {
@@ -38,11 +48,13 @@ namespace HomeBudget.Components.CurrencyRates.Providers
                                        "  FROM dbo.[CurrencyRates] " +
                                        " WHERE [CurrencyId] IN @CurrencyIds AND [UpdateDate] IN @UpdateDates;";
 
-            foreach (var ratesPerAnChunk in rates.Chunk(MaxRatePerAnOperation))
+            var dbEntities = _mapper.Map<IEnumerable<CurrencyRateEntity>>(rates);
+
+            foreach (var ratesPerAnChunk in dbEntities.Chunk(MaxRatePerAnOperation))
             {
                 await _writeRepository.ExecuteAsync(
                     deleteQuery,
-                    new
+                    new RatesForDeletePayload
                     {
                         CurrencyIds = ratesPerAnChunk.Select(r => r.CurrencyId),
                         UpdateDates = ratesPerAnChunk.Select(r => r.UpdateDate)

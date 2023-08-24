@@ -36,7 +36,7 @@ namespace HomeBudget.Components.CurrencyRates.Services
         public async Task<Result<IReadOnlyCollection<Currency>>> GetAvailableCurrenciesAsync()
         {
             var currencies = await _nationalBankApiClient.GetCurrenciesAsync();
-            var upToDateCurrencies = currencies.Where(c => c.DateStart <= DateOnly.FromDateTime(DateTime.Today) && c.DateEnd >= DateOnly.FromDateTime(DateTime.Today));
+            var upToDateCurrencies = currencies.Where(c => c.DateStart <= DateTime.Today && c.DateEnd >= DateTime.Today);
 
             return Succeeded(_mapper.Map<IReadOnlyCollection<Currency>>(upToDateCurrencies));
         }

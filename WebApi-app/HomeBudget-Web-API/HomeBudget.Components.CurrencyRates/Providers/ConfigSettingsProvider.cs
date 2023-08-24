@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 
 using HomeBudget.Components.CurrencyRates.Models;
+using HomeBudget.Components.CurrencyRates.Models.DbEntities;
 using HomeBudget.Components.CurrencyRates.Providers.Interfaces;
 using HomeBudget.DataAccess.Interfaces;
 
@@ -41,15 +42,15 @@ namespace HomeBudget.Components.CurrencyRates.Providers
             var settingsAsJson = JsonSerializer.Serialize(settings);
 
             const string query = "UPDATE [ConfigSettings]" +
-                                    "SET Settings = @settings" +
+                                    "SET Settings = @Settings" +
                                   "WHERE [Key] = @Key";
 
             return await _baseWriteRepository.ExecuteAsync(
                 query,
-                new
+                new SettingsForUpdatePayload
                 {
                     Key = GeneralConfigSettingsKey,
-                    settings = settingsAsJson
+                    Settings = settingsAsJson
                 });
         }
     }

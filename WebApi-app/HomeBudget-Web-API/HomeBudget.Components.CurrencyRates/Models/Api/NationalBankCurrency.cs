@@ -1,4 +1,5 @@
 ﻿using System;
+
 using Newtonsoft.Json;
 
 namespace HomeBudget.Components.CurrencyRates.Models.Api
@@ -21,9 +22,9 @@ namespace HomeBudget.Components.CurrencyRates.Models.Api
         public int Scale { get; set; }
 
         [JsonProperty(PropertyName = "Cur_DateStart")]
-        public DateOnly DateStart { get; set; }
+        public DateTime DateStart { get; set; }
 
         [JsonProperty(PropertyName = "Cur_DateEnd")]
-        public DateOnly DateEnd { get; set; }
+        public DateTime DateEnd { get; set; }
     }
 }
