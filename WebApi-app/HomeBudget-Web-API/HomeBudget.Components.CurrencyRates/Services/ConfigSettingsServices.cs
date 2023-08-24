@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using AutoMapper;
+
 using HomeBudget.Components.CurrencyRates.Models;
 using HomeBudget.Components.CurrencyRates.Providers.Interfaces;
 using HomeBudget.Components.CurrencyRates.Services.Interfaces;

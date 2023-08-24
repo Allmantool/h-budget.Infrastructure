@@ -18,6 +18,7 @@ namespace HomeBudget.Components.CurrencyRates.Configuration
                 .AddScoped<IConfigSettingsProvider, ConfigSettingsProvider>()
                 .AddScoped<IConfigSettingsServices, ConfigSettingsServices>()
                 .AddScoped<ICurrencyRatesWriteProvider, CurrencyRatesWriteProvider>()
+                .AddScoped<INationalBankRatesProvider, NationalBankRatesProvider>()
                 .AddScoped<ICurrencyRatesReadProvider, CurrencyRatesReadProvider>()
                 .AddScoped<ICurrencyRatesService, CurrencyRatesService>()
                 .RegisterNationalApiHttpClient(serviceProvider)

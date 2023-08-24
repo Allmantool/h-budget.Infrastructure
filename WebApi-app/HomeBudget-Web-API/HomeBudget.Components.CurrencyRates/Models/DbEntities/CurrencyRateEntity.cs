@@ -1,8 +1,10 @@
 ﻿using System;
 
-namespace HomeBudget_Web_API.Models
+using HomeBudget.DataAccess;
+
+namespace HomeBudget.Components.CurrencyRates.Models.DbEntities
 {
-    public class CurrencyRate
+    internal class CurrencyRateEntity : IDbEntity
     {
         public int CurrencyId { get; set; }
 
@@ -16,6 +18,6 @@ namespace HomeBudget_Web_API.Models
 
         public decimal RatePerUnit { get; set; }
 
-        public DateOnly UpdateDate { get; set; }
+        public DateTime UpdateDate { get; set; }
     }
 }

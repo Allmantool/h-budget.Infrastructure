@@ -1,4 +1,5 @@
 ﻿using System;
+
 using Newtonsoft.Json;
 
 namespace HomeBudget.Components.CurrencyRates.Models.Api

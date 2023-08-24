@@ -43,8 +43,8 @@ namespace HomeBudget_Web_API.Controllers
 
         [HttpGet("period/{startDate}/{endDate}")]
         public async Task<Result<IReadOnlyCollection<CurrencyRateGrouped>>> GetRatesForPeriodAsync(
-            DateTime startDate,
-            DateTime endDate,
+            DateOnly startDate,
+            DateOnly endDate,
             CancellationToken token = default)
             => await _mediator.Send(
                 new GetCurrencyGroupedRatesForPeriodQuery

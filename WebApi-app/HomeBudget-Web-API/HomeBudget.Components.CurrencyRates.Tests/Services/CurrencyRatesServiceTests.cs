@@ -11,12 +11,13 @@ using HomeBudget.Components.CurrencyRates.Extensions;
 using HomeBudget.Components.CurrencyRates.MapperProfileConfigurations;
 using HomeBudget.Components.CurrencyRates.Models;
 using HomeBudget.Components.CurrencyRates.Models.Api;
+using HomeBudget.Components.CurrencyRates.Providers;
 using HomeBudget.Components.CurrencyRates.Providers.Interfaces;
 using HomeBudget.Components.CurrencyRates.Services;
 using HomeBudget.Components.CurrencyRates.Services.Interfaces;
 using HomeBudget.Core.Constants;
 
-namespace HomeBudget.Components.CurrencyRates.Tests
+namespace HomeBudget.Components.CurrencyRates.Tests.Services
 {
     [TestFixture]
     public class CurrencyRatesServiceTests
@@ -24,6 +25,7 @@ namespace HomeBudget.Components.CurrencyRates.Tests
         private readonly Mock<INationalBankApiClient> _nationalBankApiClientMock = new();
         private readonly Mock<ICurrencyRatesReadProvider> _currencyRatesReadProviderMock = new();
         private readonly Mock<ICurrencyRatesWriteProvider> _currencyRatesWriteProviderMock = new();
+        private readonly Mock<INationalBankRatesProvider> _nationalBankRatesProviderMock = new();
 
         private CurrencyRatesService _sut;
 
@@ -54,10 +56,9 @@ namespace HomeBudget.Components.CurrencyRates.Tests
 
             _sut = new CurrencyRatesService(
                 GetDefaultMapper(),
-                null,
-                _nationalBankApiClientMock.Object,
                 _currencyRatesReadProviderMock.Object,
-                _currencyRatesWriteProviderMock.Object);
+                _currencyRatesWriteProviderMock.Object,
+                _nationalBankRatesProviderMock.Object);
         }
 
         [Test]
@@ -65,23 +66,8 @@ namespace HomeBudget.Components.CurrencyRates.Tests
         {
             const int expectedRatesCount = 4;
 
-            var testStartDate = new DateTime(2021, 3, 2);
-            var testEndDate = new DateTime(2021, 8, 2);
-
-            var config = new ConfigSettings
-            {
-                ActiveNationalBankCurrencies = new[]
-                {
-                    new ConfigCurrency
-                    {
-                        Abbreviation = "Abb-A",
-                    },
-                    new ConfigCurrency
-                    {
-                        Abbreviation = "Abb-B",
-                    }
-                }
-            };
+            var testStartDate = new DateOnly(2021, 3, 2);
+            var testEndDate = new DateOnly(2021, 8, 2);
 
             _nationalBankApiClientMock
                 .Setup(i => i.GetRatesForPeriodAsync(
@@ -123,10 +109,24 @@ namespace HomeBudget.Components.CurrencyRates.Tests
 
             _sut = new CurrencyRatesService(
                 GetDefaultMapper(),
-                config,
-                _nationalBankApiClientMock.Object,
                 _currencyRatesReadProviderMock.Object,
-                _currencyRatesWriteProviderMock.Object);
+                _currencyRatesWriteProviderMock.Object,
+                new NationalBankRatesProvider(
+                    new ConfigSettings
+                    {
+                        ActiveNationalBankCurrencies = new List<ConfigCurrency>
+                        {
+                            new()
+                            {
+                                Abbreviation = "Abb-A"
+                            },
+                            new()
+                            {
+                                Abbreviation = "Abb-B"
+                            }
+                        }
+                    },
+                    _nationalBankApiClientMock.Object));
 
             var rates = await _sut.GetRatesForPeriodAsync(testStartDate, testEndDate);
 
@@ -146,7 +146,7 @@ namespace HomeBudget.Components.CurrencyRates.Tests
                     Abbreviation = "Currency_Code_A",
                     OfficialRate = 1.1m,
                     RatePerUnit = 1.1m,
-                    UpdateDate = new DateTime(2022, 7, 1)
+                    UpdateDate = new DateOnly(2022, 7, 1)
                 },
                 new CurrencyRate
                 {
@@ -156,7 +156,7 @@ namespace HomeBudget.Components.CurrencyRates.Tests
                     Abbreviation = "Currency_Code_A",
                     OfficialRate = 1.3m,
                     RatePerUnit = 1.3m,
-                    UpdateDate = new DateTime(2022, 7, 2)
+                    UpdateDate = new DateOnly(2022, 7, 2)
                 },
                 new CurrencyRate
                 {
@@ -166,7 +166,7 @@ namespace HomeBudget.Components.CurrencyRates.Tests
                     Abbreviation = "Currency_Code_B",
                     OfficialRate = 2.1m,
                     RatePerUnit = 2.1m,
-                    UpdateDate = new DateTime(2022, 7, 1)
+                    UpdateDate = new DateOnly(2022, 7, 1)
                 },
                 new CurrencyRate
                 {
@@ -176,7 +176,7 @@ namespace HomeBudget.Components.CurrencyRates.Tests
                     Abbreviation = "Currency_Code_B",
                     OfficialRate = 2.2m,
                     RatePerUnit = 3.1m,
-                    UpdateDate = new DateTime(2022, 7, 2)
+                    UpdateDate = new DateOnly(2022, 7, 2)
                 },
             };
 
