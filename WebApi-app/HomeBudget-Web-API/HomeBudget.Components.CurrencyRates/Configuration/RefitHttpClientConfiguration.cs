@@ -31,6 +31,12 @@ namespace HomeBudget.Components.CurrencyRates.Configuration
                     httpClient.BaseAddress = externalResourceUrls.NationalBankUrl;
                     httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 })
+                .ConfigurePrimaryHttpMessageHandler(
+                    () => new HttpClientHandler
+                    {
+                        ServerCertificateCustomValidationCallback = (message, cert, chain, sslErrors) => true
+                    }
+                )
                 .AddPolicyHandler(GetRetryPolicy(serviceProvider))
                 .SetHandlerLifetime(TimeSpan.FromMinutes(15));
 

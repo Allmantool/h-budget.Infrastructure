@@ -13,8 +13,8 @@ services:
       - xpack.security.enabled=false
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - discovery.type=single-node
-#     networks:
-#      - elastic-network
+    networks:
+     - elastic-network
 
   homebudget-sql-server:
     image: "mcr.microsoft.com/mssql/server:2019-latest"
@@ -26,8 +26,8 @@ services:
       - "1433:1433"
     volumes:
       - ${SQL_VOLUME_PATH}:/var/opt/mssql/data
-#     networks:
-#       - mssql-network
+    networks:
+      - mssql-network
 
   flyway:
     image: flyway/flyway:8.5.2
@@ -35,8 +35,8 @@ services:
     command: -url=jdbc:sqlserver://homebudget-sql-server -schemas=homebudget-schema -mixed=true -baselineOnMigrate=true -user=sa -password=${SQL_PASSWORD} -connectRetries=5 migrate
     volumes:
       - ${FLYWAY_SCRIPTS_PATH}:/flyway/sql
-#     networks:
-#       - mssql-network
+    networks:
+      - mssql-network
     depends_on:
       - homebudget-sql-server
 
@@ -45,8 +45,8 @@ services:
     container_name: homebudget-cache
     ports:
       - "6379:6379"
-#     networks:
-#       - redis-network
+    networks:
+      - redis-network
     depends_on:
       - homebudget-sql-server
 
@@ -63,8 +63,8 @@ services:
       - sonarqube_data:/opt/sonarqube/data
       - sonarqube_extensions:/opt/sonarqube/extensions
       - sonarqube_logs:/opt/sonarqube/logs
-#     networks:
-#       - sonar-network
+    networks:
+      - sonar-network
     depends_on:
       - homebudget-sql-server
 
@@ -75,13 +75,13 @@ services:
       - 5601:5601
     environment:
       - ELASTICSEARCH_URL=http://localhost:9250
-#     networks:
-#       - elastic-network
+    networks:
+      - elastic-network
     depends_on:
       - elasticsearch
 
   homebudget-web-api:
-    image: ${DOCKER_REGISTRY-}homebudget-webapi:v0.0.64
+    image: ${DOCKER_REGISTRY-}homebudget-webapi:v0.0.75
     container_name: homebudget-api
     build:
       context: .
@@ -104,12 +104,12 @@ services:
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
-#     networks:
-#       - elastic-network
-#       - sonar-network
-#       - redis-network
-#       - mssql-network
-#       - rates-api-network
+    networks:
+      - elastic-network
+      - sonar-network
+      - redis-network
+      - mssql-network
+      - rates-api-network
     depends_on:
       - homebudget-sql-server
       - redis_server
@@ -117,17 +117,17 @@ services:
       - elasticsearch
       - kibana
 
-# networks:
-#   rates-api-network:
-#     driver: bridge
-#   elastic-network:
-#   driver: bridge
-#   sonar-network:
-#     driver: bridge
-#   redis-network:
-#     driver: bridge
-#   mssql-network:
-#     driver: bridge
+networks:
+  rates-api-network:
+    driver: bridge
+  elastic-network:
+    driver: bridge
+  sonar-network:
+    driver: bridge
+  redis-network:
+    driver: bridge
+  mssql-network:
+    driver: bridge
 
 volumes:
   sonarqube_data:
