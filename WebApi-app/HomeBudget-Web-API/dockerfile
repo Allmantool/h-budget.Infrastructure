@@ -6,7 +6,7 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /scr
 
-COPY --from=mcr.microsoft.com/dotnet/sdk:5.0 /usr/share/dotnet/shared /usr/share/dotnet/shared
+COPY --from=mcr.microsoft.com/dotnet/sdk:6.0 /usr/share/dotnet/shared /usr/share/dotnet/shared
 
 ARG SONAR_TOKEN
 ARG PULL_REQUEST_ID
@@ -48,9 +48,9 @@ RUN export JAVA_HOME
 RUN export PATH=$PATH:$JAVA_HOME/bin
 
 RUN dotnet new tool-manifest
-RUN dotnet tool install dotnet-sonarscanner --tool-path /tools --version 5.6.0
-RUN dotnet tool install dotnet-reportgenerator-globaltool --tool-path /tools --version 5.1.9
-RUN dotnet tool install snitch --tool-path /tools --version 1.10.0
+RUN dotnet tool install dotnet-sonarscanner --tool-path /tools --version 5.13.1
+RUN dotnet tool install dotnet-reportgenerator-globaltool --tool-path /tools --version 5.1.24
+RUN dotnet tool install snitch --tool-path /tools --version 1.12.0
 
 RUN dotnet tool restore
 
