@@ -90,7 +90,9 @@ RUN dotnet test HomeBudget-Web-API.sln \
     --collect:"XPlat Code Coverage" \
     /p:CollectCoverage=true \
     /p:CoverletOutputFormat=opencover \
-    /p:CoverletOutput="/app/testresults/coverage/currencyRates.coverage.xml" 
+    /p:CoverletOutput="/app/testresults/coverage/currencyRates.coverage.xml"
+
+RUN dotnet dev-certs https --trust
 
 RUN /tools/reportgenerator \
     -reports:'/app/testresults/coverage/**/coverage.cobertura.xml' \
