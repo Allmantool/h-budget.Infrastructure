@@ -27,7 +27,7 @@ describe('AppComponent', () => {
 		const fixture = TestBed.createComponent(MainDashboardComponent);
 		fixture.detectChanges();
 
-		const compiled = fixture.nativeElement;
+		const compiled: any = fixture.nativeElement;
 		const titleSpan = compiled.querySelector('.content');
 
 		expect(titleSpan.children.length).toBe(2);

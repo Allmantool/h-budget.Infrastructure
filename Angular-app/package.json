@@ -15,7 +15,8 @@
     "prettier": "prettier --write src/**/*.{js,ts,css}",
     "eslint": "eslint --cache --fix --ext .js,.jsx,.ts,.tsx src",
     "eslint:dump": "eslint --print-config ./.eslintrc.json",
-    "sonar-scanner": "sonar-scanner"
+    "sonar-scanner": "sonar-scanner",
+    "prepare": "cd .. && husky install"
   },
   "husky": {
     "hooks": {
