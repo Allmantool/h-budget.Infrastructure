@@ -10,7 +10,7 @@
     "test": "nx test --code-coverage",
     "test-headless-ci-only": "nx test --browsers=ChromiumNoSandbox",
     "test-headless": "nx test --watch=false --code-coverage --source-map=false --browsers=ChromiumNoSandbox",
-    "lint": "nx lint",
+    "lint": "nx lint --verbose",
     "lint-css": "stylelint src/**/*.css",
     "prettier": "prettier --write src/**/*.{js,ts,css}",
     "eslint": "eslint --cache --fix --ext .js,.jsx,.ts,.tsx src",
