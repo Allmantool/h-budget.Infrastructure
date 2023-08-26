@@ -126,11 +126,7 @@ jobs:
           npm ci
           npm i -g npm-check-updates
           ncu -u
-          npm i --legacy-peer-deps
-
-      - name: Keep up minor UI dependencies up to date
-        run: |
-          npm update
+          npm i --legacy-peer-depss
 
       - name: Build UI project
         run: |
