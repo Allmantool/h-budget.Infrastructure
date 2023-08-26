@@ -125,7 +125,7 @@ jobs:
         run: |
           npm i -g npm-check-updates
           ncu -u
-          npm i --legacy-peer-depss
+          npm i --legacy-peer-deps
 
       - name: Build UI project
         run: |
