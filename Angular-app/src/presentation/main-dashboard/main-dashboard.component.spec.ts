@@ -20,7 +20,7 @@ describe('AppComponent', () => {
 	it(`should have as title 'h-budget'`, () => {
 		const fixture = TestBed.createComponent(MainDashboardComponent);
 		const app = fixture.componentInstance;
-		expect(app.browserTitle).toEqual('Home budget');
+		expect(app.browserTitle).toEqual('H-Budget dashboard');
 	});
 
 	it('should have 2 sub sections: accouting & rates', () => {

@@ -16,7 +16,7 @@
     "eslint": "eslint --cache --fix --ext .js,.jsx,.ts,.tsx src",
     "eslint:dump": "eslint --print-config ./.eslintrc.json",
     "sonar-scanner": "sonar-scanner",
-    "prepare": "cd .. && husky install"
+    "prepare": "cd .. && husky install Angular-app/.husky"
   },
   "husky": {
     "hooks": {
