@@ -1,14 +1,14 @@
 name: Upgrade NPM packages
 
 on:
-    push:
-      branches: [ master ]
-    pull_request:
-      # The branches below must be a subset of the branches above
-      branches: [ master ]
-    schedule:
-      # * is a special character in YAML so you have to quote this string
-      - cron:  '0 0 * * 0'
+  push:
+    branches: [master]
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: [master]
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    - cron: "0 0 * * 0"
 
 jobs:
   upgrade-packages:
@@ -23,7 +23,7 @@ jobs:
       - name: Set up Node.js ⚙️
         uses: actions/setup-node@v3
         with:
-          node-version: '17.x'
+          node-version: "17.x"
 
       - name: Upgrade packages 🔀
         run: npm update
@@ -31,6 +31,6 @@ jobs:
       - name: Commit and create PR 🔀
         uses: peter-evans/create-pull-request@v5
         with:
-          title: 'build(deps): Upgrade NPM packages (automated)'
-          branch: 'build-deps-upgrade-npm-packages-automated'
-          commit-message: 'build(deps): upgrade NPM packages (automated)'
+          title: "build(deps): Upgrade NPM packages (automated)"
+          branch: "build-deps-upgrade-npm-packages-automated"
+          commit-message: "build(deps): upgrade NPM packages (automated)"
