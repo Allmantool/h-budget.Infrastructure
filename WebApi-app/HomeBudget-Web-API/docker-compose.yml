@@ -81,7 +81,7 @@ services:
       - elasticsearch
 
   homebudget-web-api:
-    image: ${DOCKER_REGISTRY-}homebudget-webapi:v0.0.75
+    image: ${DOCKER_REGISTRY-}homebudget-webapi:v0.0.76
     container_name: homebudget-api
     build:
       context: .
