@@ -20,14 +20,14 @@ describe('AppComponent', () => {
 	it(`should have as title 'h-budget'`, () => {
 		const fixture = TestBed.createComponent(MainDashboardComponent);
 		const app = fixture.componentInstance;
-		expect(app.browserTitle).toEqual('Home budget');
+		expect(app.browserTitle).toEqual('H-Budget dashboard');
 	});
 
 	it('should have 2 sub sections: accouting & rates', () => {
 		const fixture = TestBed.createComponent(MainDashboardComponent);
 		fixture.detectChanges();
 
-		const compiled = fixture.nativeElement;
+		const compiled: any = fixture.nativeElement;
 		const titleSpan = compiled.querySelector('.content');
 
 		expect(titleSpan.children.length).toBe(2);
