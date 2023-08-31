@@ -1,19 +1,32 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { TestBed } from '@angular/core/testing';
 
 import { NgxsModule, Store } from '@ngxs/store';
 import * as _ from 'lodash';
 import { of } from 'rxjs';
 
-import {
-	AddCurrencyGroups,
-	FetchAllCurrencyRates,
-} from './../../../../app/modules/shared/store/actions/currency-rates.actions';
 import { CurrencyTrend } from './../../../../app/modules/shared/store/models/currency-rates/currency-trend';
 import { ngxsConfig } from './../../../../app/modules/shared/store/ngxs.config';
-import { CurrencyRatesState } from './../../../../app/modules/shared/store/states/currency-rates.state';
+import { CurrencyRatesState } from '../../../../app/modules/shared/store/states/rates/currency-rates.state';
 import { NationalBankCurrencyProvider } from '../../../../data/providers/rates/national-bank-currency.provider';
 import { CurrencyRateGroupModel } from 'domain/models/rates/currency-rates-group.model';
 import { CurrencyRateValueModel } from 'domain/models/rates/currency-rate-value.model';
+import {
+	AddCurrencyGroups,
+	FetchAllCurrencyRates,
+} from '../../../../app/modules/shared/store/states/rates/actions/currency.actions';
+import { CurrencyTableState } from 'app/modules/shared/store/states/rates/currency-table.state';
+import { CurrencyChartState } from '../../../../app/modules/shared/store/states/rates/currency-chart.state';
+import {
+	getCurrencyRatesFromPreviousDay,
+	getCurrencyRatesGroupByCurrencyId,
+} from '../../../../app/modules/shared/store/states/rates/selectors/currency.selectors';
 
 describe('Currency rates store', () => {
 	let store: Store;
@@ -54,7 +67,16 @@ describe('Currency rates store', () => {
 		]);
 
 		TestBed.configureTestingModule({
-			imports: [NgxsModule.forRoot([CurrencyRatesState], ngxsConfig)],
+			imports: [
+				NgxsModule.forRoot(
+					[
+						CurrencyRatesState,
+						CurrencyTableState,
+						CurrencyChartState,
+					],
+					ngxsConfig
+				),
+			],
 			providers: [
 				{
 					provide: NationalBankCurrencyProvider,
@@ -70,7 +92,7 @@ describe('Currency rates store', () => {
 
 	it('it "AddCurrencyGroups": initial setup - expect 2 carrency groups', () => {
 		store
-			.selectOnce((state) => state.currencyRateState.rateGroups)
+			.selectOnce((state) => state.currencyState.rateGroups)
 			.subscribe((groups) => {
 				expect(groups.length).toBe(2);
 			});
@@ -96,7 +118,7 @@ describe('Currency rates store', () => {
 		store.dispatch(new AddCurrencyGroups(updatedCurrencyRateGroups));
 
 		store
-			.selectOnce((state) => state.currencyRateState.rateGroups)
+			.selectOnce((state) => state.currencyState.rateGroups)
 			.subscribe((groups) => {
 				expect(groups.length).toBe(2);
 			});
@@ -122,7 +144,7 @@ describe('Currency rates store', () => {
 		store.dispatch(new AddCurrencyGroups(updatedCurrencyRateGroups));
 
 		store
-			.selectOnce((state) => state.currencyRateState.rateGroups)
+			.selectOnce((state) => state.currencyState.rateGroups)
 			.subscribe((groups) => {
 				const updatedRateGroup = _.find(
 					groups,
@@ -159,7 +181,7 @@ describe('Currency rates store', () => {
 		store.dispatch(new AddCurrencyGroups(updatedCurrencyRateGroups));
 
 		store
-			.selectOnce((state) => state.currencyRateState.rateGroups)
+			.selectOnce((state) => state.currencyState.rateGroups)
 			.subscribe((groups: CurrencyRateGroupModel[]) => {
 				const items = _.flattenDeep(
 					_.map(groups, (g) => g.rateValues!)
@@ -193,7 +215,7 @@ describe('Currency rates store', () => {
 		store.dispatch(new FetchAllCurrencyRates());
 
 		const groups = store.selectSnapshot(
-			(state) => state.currencyRateState.rateGroups
+			(state) => state.currencyState.rateGroups
 		);
 
 		const items = _.flattenDeep(
@@ -230,8 +252,7 @@ describe('Currency rates store', () => {
 			},
 		];
 
-		const previousDayRates =
-			CurrencyRatesState.getCurrencyRatesFromPreviousDay(stubValue);
+		const previousDayRates = getCurrencyRatesFromPreviousDay(stubValue);
 
 		const previousDate = _.first(previousDayRates)?.updateDate;
 
@@ -239,10 +260,9 @@ describe('Currency rates store', () => {
 	});
 
 	it('it "GetCurrencyRatesByCurrencyId": return a currency group by id', () => {
-		const carrencyGroup =
-			CurrencyRatesState.getCurrencyRatesGroupByCurrencyId(
-				store.selectSnapshot((state) => state.currencyRateState)
-			)(2);
+		const carrencyGroup = getCurrencyRatesGroupByCurrencyId(
+			store.selectSnapshot((state: any) => state.currencyState)
+		)(2);
 
 		expect(carrencyGroup.currencyId).toBe(2);
 	});
