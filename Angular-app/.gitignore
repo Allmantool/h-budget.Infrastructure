@@ -106,3 +106,5 @@ reports/*
 
 .tools/*
 .eslintcaches
+
+.eslintcache
