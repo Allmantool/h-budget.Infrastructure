@@ -25,14 +25,14 @@ export class NationalBankCurrencyProvider implements BankCurrencyProvider {
 	public getCurrenciesForSpecifiedPeriod(
 		payload: DaysRangePayload
 	): Observable<CurrencyRateGroupModel[]> {
+		const ratesUrl: string = `${RoutesSegments.HOME_BUDGET_APP_HOST}/currencyRates/period`;
+
+		// prettier-ignore
+		const parametersSegmentUri = `${format(payload.startDate,'yyyy-MM-dd')}/${format(payload.endDate, 'yyyy-MM-dd')}`;
+
 		return this.http
 			.get<Result<RatesGroupEntity[]>>(
-				`${
-					RoutesSegments.HOME_BUDGET_APP_HOST
-				}/currencyRates/period/${format(
-					payload.startDate,
-					'yyyy-MM-dd'
-				)}/${format(payload.endDate, 'yyyy-MM-dd')}`
+				`${ratesUrl}/${parametersSegmentUri}`
 			)
 			.pipe(
 				map(

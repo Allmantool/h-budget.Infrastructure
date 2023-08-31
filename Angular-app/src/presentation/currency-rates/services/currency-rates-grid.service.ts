@@ -8,20 +8,18 @@ import * as _ from 'lodash';
 
 import { CurrencyGridRateModel } from '../models/currency-grid-rate.model';
 import { CurrencyRateGroupModel } from 'domain/models/rates/currency-rates-group.model';
-import {
-	AddCurrencyGroups,
-	SetActiveCurrency,
-} from 'app/modules/shared/store/actions/currency-rates.actions';
 import { PreviousDayCurrencyRate } from 'app/modules/shared/store/models/currency-rates/previous-day-currency-rate';
 import { RatesGridDefaultOptions } from 'app/modules/shared/constants/rates-grid-default-options';
 import { CurrencyTrend } from 'app/modules/shared/store/models/currency-rates/currency-trend';
 import { PresentationRatesMappingProfile } from '../mappers/presentation-rates-mapping.profiler';
+import { AddCurrencyGroups } from '../../../app/modules/shared/store/states/rates/actions/currency.actions';
+import { SetActiveCurrency } from '../../../app/modules/shared/store/states/rates/actions/currency-table-options.actions';
 
 @Injectable()
 export class CurrencyRatesGridService {
 	constructor(
-		private mapper: Mapper,
-		private store: Store
+		private readonly mapper: Mapper,
+		private readonly store: Store
 	) {}
 
 	public GetDataSource(

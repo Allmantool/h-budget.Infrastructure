@@ -15,9 +15,11 @@ import { NationalBankCurrencyProvider } from 'data/providers/rates/national-bank
 import { RatesDialogService } from './services/rates-dialog.service';
 import { AppCoreModule } from 'app/modules/core';
 import { AppSharedModule } from 'app/modules/shared/shared.module';
-import { CurrencyRatesState } from 'app/modules/shared/store/states/currency-rates.state';
+import { CurrencyRatesState } from 'app/modules/shared/store/states/rates/currency-rates.state';
 import { CurrencyRatesGridService } from './services/currency-rates-grid.service';
 import { PresentationRatesMappingProfile } from './mappers/presentation-rates-mapping.profiler';
+import { CurrencyTableState } from 'app/modules/shared/store/states/rates/currency-table.state';
+import { CurrencyChartState } from 'app/modules/shared/store/states/rates/currency-chart.state';
 
 @NgModule({
 	declarations: [
@@ -29,7 +31,11 @@ import { PresentationRatesMappingProfile } from './mappers/presentation-rates-ma
 		CurrencyRatesRoutingModule,
 		AppSharedModule,
 		AppCoreModule,
-		NgxsModule.forFeature([CurrencyRatesState]),
+		NgxsModule.forFeature([
+			CurrencyRatesState,
+			CurrencyTableState,
+			CurrencyChartState,
+		]),
 		MapperModule.withProfiles([
 			DataRatesMappingProfile,
 			PresentationRatesMappingProfile,

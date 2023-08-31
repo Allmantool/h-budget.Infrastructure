@@ -28,10 +28,11 @@ import { filter } from 'rxjs/operators';
 import { CurrencyGridRateModel } from '../../models/currency-grid-rate.model';
 import { LineChartService } from '../../services/line-chart.service';
 import { LineChartOptions } from '../../models/line-chart-options';
-import { CurrencyRatesState } from 'app/modules/shared/store/states/currency-rates.state';
 import { CurrencyTableOptions } from 'app/modules/shared/store/models/currency-rates/currency-table-options';
-import { FetchAllCurrencyRates } from 'app/modules/shared/store/actions/currency-rates.actions';
 import { CurrencyRateGroupModel } from 'domain/models/rates/currency-rates-group.model';
+import { getCurrencyTableOptions } from 'app/modules/shared/store/states/rates/selectors/currency-table-options.selectors';
+import { getCurrencyRatesGroupByCurrencyId } from 'app/modules/shared/store/states/rates/selectors/currency.selectors';
+import { FetchAllCurrencyRates } from '../../../../app/modules/shared/store/states/rates/actions/currency.actions';
 
 export type ChartOptions = {
 	series: ApexAxisChartSeries;
@@ -47,10 +48,10 @@ export type ChartOptions = {
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
-	@Select(CurrencyRatesState.getCurrencyRatesGroupByCurrencyId)
+	@Select(getCurrencyRatesGroupByCurrencyId)
 	ratesGroup$!: Observable<(id: number) => CurrencyRateGroupModel>;
 
-	@Select(CurrencyRatesState.getCurrencyTableOptions)
+	@Select(getCurrencyTableOptions)
 	currencyTableOptions$!: Observable<CurrencyTableOptions>;
 
 	@ViewChild('chart') chart!: ChartComponent;

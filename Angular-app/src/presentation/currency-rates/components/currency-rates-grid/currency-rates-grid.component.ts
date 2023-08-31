@@ -16,15 +16,20 @@ import * as _ from 'lodash';
 import { CurrencyGridRateModel } from '../../models/currency-grid-rate.model';
 import { RatesDialogService } from './../../services/rates-dialog.service';
 import { CurrencyRatesGridService } from '../../services/currency-rates-grid.service';
-import { CurrencyRatesState } from 'app/modules/shared/store/states/currency-rates.state';
 import { PreviousDayCurrencyRate } from 'app/modules/shared/store/models/currency-rates/previous-day-currency-rate';
 import { CurrencyRateGroupModel } from 'domain/models/rates/currency-rates-group.model';
-import { SetCurrencyDateRange } from 'app/modules/shared/store/actions/currency-rates.actions';
 import { NationalBankCurrencyProvider } from 'data/providers/rates/national-bank-currency.provider';
 import { RatesGridDefaultOptions } from 'app/modules/shared/constants/rates-grid-default-options';
 import { CurrencyTableOptions } from 'app/modules/shared/store/models/currency-rates/currency-table-options';
 import { RatesGridColumnOptions } from 'presentation/currency-rates/constants/rates-grid-options';
 import { CurrencyRateValueModel } from 'domain/models/rates/currency-rate-value.model';
+import { getCurrencyTableOptions } from 'app/modules/shared/store/states/rates/selectors/currency-table-options.selectors';
+import { SetSelectedCurrencyRange } from '../../../../app/modules/shared/store/states/rates/actions/currency-chart-options.actions';
+import { SetCurrencyDateRange } from '../../../../app/modules/shared/store/states/rates/actions/currency-table-options.actions';
+import {
+	getCurrencyRatesFromPreviousDay,
+	getRates,
+} from 'app/modules/shared/store/states/rates/selectors/currency.selectors';
 
 @Component({
 	selector: 'app-currency-rates-grid',
@@ -33,14 +38,12 @@ import { CurrencyRateValueModel } from 'domain/models/rates/currency-rate-value.
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
-	@Select(CurrencyRatesState.getRates) rates$!: Observable<
-		CurrencyRateValueModel[]
-	>;
+	@Select(getRates) rates$!: Observable<CurrencyRateValueModel[]>;
 
-	@Select(CurrencyRatesState.getCurrencyTableOptions)
+	@Select(getCurrencyTableOptions)
 	currencyTableOptions$!: Observable<CurrencyTableOptions>;
 
-	@Select(CurrencyRatesState.getCurrencyRatesFromPreviousDay)
+	@Select(getCurrencyRatesFromPreviousDay)
 	previousDayRates$!: Observable<PreviousDayCurrencyRate[]>;
 
 	public selectedCurrencyPertionOption: number =
@@ -94,8 +97,21 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 						rateGroups,
 						tableOptions.selectedItem.currencyId
 					);
+
 				this.selectedCurrencyPertionOption =
 					tableOptions.selectedDateRange.diffInMonths;
+
+				this.store.dispatch(
+					new SetSelectedCurrencyRange(
+						0,
+						_.find(
+							rateGroups,
+							(rg) =>
+								rg.currencyId ===
+								tableOptions.selectedItem.currencyId
+						)?.rateValues?.length ?? 0
+					)
+				);
 			});
 
 		if (getRatesSub$) {
