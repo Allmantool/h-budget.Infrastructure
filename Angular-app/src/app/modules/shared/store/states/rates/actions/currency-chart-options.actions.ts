@@ -1,8 +1,5 @@
-export class SetSelectedCurrencyRange {
+export class SetActiveCurrencyTrendTitle {
 	static readonly type =
-		'[CURR-CHART-OPTIONS] Set selected currency chart range';
-	constructor(
-		public startValueIndex: number,
-		public endValueIndex: number
-	) {}
+		'[CURR-CHART-OPTIONS] Set chart currency trend title';
+	constructor(public activeCurrencyTitle: string) {}
 }

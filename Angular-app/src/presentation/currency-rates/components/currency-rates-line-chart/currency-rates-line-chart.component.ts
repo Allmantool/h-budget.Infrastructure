@@ -1,4 +1,5 @@
 import {
+	AfterViewInit,
 	ChangeDetectionStrategy,
 	Component,
 	Input,
@@ -6,40 +7,31 @@ import {
 	OnInit,
 	ViewChild,
 } from '@angular/core';
-import { Select, Store } from '@ngxs/store';
 
+import { Select, Store } from '@ngxs/store';
 import * as _ from 'lodash';
-import {
-	ApexAxisChartSeries,
-	ApexChart,
-	ApexXAxis,
-	ApexTitleSubtitle,
-	ChartComponent,
-} from 'ng-apexcharts';
+import { ChartComponent } from 'ng-apexcharts';
 import {
 	BehaviorSubject,
 	combineLatest,
+	from,
 	Observable,
 	Subject,
 	Subscription,
 } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { filter, take } from 'rxjs/operators';
 
 import { CurrencyGridRateModel } from '../../models/currency-grid-rate.model';
 import { LineChartService } from '../../services/line-chart.service';
 import { LineChartOptions } from '../../models/line-chart-options';
-import { CurrencyTableOptions } from 'app/modules/shared/store/models/currency-rates/currency-table-options';
-import { CurrencyRateGroupModel } from 'domain/models/rates/currency-rates-group.model';
-import { getCurrencyTableOptions } from 'app/modules/shared/store/states/rates/selectors/currency-table-options.selectors';
 import { getCurrencyRatesGroupByCurrencyId } from 'app/modules/shared/store/states/rates/selectors/currency.selectors';
 import { FetchAllCurrencyRates } from '../../../../app/modules/shared/store/states/rates/actions/currency.actions';
-
-export type ChartOptions = {
-	series: ApexAxisChartSeries;
-	chart: ApexChart;
-	xaxis: ApexXAxis;
-	title: ApexTitleSubtitle;
-};
+import { CurrencyChartOptions } from '../../../../app/modules/shared/store/models/currency-rates/currency-chart-option.';
+import { getCurrencyChartOptions } from '../../../../app/modules/shared/store/states/rates/selectors/currency-chart-options.selectors';
+import { ChartOptions } from '../../models/chart-options';
+import { CurrencyRateGroupModel } from '../../../../domain/models/rates/currency-rates-group.model';
+import { CurrencyTableOptions } from '../../../../app/modules/shared/store/models/currency-rates/currency-table-options';
+import { getCurrencyTableOptions } from '../../../../app/modules/shared/store/states/rates/selectors/currency-table-options.selectors';
 
 @Component({
 	selector: 'currency-rates-line-chart',
@@ -47,18 +39,23 @@ export type ChartOptions = {
 	styleUrls: ['./currency-rates-line-chart.component.css'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
+export class CurrencyRatesLineChartComponent
+	implements AfterViewInit, OnInit, OnDestroy
+{
 	@Select(getCurrencyRatesGroupByCurrencyId)
 	ratesGroup$!: Observable<(id: number) => CurrencyRateGroupModel>;
 
 	@Select(getCurrencyTableOptions)
 	currencyTableOptions$!: Observable<CurrencyTableOptions>;
 
-	@ViewChild('chart') chart!: ChartComponent;
+	@Select(getCurrencyChartOptions)
+	currencyChartOptions$!: Observable<CurrencyChartOptions>;
+
+	@ViewChild(ChartComponent, { static: false }) chart!: ChartComponent;
+	public chartOptions: Partial<ChartOptions> = {};
 
 	@Input() public chartWidth = '500%';
 	@Input() public chartHeight = '360';
-	public chartOptions: ChartOptions = {} as ChartOptions;
 
 	public isChartInitialized$: BehaviorSubject<boolean> =
 		new BehaviorSubject<boolean>(false);
@@ -69,10 +66,22 @@ export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
 
 	private subs: Subscription[] = [];
 
+	private lineChartOptions: LineChartOptions;
+
 	constructor(
 		private store: Store,
 		private linechartService: LineChartService
-	) {}
+	) {
+		this.lineChartOptions = {
+			height: this.chartHeight,
+			width: this.chartWidth,
+			dateFormat: 'dd MMM yy',
+			type: 'area',
+		} as LineChartOptions;
+	}
+	ngAfterViewInit(): void {
+		this.populateChartOptions();
+	}
 
 	ngOnDestroy(): void {
 		this.subs.forEach((s) => s.unsubscribe());
@@ -80,7 +89,6 @@ export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
 
 	ngOnInit(): void {
 		this.store.dispatch(new FetchAllCurrencyRates());
-		this.populateChartOptions();
 	}
 
 	private populateChartOptions(): void {
@@ -100,21 +108,34 @@ export class CurrencyRatesLineChartComponent implements OnInit, OnDestroy {
 						tableOptions.selectedItem.currencyId
 					)?.rateValues;
 
-					const lineChartOptions: LineChartOptions = {
-						height: this.chartHeight,
-						width: this.chartWidth,
-						dateFormat: 'dd MMM yy',
-						type: 'area',
-					};
-
 					this.chartOptions = this.linechartService.getChartOptions(
 						rateValues ?? [],
 						tableOptions,
-						lineChartOptions
+						this.lineChartOptions
 					);
 
 					this.isChartInitialized$.next(true);
 				})
 		);
+
+		this.subs.push(
+			this.currencyChartOptions$
+				.pipe()
+				.subscribe((chartOptions) =>
+					from(
+						this.updateTitle(chartOptions.activeCurrencyTrendTitle)
+					)
+						.pipe(take(1))
+						.subscribe()
+				)
+		);
+	}
+
+	private async updateTitle(titleText: string): Promise<void> {
+		return await this.chart?.updateOptions({
+			title: {
+				text: titleText,
+			},
+		});
 	}
 }

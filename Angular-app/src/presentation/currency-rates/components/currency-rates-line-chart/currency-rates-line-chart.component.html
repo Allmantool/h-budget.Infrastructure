@@ -1,9 +1,9 @@
 <div *ngIf="isChartInitialized$ | async" class="currency-rates-chart">
 	<apx-chart
-		[series]="chartOptions.series"
-		[chart]="chartOptions.chart"
-		[xaxis]="chartOptions.xaxis"
-		[title]="chartOptions.title"
+		[series]="chartOptions.series!"
+		[chart]="chartOptions.chart!"
+		[xaxis]="chartOptions.xaxis!"
+		[title]="chartOptions.title!"
 	></apx-chart>
 </div>
 
