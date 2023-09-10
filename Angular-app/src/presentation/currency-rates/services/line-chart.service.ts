@@ -1,3 +1,5 @@
+/* eslint-disable no-var */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Injectable } from '@angular/core';
@@ -5,16 +7,23 @@ import { Injectable } from '@angular/core';
 import { format } from 'date-fns';
 import * as _ from 'lodash';
 import { Store } from '@ngxs/store';
+import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 
-import { ChartOptions } from '../components/currency-rates-line-chart/currency-rates-line-chart.component';
 import { LineChartOptions } from '../models/line-chart-options';
 import { CurrencyTableOptions } from 'app/modules/shared/store/models/currency-rates/currency-table-options';
 import { CurrencyRateValueModel } from 'domain/models/rates/currency-rate-value.model';
-import { SetSelectedCurrencyRange } from '../../../app/modules/shared/store/states/rates/actions/currency-chart-options.actions';
+import { SetActiveCurrencyTrendTitle } from '../../../app/modules/shared/store/states/rates/actions/currency-chart-options.actions';
+import { LineChartTitleService } from './line-chart-title.service';
+import { CurrencyChartTitle } from '../../../app/modules/shared/store/models/currency-rates/currency-chart-title';
+import { ChartOptions } from '../models/chart-options';
 
 @Injectable()
 export class LineChartService {
 	constructor(protected readonly store: Store) {}
+
+	private chartCurrencyTrendTitle$ = new BehaviorSubject(
+		{} as CurrencyChartTitle
+	);
 
 	public getChartOptions(
 		rates: CurrencyRateValueModel[],
@@ -34,6 +43,13 @@ export class LineChartService {
 
 		const abbreviation = tableOptions.selectedItem.abbreviation;
 
+		this.chartCurrencyTrendTitle$.next(
+			LineChartTitleService.calculateTitle(
+				abbreviation,
+				_.map(ratesForPeriod, (r) => r.ratePerUnit!)
+			)
+		);
+
 		return {
 			series: [
 				{
@@ -43,11 +59,28 @@ export class LineChartService {
 			],
 			chart: {
 				events: {
-					zoomed: (_, { xaxis }) => {
+					zoomed: (chartContext, { xaxis }) => {
+						const dataPyaload: number[] =
+							LineChartService.getRatesFromChartContext(
+								chartContext
+							);
+
+						var zoomedData = _.slice(
+							dataPyaload,
+							xaxis.min - 1,
+							xaxis.max
+						);
+
+						this.chartCurrencyTrendTitle$.next(
+							LineChartTitleService.calculateTitle(
+								abbreviation,
+								zoomedData
+							)
+						);
+
 						this.store.dispatch(
-							new SetSelectedCurrencyRange(
-								xaxis.min - 1,
-								xaxis.max
+							new SetActiveCurrencyTrendTitle(
+								this.chartCurrencyTrendTitle$.value.text
 							)
 						);
 					},
@@ -56,14 +89,16 @@ export class LineChartService {
 				width: options.width,
 				type: options.type,
 			},
-			title: {
-				text: abbreviation,
-			},
+			title: this.chartCurrencyTrendTitle$.value,
 			xaxis: {
 				categories: _.map(ratesForPeriod, (r) =>
 					format(r.updateDate!, options.dateFormat)
 				),
 			},
 		};
+	}
+
+	private static getRatesFromChartContext(chartContext: any): number[] {
+		return chartContext.series.ctx.series.w.globals.series[0];
 	}
 }

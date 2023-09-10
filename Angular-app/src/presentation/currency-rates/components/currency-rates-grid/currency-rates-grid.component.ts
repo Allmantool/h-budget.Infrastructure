@@ -24,7 +24,6 @@ import { CurrencyTableOptions } from 'app/modules/shared/store/models/currency-r
 import { RatesGridColumnOptions } from 'presentation/currency-rates/constants/rates-grid-options';
 import { CurrencyRateValueModel } from 'domain/models/rates/currency-rate-value.model';
 import { getCurrencyTableOptions } from 'app/modules/shared/store/states/rates/selectors/currency-table-options.selectors';
-import { SetSelectedCurrencyRange } from '../../../../app/modules/shared/store/states/rates/actions/currency-chart-options.actions';
 import { SetCurrencyDateRange } from '../../../../app/modules/shared/store/states/rates/actions/currency-table-options.actions';
 import {
 	getCurrencyRatesFromPreviousDay,
@@ -100,18 +99,6 @@ export class CurrencyRatesGridComponent implements OnInit, OnDestroy {
 
 				this.selectedCurrencyPertionOption =
 					tableOptions.selectedDateRange.diffInMonths;
-
-				this.store.dispatch(
-					new SetSelectedCurrencyRange(
-						0,
-						_.find(
-							rateGroups,
-							(rg) =>
-								rg.currencyId ===
-								tableOptions.selectedItem.currencyId
-						)?.rateValues?.length ?? 0
-					)
-				);
 			});
 
 		if (getRatesSub$) {
