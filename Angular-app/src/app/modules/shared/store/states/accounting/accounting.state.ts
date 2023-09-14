@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 
-import { Action, Selector, State, StateContext } from '@ngxs/store';
+import { Action, State, StateContext } from '@ngxs/store';
 import * as _ from 'lodash';
 
-import { AccountingTableOptions } from './../models/accounting/accounting-table-options';
-import { Add, AddRange, Edit, SetActive } from '../actions/accounting.actions';
+import { AccountingTableOptions } from '../../models/accounting/accounting-table-options';
 import { AccountingGridRecord } from 'presentation/accounting/models/accounting-grid-record';
+import { AccountingTableState } from './accounting-table.state';
+import { AddRange, Edit, Add } from './actions/accounting.actions';
 
 export interface IAccountingStateModel {
 	operationRecords: AccountingGridRecord[];
@@ -22,21 +23,10 @@ export interface IAccountingStateModel {
 			selectedRecordGuid: {},
 		} as AccountingTableOptions,
 	},
+	children: [AccountingTableState],
 })
 @Injectable()
 export class AccountingState {
-	@Selector([AccountingState])
-	static getAccountingRecords(
-		state: IAccountingStateModel
-	): AccountingGridRecord[] {
-		return state.operationRecords;
-	}
-
-	@Selector([AccountingState])
-	static getAccountingTableOptions(state: IAccountingStateModel) {
-		return state.tableOptions;
-	}
-
 	@Action(Add)
 	add(
 		{ getState, patchState }: StateContext<IAccountingStateModel>,
@@ -61,19 +51,9 @@ export class AccountingState {
 				_.differenceWith(
 					accountingRecord,
 					state.operationRecords,
-					_.isEqual
+					_.isEqual.bind(this)
 				)
 			),
-		});
-	}
-
-	@Action(SetActive)
-	setActive(
-		{ patchState }: StateContext<IAccountingStateModel>,
-		{ id }: SetActive
-	): void {
-		patchState({
-			tableOptions: { selectedRecordGuid: id } as AccountingTableOptions,
 		});
 	}
 

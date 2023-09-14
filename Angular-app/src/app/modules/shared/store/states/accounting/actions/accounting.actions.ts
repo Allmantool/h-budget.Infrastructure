@@ -1,6 +1,6 @@
 import { Guid } from 'typescript-guid';
 
-import { AccountingGridRecord } from 'presentation/accounting/models/accounting-grid-record';
+import { AccountingGridRecord } from '../../../../../../../presentation/accounting/models/accounting-grid-record';
 
 export class Add {
 	static readonly type = '[Accounting] Add';
@@ -15,11 +15,6 @@ export class AddRange {
 export class Delete {
 	static readonly type = '[Accounting] Delete';
 	constructor(public accountingGuid: Guid) {}
-}
-
-export class SetActive {
-	static readonly type = '[Accounting] Set active';
-	constructor(public id: Guid) {}
 }
 
 export class Edit {

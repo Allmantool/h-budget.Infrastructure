@@ -1,5 +1,5 @@
-/* eslint-disable no-var */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Injectable } from '@angular/core';
@@ -65,7 +65,7 @@ export class LineChartService {
 								chartContext
 							);
 
-						var zoomedData = _.slice(
+						const zoomedData = _.slice(
 							dataPyaload,
 							xaxis.min - 1,
 							xaxis.max
