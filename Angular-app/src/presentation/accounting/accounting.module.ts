@@ -7,14 +7,15 @@ import {
 	AccountingCrudComponent,
 } from '../accounting';
 import { AppSharedModule } from 'app/modules/shared';
-import { AccountingState } from 'app/modules/shared/store/states/accounting.state';
+import { AccountingState } from 'app/modules/shared/store/states/accounting/accounting.state';
+import { AccountingTableState } from '../../app/modules/shared/store/states/accounting/accounting-table.state';
 
 @NgModule({
 	declarations: [AccountingGridComponent, AccountingCrudComponent],
 	imports: [
 		AppSharedModule,
 		AccountingRoutingModule,
-		NgxsModule.forFeature([AccountingState]),
+		NgxsModule.forFeature([AccountingState, AccountingTableState]),
 	],
 	providers: [],
 	bootstrap: [],

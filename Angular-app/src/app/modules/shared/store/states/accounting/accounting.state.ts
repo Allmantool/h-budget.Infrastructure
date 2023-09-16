@@ -1,42 +1,23 @@
 import { Injectable } from '@angular/core';
 
-import { Action, Selector, State, StateContext } from '@ngxs/store';
+import { Action, State, StateContext } from '@ngxs/store';
 import * as _ from 'lodash';
 
-import { AccountingTableOptions } from './../models/accounting/accounting-table-options';
-import { Add, AddRange, Edit, SetActive } from '../actions/accounting.actions';
-import { AccountingGridRecord } from 'presentation/accounting/models/accounting-grid-record';
-
-export interface IAccountingStateModel {
-	operationRecords: AccountingGridRecord[];
-	tableOptions: AccountingTableOptions;
-	activeCurrency: string;
-}
+import { AccountingTableState } from './accounting-table.state';
+import { AddRange, Edit, Add } from './actions/accounting.actions';
+import { IAccountingStateModel } from './models/accounting-state.model';
+import { RatesAbbrevitions } from '../../../constants/rates-abbreviations';
 
 @State<IAccountingStateModel>({
 	name: 'accounting',
 	defaults: {
-		activeCurrency: 'BYN',
+		activeCurrency: RatesAbbrevitions.BYN,
 		operationRecords: [],
-		tableOptions: {
-			selectedRecordGuid: {},
-		} as AccountingTableOptions,
 	},
+	children: [AccountingTableState],
 })
 @Injectable()
 export class AccountingState {
-	@Selector([AccountingState])
-	static getAccountingRecords(
-		state: IAccountingStateModel
-	): AccountingGridRecord[] {
-		return state.operationRecords;
-	}
-
-	@Selector([AccountingState])
-	static getAccountingTableOptions(state: IAccountingStateModel) {
-		return state.tableOptions;
-	}
-
 	@Action(Add)
 	add(
 		{ getState, patchState }: StateContext<IAccountingStateModel>,
@@ -61,19 +42,9 @@ export class AccountingState {
 				_.differenceWith(
 					accountingRecord,
 					state.operationRecords,
-					_.isEqual
+					_.isEqual.bind(this)
 				)
 			),
-		});
-	}
-
-	@Action(SetActive)
-	setActive(
-		{ patchState }: StateContext<IAccountingStateModel>,
-		{ id }: SetActive
-	): void {
-		patchState({
-			tableOptions: { selectedRecordGuid: id } as AccountingTableOptions,
 		});
 	}
 

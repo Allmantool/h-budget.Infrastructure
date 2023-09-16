@@ -9,12 +9,10 @@ import { Select, Store } from '@ngxs/store';
 import { Observable, Subscription, BehaviorSubject } from 'rxjs';
 import { Guid } from 'typescript-guid';
 
-import { AccountingState } from 'app/modules/shared/store/states/accounting.state';
-import {
-	AddRange,
-	SetActive,
-} from 'app/modules/shared/store/actions/accounting.actions';
 import { AccountingGridRecord } from 'presentation/accounting/models/accounting-grid-record';
+import { getAccountingRecords } from '../../../../app/modules/shared/store/states/accounting/selectors/accounting.selectors';
+import { AddRange } from '../../../../app/modules/shared/store/states/accounting/actions/accounting.actions';
+import { SetActiveAccountingOperation } from '../../../../app/modules/shared/store/states/accounting/actions/accounting-table-options.actions';
 
 @Component({
 	selector: 'accounting-grid',
@@ -25,7 +23,7 @@ import { AccountingGridRecord } from 'presentation/accounting/models/accounting-
 export class AccountingGridComponent implements OnInit, OnDestroy {
 	private subs: Subscription[] = [];
 
-	@Select(AccountingState.getAccountingRecords)
+	@Select(getAccountingRecords)
 	accountingRecords$!: Observable<AccountingGridRecord[]>;
 
 	public ELEMENT_DATA: AccountingGridRecord[] = [
@@ -101,6 +99,6 @@ export class AccountingGridComponent implements OnInit, OnDestroy {
 	}
 
 	public selectRow(record: AccountingGridRecord): void {
-		this.store.dispatch(new SetActive(record.id));
+		this.store.dispatch(new SetActiveAccountingOperation(record.id));
 	}
 }

@@ -16,11 +16,12 @@ import { filter } from 'rxjs/operators';
 import * as _ from 'lodash';
 
 import { AccountingGridRecord } from '../../models/accounting-grid-record';
-import { OperationType } from '../../models/operation-type';
-import { OperationCategory } from './../../models/operation-category';
-import { AccountingState } from 'app/modules/shared/store/states/accounting.state';
+import { OperationCategory } from '../../../../domain/models/accounting/operation-category';
 import { AccountingTableOptions } from 'app/modules/shared/store/models/accounting/accounting-table-options';
-import { Edit } from 'app/modules/shared/store/actions/accounting.actions';
+import { OperationType } from '../../../../domain/models/accounting/operation-type';
+import { getAccountingTableOptions } from '../../../../app/modules/shared/store/states/accounting/selectors/table-options.selectors';
+import { getAccountingRecords } from '../../../../app/modules/shared/store/states/accounting/selectors/accounting.selectors';
+import { Edit } from '../../../../app/modules/shared/store/states/accounting/actions/accounting.actions';
 
 @Component({
 	selector: 'accounting-crud',
@@ -54,10 +55,10 @@ export class AccountingCrudComponent implements OnInit, OnDestroy {
 
 	public crudRecordFg: UntypedFormGroup;
 
-	@Select(AccountingState.getAccountingTableOptions)
+	@Select(getAccountingTableOptions)
 	accountingTableOptions$!: Observable<AccountingTableOptions>;
 
-	@Select(AccountingState.getAccountingRecords)
+	@Select(getAccountingRecords)
 	accountingRecords$!: Observable<AccountingGridRecord[]>;
 
 	constructor(
@@ -87,8 +88,7 @@ export class AccountingCrudComponent implements OnInit, OnDestroy {
 			.pipe(
 				filter(
 					([tableOptions, records]) =>
-						!_.isNil(tableOptions?.selectedRecordGuid) &&
-						!_.isNil(records)
+						!_.isNil(tableOptions) && !_.isNil(records)
 				)
 			)
 			.subscribe(([tableOptions, records]) => {
@@ -125,9 +125,10 @@ export class AccountingCrudComponent implements OnInit, OnDestroy {
 	}
 
 	public isExpenseOperation(): boolean {
-		const selectedCategoryValue =
+		const selectedCategoryValue: string | undefined =
 			this.crudRecordFg.controls['category']?.value ||
 			this.selectedRecord?.value?.category;
+
 		const selectedCategory = _.find(
 			this.categories,
 			(c) => c.value === selectedCategoryValue
