@@ -88,8 +88,7 @@ export class AccountingCrudComponent implements OnInit, OnDestroy {
 			.pipe(
 				filter(
 					([tableOptions, records]) =>
-						!_.isNil(tableOptions?.selectedRecordGuid) &&
-						!_.isNil(records)
+						!_.isNil(tableOptions) && !_.isNil(records)
 				)
 			)
 			.subscribe(([tableOptions, records]) => {

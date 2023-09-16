@@ -3,25 +3,16 @@ import { Injectable } from '@angular/core';
 import { Action, State, StateContext } from '@ngxs/store';
 import * as _ from 'lodash';
 
-import { AccountingTableOptions } from '../../models/accounting/accounting-table-options';
-import { AccountingGridRecord } from 'presentation/accounting/models/accounting-grid-record';
 import { AccountingTableState } from './accounting-table.state';
 import { AddRange, Edit, Add } from './actions/accounting.actions';
-
-export interface IAccountingStateModel {
-	operationRecords: AccountingGridRecord[];
-	tableOptions: AccountingTableOptions;
-	activeCurrency: string;
-}
+import { IAccountingStateModel } from './models/accounting-state.model';
+import { RatesAbbrevitions } from '../../../constants/rates-abbreviations';
 
 @State<IAccountingStateModel>({
 	name: 'accounting',
 	defaults: {
-		activeCurrency: 'BYN',
+		activeCurrency: RatesAbbrevitions.BYN,
 		operationRecords: [],
-		tableOptions: {
-			selectedRecordGuid: {},
-		} as AccountingTableOptions,
 	},
 	children: [AccountingTableState],
 })
