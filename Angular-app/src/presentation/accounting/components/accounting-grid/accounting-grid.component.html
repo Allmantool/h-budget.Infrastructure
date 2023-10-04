@@ -1,8 +1,9 @@
-<div class="accounting-table">
-	<table mat-table [dataSource]="dataSource$" class="mat-elevation-z8">
+<div class="accounting-table mat-elevation-z8" tabindex="0">
+	<mat-table #table [dataSource]="dataSource$">
 		<caption>
 			Accounting grid
 		</caption>
+
 		<ng-container matColumnDef="operationDate">
 			<th mat-header-cell *matHeaderCellDef>Date</th>
 			<td mat-cell *matCellDef="let element">
@@ -46,12 +47,16 @@
 			<td mat-cell *matCellDef="let element">{{ element.comment }}</td>
 		</ng-container>
 
-		<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
 		<tr
+			mat-header-row
+			*matHeaderRowDef="displayedColumns; sticky: true"
+		></tr>
+		<tr
+			class="row"
 			mat-row
 			(click)="selectRow(row)"
-			[class.row-is-clicked]="clickedRows.has(row)"
+			[class.row-is-clicked]="clickedRowGuids.has(row?.id)"
 			*matRowDef="let row; columns: displayedColumns;"
 		></tr>
-	</table>
+	</mat-table>
 </div>

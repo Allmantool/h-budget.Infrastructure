@@ -4,7 +4,7 @@ import { Action, State, StateContext } from '@ngxs/store';
 import * as _ from 'lodash';
 
 import { AccountingTableState } from './accounting-table.state';
-import { AddRange, Edit, Add } from './actions/accounting.actions';
+import { AddRange, Edit, Add, Delete } from './actions/accounting.actions';
 import { IAccountingStateModel } from './models/accounting-state.model';
 import { RatesAbbrevitions } from '../../../constants/rates-abbreviations';
 
@@ -25,8 +25,14 @@ export class AccountingState {
 	): void {
 		const state = getState();
 
+		const records = _.orderBy(
+			[...state.operationRecords, accountingRecord],
+			['operationDate'],
+			['asc']
+		);
+
 		patchState({
-			operationRecords: [...state.operationRecords, accountingRecord],
+			operationRecords: records,
 		});
 	}
 
@@ -62,7 +68,28 @@ export class AccountingState {
 		records.splice(updatedItemIndex, 1, accountingRecord);
 
 		patchState({
-			operationRecords: [...records],
+			operationRecords: [
+				..._.orderBy(records, ['operationDate'], ['asc']),
+			],
+		});
+	}
+
+	@Action(Delete)
+	delete(
+		{ getState, patchState }: StateContext<IAccountingStateModel>,
+		{ accountingGuid }: Delete
+	): void {
+		const state = getState();
+
+		const orderedRecords = _.chain(state.operationRecords)
+			.filter(function (record) {
+				return record.id !== accountingGuid;
+			})
+			.sortBy('operationDate')
+			.value();
+
+		patchState({
+			operationRecords: [...orderedRecords],
 		});
 	}
 }

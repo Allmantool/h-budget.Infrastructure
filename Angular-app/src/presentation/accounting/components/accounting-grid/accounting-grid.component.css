@@ -1,23 +1,46 @@
-table {
-	width: 100%;
-}
-
 .accounting-table {
-	display: flex;
-	justify-content: center;
-	width: 100%;
-}
-
-.mat-row .mat-cell {
-	border-bottom: 1px solid transparent;
-	border-top: 1px solid transparent;
-	cursor: pointer;
-}
-
-.mat-row:hover .mat-cell {
-	border-color: currentColor;
+	margin-top: 2em;
 }
 
 .row-is-clicked {
 	font-weight: bold;
+	background-color: gold;
+}
+
+.mat-mdc-table {
+	overflow-y: scroll;
+	max-height: 70em;
+	min-height: 70em;
+}
+
+.mat-mdc-cell {
+	vertical-align: middle;
+}
+
+.mat-column-operationDate {
+	width: 10em;
+}
+
+.mat-column-contractor {
+	width: 15em;
+}
+
+.mat-column-category {
+	width: 25em;
+}
+
+.mat-column-income {
+	width: 7em;
+}
+
+.mat-column-expense {
+	width: 7em;
+}
+
+.mat-column-balance {
+	width: 7em;
+}
+
+.mat-column-comment {
+	width: 35em;
 }
