@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import {
 	Component,
@@ -67,5 +68,9 @@ export class AppFormFieldComponent implements ControlValueAccessor {
 		this.onTouched();
 
 		this.onDataChanged.emit(this.data$.value);
+	}
+
+	trackByFn(index: number, item: string): string {
+		return item; // Replace with a unique identifier for each item
 	}
 }
