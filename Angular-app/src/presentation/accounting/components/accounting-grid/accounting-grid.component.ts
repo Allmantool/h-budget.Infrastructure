@@ -13,6 +13,8 @@ import { AccountingGridRecord } from 'presentation/accounting/models/accounting-
 import { getAccountingRecords } from '../../../../app/modules/shared/store/states/accounting/selectors/accounting.selectors';
 import { AddRange } from '../../../../app/modules/shared/store/states/accounting/actions/accounting.actions';
 import { SetActiveAccountingOperation } from '../../../../app/modules/shared/store/states/accounting/actions/accounting-table-options.actions';
+import { getAccountingTableOptions } from '../../../../app/modules/shared/store/states/accounting/selectors/table-options.selectors';
+import { AccountingTableOptions } from '../../../../app/modules/shared/store/models/accounting/accounting-table-options';
 
 @Component({
 	selector: 'accounting-grid',
@@ -81,17 +83,28 @@ export class AccountingGridComponent implements OnInit, OnDestroy {
 
 	public dataSource$: BehaviorSubject<AccountingGridRecord[]> =
 		new BehaviorSubject<AccountingGridRecord[]>([]);
-	public clickedRows = new Set<AccountingGridRecord>();
+	public clickedRowGuids = new Set<Guid>();
 
-	constructor(private store: Store) {}
+	@Select(getAccountingTableOptions)
+	accountingTableOptions$!: Observable<AccountingTableOptions>;
+
+	constructor(private store: Store) {
+		this.store.dispatch(new AddRange(this.ELEMENT_DATA));
+	}
 	ngOnInit(): void {
 		const tableDataSource$ = this.accountingRecords$.subscribe((records) =>
 			this.dataSource$.next(records)
 		);
 
-		this.subs.push(tableDataSource$);
+		const tableOptions$ = this.accountingTableOptions$.subscribe(
+			(options) => {
+				this.clickedRowGuids.clear();
+				this.clickedRowGuids.add(options.selectedRecordGuid);
+			}
+		);
 
-		this.store.dispatch(new AddRange(this.ELEMENT_DATA));
+		this.subs.push(tableDataSource$);
+		this.subs.push(tableOptions$);
 	}
 
 	ngOnDestroy(): void {
