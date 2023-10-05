@@ -14,6 +14,7 @@ import { Select, Store } from '@ngxs/store';
 import { combineLatest, Observable, Subscription, BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import * as _ from 'lodash';
+import { Guid } from 'typescript-guid';
 
 import { AccountingGridRecord } from '../../models/accounting-grid-record';
 import { OperationCategory } from '../../../../domain/models/accounting/operation-category';
@@ -21,7 +22,12 @@ import { AccountingTableOptions } from 'app/modules/shared/store/models/accounti
 import { OperationType } from '../../../../domain/models/accounting/operation-type';
 import { getAccountingTableOptions } from '../../../../app/modules/shared/store/states/accounting/selectors/table-options.selectors';
 import { getAccountingRecords } from '../../../../app/modules/shared/store/states/accounting/selectors/accounting.selectors';
-import { Edit } from '../../../../app/modules/shared/store/states/accounting/actions/accounting.actions';
+import { SetActiveAccountingOperation } from '../../../../app/modules/shared/store/states/accounting/actions/accounting-table-options.actions';
+import {
+	Edit,
+	Add,
+	Delete,
+} from '../../../../app/modules/shared/store/states/accounting/actions/accounting.actions';
 
 @Component({
 	selector: 'accounting-crud',
@@ -49,7 +55,7 @@ export class AccountingCrudComponent implements OnInit, OnDestroy {
 		},
 	];
 
-	public selectedRecord = new BehaviorSubject<
+	public selectedRecord$ = new BehaviorSubject<
 		AccountingGridRecord | undefined
 	>(undefined);
 
@@ -62,8 +68,8 @@ export class AccountingCrudComponent implements OnInit, OnDestroy {
 	accountingRecords$!: Observable<AccountingGridRecord[]>;
 
 	constructor(
-		fb: UntypedFormBuilder,
-		private store: Store
+		private readonly fb: UntypedFormBuilder,
+		private readonly store: Store
 	) {
 		this.crudRecordFg = fb.group({
 			id: new UntypedFormControl(),
@@ -92,7 +98,7 @@ export class AccountingCrudComponent implements OnInit, OnDestroy {
 				)
 			)
 			.subscribe(([tableOptions, records]) => {
-				this.selectedRecord.next(
+				this.selectedRecord$.next(
 					records.find(
 						(r) => tableOptions.selectedRecordGuid === r.id
 					)
@@ -100,9 +106,9 @@ export class AccountingCrudComponent implements OnInit, OnDestroy {
 
 				if (
 					!_.isNil(this.crudRecordFg) &&
-					!_.isNil(this.selectedRecord.value)
+					!_.isNil(this.selectedRecord$.value)
 				) {
-					const recordData = this.selectedRecord.value;
+					const recordData = this.selectedRecord$.value;
 
 					this.crudRecordFg.patchValue({
 						id: recordData.id,
@@ -118,16 +124,16 @@ export class AccountingCrudComponent implements OnInit, OnDestroy {
 
 		const formChangeSubscription$ =
 			this.crudRecordFg.valueChanges.subscribe((formData) => {
-				this.selectedRecord.next(formData as AccountingGridRecord);
+				this.selectedRecord$.next(formData as AccountingGridRecord);
 			});
 
 		this.subs.push(activeRecordSubscription$, formChangeSubscription$);
 	}
 
 	public isExpenseOperation(): boolean {
-		const selectedCategoryValue: string | undefined =
+		const selectedCategoryValue: string =
 			this.crudRecordFg.controls['category']?.value ||
-			this.selectedRecord?.value?.category;
+			this.selectedRecord$?.value?.category;
 
 		const selectedCategory = _.find(
 			this.categories,
@@ -141,9 +147,40 @@ export class AccountingCrudComponent implements OnInit, OnDestroy {
 		return this.categories.map((c) => c.value);
 	}
 
-	public save(): void {
-		if (!_.isNil(this.selectedRecord.value)) {
-			this.store.dispatch(new Edit(this.selectedRecord.value));
+	public saveRecord(): void {
+		if (!_.isNil(this.selectedRecord$.value)) {
+			this.store.dispatch(new Edit(this.selectedRecord$.value));
 		}
+	}
+
+	public addRecord(): void {
+		const newRecord = {
+			id: Guid.create(),
+			operationDate: new Date(),
+			contractor: '',
+			category: '',
+			income: 0,
+			expense: 0,
+			balance: 0,
+			comment: '',
+		} as AccountingGridRecord;
+
+		this.store.dispatch(new Add(newRecord));
+
+		this.selectedRecord$.next(newRecord);
+
+		this.store.dispatch(new SetActiveAccountingOperation(newRecord.id));
+	}
+
+	public deleteRecord(): void {
+		console.log(this.selectedRecord$.value);
+
+		const recordGuid = this.selectedRecord$.value?.id;
+
+		if (_.isNil(recordGuid)) {
+			return;
+		}
+
+		this.store.dispatch(new Delete(recordGuid));
 	}
 }

@@ -19,11 +19,19 @@ import { ChartOptions } from '../models/chart-options';
 
 @Injectable()
 export class LineChartService {
-	constructor(protected readonly store: Store) {}
+	constructor(protected readonly store: Store) {
+		this.chartCurrencyTrendTitle$.subscribe((p) => {
+			const updatedState = { ...this.charOptions$.value, title: p };
+
+			this.charOptions$.next(updatedState);
+		});
+	}
 
 	private chartCurrencyTrendTitle$ = new BehaviorSubject(
 		{} as CurrencyChartTitle
 	);
+
+	private charOptions$ = new BehaviorSubject({} as ChartOptions);
 
 	public getChartOptions(
 		rates: CurrencyRateValueModel[],
@@ -50,7 +58,7 @@ export class LineChartService {
 			)
 		);
 
-		return {
+		this.charOptions$.next({
 			series: [
 				{
 					name: abbreviation,
@@ -95,7 +103,9 @@ export class LineChartService {
 					format(r.updateDate!, options.dateFormat)
 				),
 			},
-		};
+		});
+
+		return this.charOptions$.value;
 	}
 
 	private static getRatesFromChartContext(chartContext: any): number[] {
