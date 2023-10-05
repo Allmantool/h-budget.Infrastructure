@@ -16,6 +16,10 @@
 				[selectOptions]="contractors"
 			>
 			</app-form-field>
+
+			<button mat-fab color="primary" aria-label="add a contractor">
+				<mat-icon>add</mat-icon>
+			</button>
 		</div>
 
 		<div class="category-section">
@@ -26,6 +30,10 @@
 				[selectOptions]="getCategoryLabels()"
 			>
 			</app-form-field>
+
+			<button mat-fab color="primary" aria-label="add a category">
+				<mat-icon>add</mat-icon>
+			</button>
 		</div>
 
 		<ng-container #expense *ngIf="isExpenseOperation(); else income">

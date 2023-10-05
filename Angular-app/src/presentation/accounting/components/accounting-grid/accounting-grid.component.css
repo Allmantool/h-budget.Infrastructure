@@ -22,7 +22,7 @@
 }
 
 .mat-column-contractor {
-	width: 15em;
+	width: 20em;
 }
 
 .mat-column-category {
@@ -31,10 +31,12 @@
 
 .mat-column-income {
 	width: 10em;
+	color: limegreen;
 }
 
 .mat-column-expense {
 	width: 10em;
+	color: lightcoral;
 }
 
 .mat-column-balance {
