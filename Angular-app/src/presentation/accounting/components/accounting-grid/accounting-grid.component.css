@@ -26,19 +26,19 @@
 }
 
 .mat-column-category {
-	width: 25em;
+	width: 30em;
 }
 
 .mat-column-income {
-	width: 7em;
+	width: 10em;
 }
 
 .mat-column-expense {
-	width: 7em;
+	width: 10em;
 }
 
 .mat-column-balance {
-	width: 7em;
+	width: 10em;
 }
 
 .mat-column-comment {

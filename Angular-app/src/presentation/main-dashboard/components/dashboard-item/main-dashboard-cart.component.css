@@ -2,13 +2,18 @@
 	display: grid;
 	grid-template-columns: 1fr;
 	grid-template-rows: 0.5fr 3fr 0.5fr;
-	width: 300px;
-	height: 500px;
+	width: 35em;
+	height: 35em;
 }
 
 .dahsboard-card-item_image {
 	background-image: url('/assets/currency-logo.png');
 	background-size: cover;
+}
+
+.mdc-card__media {
+	height: 256px;
+	place-self: center;
 }
 
 .dahsboard-card-item_navigate-buttom {
