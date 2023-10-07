@@ -2,13 +2,15 @@ import { Injectable } from '@angular/core';
 import { MatDialogConfig } from '@angular/material/dialog';
 
 import { Store } from '@ngxs/store';
-import { Subject } from 'rxjs';
+import { of } from 'rxjs';
 import * as _ from 'lodash';
 
 import { DialogProvider } from '../../../app/modules/shared/providers/dialog-provider';
 import { DialogContainer } from '../../../app/modules/shared/models/dialog-container';
 import { CategoriesDialogComponent } from '../../../app/modules/shared/components/dialog/categories/categories-dialog.component';
 import { Result } from '../../../core/result';
+import { AddCategory } from '../../../app/modules/shared/store/states/handbooks/actions/category.actions';
+import { OperationCategory } from 'domain/models/accounting/operation-category';
 
 @Injectable()
 export class CategoriesDialogService {
@@ -20,14 +22,14 @@ export class CategoriesDialogService {
 	public openCategories(): void {
 		const config = new MatDialogConfig<DialogContainer>();
 
-		const onSave = (operationResult: Result<string[]>) => {
+		const onSave = (operationResult: Result<OperationCategory>) => {
 			if (!operationResult.isSucceeded) {
 				return;
 			}
 
-			const categoryNodesSubject = new Subject<number>();
+			this.store.dispatch(new AddCategory(operationResult.payload));
 
-			return categoryNodesSubject;
+			return of(operationResult.payload);
 		};
 
 		config.data = {

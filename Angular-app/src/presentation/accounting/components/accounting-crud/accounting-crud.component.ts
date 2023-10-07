@@ -73,7 +73,7 @@ export class AccountingCrudComponent implements OnInit, OnDestroy {
 		private readonly categoriesDialogService: CategoriesDialogService,
 		private readonly store: Store
 	) {
-		this.crudRecordFg = fb.group({
+		this.crudRecordFg = this.fb.group({
 			id: new UntypedFormControl(),
 			operationDate: new UntypedFormControl(),
 			contractor: new UntypedFormControl(),

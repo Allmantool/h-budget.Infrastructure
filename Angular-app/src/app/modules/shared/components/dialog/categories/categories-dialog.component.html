@@ -3,9 +3,18 @@
 
 	<mat-dialog-content class="dialog-body" [formGroup]="dialogFg">
 		<form>
+			<app-form-field
+				formControlName="categoryType"
+				[fieldType]="'SELECT'"
+				[title]="'Category type:'"
+				[defaultValue]="getCategoryTypes()[0]"
+				[selectOptions]="getCategoryTypes()"
+			>
+			</app-form-field>
 			<!-- -->
 			<mat-form-field class="categories-chip-list">
 				<mat-label>Budget categories</mat-label>
+
 				<mat-chip-grid #chipGrid aria-label="Category selection">
 					<mat-chip-row
 						*ngFor="let categoryNode of categoryNodes"

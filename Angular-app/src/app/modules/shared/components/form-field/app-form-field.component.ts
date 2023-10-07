@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/ban-types */
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import {
@@ -33,35 +36,40 @@ export class AppFormFieldComponent implements ControlValueAccessor {
 
 	private disabled = false;
 
-	public data$ = new BehaviorSubject<FormInput>(undefined);
-
 	@Input() public fieldType: string = InputTypes.INPUT;
 
 	@Input() public selectOptions: string[] = [];
 
 	@Input() public title: string = '';
 
+	@Input() public defaultValue: string = '';
+
+	// eslint-disable-next-line @angular-eslint/no-output-on-prefix
 	@Output() public onDataChanged = new EventEmitter<
 		string | number | undefined
 	>();
 
-	writeValue(value: any): void {
+	public data$ = new BehaviorSubject<FormInput>(
+		this.defaultValue ?? undefined
+	);
+
+	public writeValue(value: any): void {
 		this.data$.next(value);
 	}
 
-	registerOnChange(fn: (value: any) => {}): void {
+	public registerOnChange(fn: (value: any) => {}): void {
 		this.onChanged = fn;
 	}
 
-	registerOnTouched(fn: Function): void {
+	public registerOnTouched(fn: Function): void {
 		this.onTouched = fn;
 	}
 
-	setDisabledState(isDisabled: boolean) {
+	public setDisabledState(isDisabled: boolean) {
 		this.disabled = isDisabled;
 	}
 
-	updateValue(event: any) {
+	public updateValue(event: any) {
 		this.data$.next(event.value);
 
 		this.onChanged(this.data$.value);
@@ -70,7 +78,7 @@ export class AppFormFieldComponent implements ControlValueAccessor {
 		this.onDataChanged.emit(this.data$.value);
 	}
 
-	trackByFn(index: number, item: string): string {
+	public trackByFn(index: number, item: string): string {
 		return item; // Replace with a unique identifier for each item
 	}
 }

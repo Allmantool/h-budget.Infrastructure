@@ -21,6 +21,7 @@ import * as _ from 'lodash';
 
 import { DialogContainer } from '../../../models/dialog-container';
 import { Result } from 'core/result';
+import { OperationType } from 'domain/models/accounting/operation-type';
 
 @Component({
 	selector: 'categories-dialog',
@@ -73,6 +74,10 @@ export class CategoriesDialogComponent {
 
 	public close() {
 		this.dialogRef.close();
+	}
+
+	public getCategoryTypes(): string[] {
+		return Object.keys(OperationType).filter((v) => isNaN(Number(v)));
 	}
 
 	public save(): void {
