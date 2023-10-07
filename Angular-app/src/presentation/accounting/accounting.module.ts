@@ -9,6 +9,7 @@ import {
 import { AppSharedModule } from 'app/modules/shared';
 import { AccountingState } from 'app/modules/shared/store/states/accounting/accounting.state';
 import { AccountingTableState } from '../../app/modules/shared/store/states/accounting/accounting-table.state';
+import { CategoriesDialogService } from 'presentation/currency-rates/services/categories-dialog.service';
 
 @NgModule({
 	declarations: [AccountingGridComponent, AccountingCrudComponent],
@@ -17,7 +18,7 @@ import { AccountingTableState } from '../../app/modules/shared/store/states/acco
 		AccountingRoutingModule,
 		NgxsModule.forFeature([AccountingState, AccountingTableState]),
 	],
-	providers: [],
+	providers: [CategoriesDialogService],
 	bootstrap: [],
 })
 export class AccountingModule {}

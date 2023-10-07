@@ -23,6 +23,7 @@ import { OperationType } from '../../../../domain/models/accounting/operation-ty
 import { getAccountingTableOptions } from '../../../../app/modules/shared/store/states/accounting/selectors/table-options.selectors';
 import { getAccountingRecords } from '../../../../app/modules/shared/store/states/accounting/selectors/accounting.selectors';
 import { SetActiveAccountingOperation } from '../../../../app/modules/shared/store/states/accounting/actions/accounting-table-options.actions';
+import { CategoriesDialogService } from '../../../currency-rates/services/categories-dialog.service';
 import {
 	Edit,
 	Add,
@@ -69,6 +70,7 @@ export class AccountingCrudComponent implements OnInit, OnDestroy {
 
 	constructor(
 		private readonly fb: UntypedFormBuilder,
+		private readonly categoriesDialogService: CategoriesDialogService,
 		private readonly store: Store
 	) {
 		this.crudRecordFg = fb.group({
@@ -182,5 +184,9 @@ export class AccountingCrudComponent implements OnInit, OnDestroy {
 		}
 
 		this.store.dispatch(new Delete(recordGuid));
+	}
+
+	public addCategory(): void {
+		this.categoriesDialogService.openCategories();
 	}
 }
