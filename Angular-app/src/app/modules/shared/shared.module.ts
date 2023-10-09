@@ -34,6 +34,7 @@ import { AccountingCurrencyFormatPipe } from './pipes/accouting-currency-pipe';
 import { DateRangeDialogComponent } from './components/dialog/dates-rage/dates-range-dialog.component';
 import { ProgressBarComponent } from './components/progress-bar/progress-bar.component';
 import { CategoriesDialogComponent } from './components/dialog/categories/categories-dialog.component';
+import { CounterpartiesDialogComponent } from './components/dialog/counterparties/counterparties-dialog.component';
 
 @NgModule({
 	declarations: [
@@ -44,6 +45,7 @@ import { CategoriesDialogComponent } from './components/dialog/categories/catego
 		DatepickerComponent,
 		DateRangeDialogComponent,
 		CategoriesDialogComponent,
+		CounterpartiesDialogComponent,
 		AppFormFieldComponent,
 		AppButtonComponent,
 
@@ -59,6 +61,7 @@ import { CategoriesDialogComponent } from './components/dialog/categories/catego
 		DatepickerComponent,
 		DateRangeDialogComponent,
 		CategoriesDialogComponent,
+		CounterpartiesDialogComponent,
 		AppFormFieldComponent,
 		AppButtonComponent,
 

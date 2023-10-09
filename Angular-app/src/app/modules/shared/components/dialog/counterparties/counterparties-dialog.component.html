@@ -2,35 +2,28 @@
 <div class="dialog-content">
 	<h1 mat-dialog-title>{{ title }}</h1>
 
-	<mat-dialog-content class="dialog-body" [formGroup]="dialogFg">
+	<mat-dialog-content class="dialog-body">
 		<form>
-			<app-form-field
-				formControlName="categoryType"
-				[fieldType]="'SELECT'"
-				[title]="'Category type:'"
-				[defaultValue]="getCategoryTypes()[0]"
-				[selectOptions]="getCategoryTypes()"
-			>
-			</app-form-field>
 			<!-- -->
-			<mat-form-field class="categories-chip-list">
-				<mat-label>Budget categories</mat-label>
+			<mat-form-field class="contractors-chip-list ">
+				<mat-label>Couterparties</mat-label>
 
-				<mat-chip-grid #chipGrid aria-label="Category selection">
+				<mat-chip-grid #chipGrid aria-label="Couterparties selection">
 					<mat-chip-row
-						*ngFor="let categoryNode of categoryNodes"
-						(removed)="remove(categoryNode)"
+						*ngFor="let partyNode of partyNodes"
+						(removed)="remove(partyNode)"
 					>
-						{{categoryNode}}
-						<button matChipRemove [attr.aria-label]="'remove ' + categoryNode">
+						{{partyNode}}
+						<button matChipRemove [attr.aria-label]="'remove ' + partyNode">
 							<mat-icon>cancel</mat-icon>
 						</button>
 					</mat-chip-row>
 				</mat-chip-grid>
 				<input
-					placeholder="New category..."
+					placeholder="New counterparty..."
+                    formControlName="counterPartyController"
 					#fruitInput
-					[formControl]="categoryCtrl"
+					[formControl]="partyCtrl"
 					[matChipInputFor]="chipGrid"
 					[matAutocomplete]="auto"
 					[matChipInputSeparatorKeyCodes]="separatorKeysCodes"
@@ -38,10 +31,10 @@
 				/>
 				<mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
 					<mat-option
-						*ngFor="let filteredCategoryNode of filteredCategoryNodes$ | async"
-						[value]="filteredCategoryNode"
+						*ngFor="let filteredPartyNode of filteredPartyNodes$ | async"
+						[value]="filteredPartyNode"
 					>
-						{{filteredCategoryNode}}
+						{{filteredPartyNode}}
 					</mat-option>
 				</mat-autocomplete>
 			</mat-form-field>

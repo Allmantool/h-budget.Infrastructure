@@ -15,8 +15,14 @@ import { getAccountingTableOptions } from '../../../../app/modules/shared/store/
 import { getAccountingRecords } from '../../../../app/modules/shared/store/states/accounting/selectors/accounting.selectors';
 import { SetActiveAccountingOperation } from '../../../../app/modules/shared/store/states/accounting/actions/accounting-table-options.actions';
 import { CategoriesDialogService } from '../../../currency-rates/services/categories-dialog.service';
-import { Edit, Add, Delete } from '../../../../app/modules/shared/store/states/accounting/actions/accounting.actions';
+import {
+	Edit,
+	Add,
+	Delete,
+} from '../../../../app/modules/shared/store/states/accounting/actions/accounting.actions';
 import { getCategories } from '../../../../app/modules/shared/store/states/handbooks/selectors/categories.selectors';
+import { getContractors } from '../../../../app/modules/shared/store/states/handbooks/selectors/counterparties.selectors';
+import { CounterpartiesDialogService } from '../../../currency-rates/services/counterparties-dialog.service';
 
 @Component({
 	selector: 'accounting-crud',
@@ -27,7 +33,7 @@ import { getCategories } from '../../../../app/modules/shared/store/states/handb
 export class AccountingCrudComponent implements OnInit, OnDestroy {
 	private destroy$ = new Subject();
 
-	public contractors: string[] = ['Перевозчик: Такси', 'Работа: GodelTech'];
+	public contractors: string[] = [];
 
 	public categories: OperationCategory[] = [];
 
@@ -44,9 +50,13 @@ export class AccountingCrudComponent implements OnInit, OnDestroy {
 	@Select(getCategories)
 	categories$!: Observable<OperationCategory[]>;
 
+	@Select(getContractors)
+	counterparties$!: Observable<string[]>;
+
 	constructor(
 		private readonly fb: UntypedFormBuilder,
 		private readonly categoriesDialogService: CategoriesDialogService,
+		private readonly counterpartiesDialogService: CounterpartiesDialogService,
 		private readonly store: Store
 	) {
 		this.crudRecordFg = this.fb.group({
@@ -72,7 +82,9 @@ export class AccountingCrudComponent implements OnInit, OnDestroy {
 				filter(([tableOptions, records]) => !_.isNil(tableOptions) && !_.isNil(records))
 			)
 			.subscribe(([tableOptions, records]) => {
-				this.selectedRecord$.next(records.find((r) => tableOptions.selectedRecordGuid === r.id));
+				this.selectedRecord$.next(
+					records.find((r) => tableOptions.selectedRecordGuid === r.id)
+				);
 
 				if (!_.isNil(this.crudRecordFg) && !_.isNil(this.selectedRecord$.value)) {
 					const recordData = this.selectedRecord$.value;
@@ -93,13 +105,24 @@ export class AccountingCrudComponent implements OnInit, OnDestroy {
 			this.selectedRecord$.next(formData as AccountingGridRecord);
 		});
 
-		this.categories$
+		this.categories$.pipe(takeUntil(this.destroy$)).subscribe(
+			(payload) =>
+				(this.categories = _.map(
+					payload,
+					(i) =>
+						<OperationCategory>{
+							type: i.type,
+							value: (JSON.parse(i.value) as string[]).join(': '),
+						}
+				))
+		);
+
+		this.counterparties$
 			.pipe(takeUntil(this.destroy$))
 			.subscribe(
 				(payload) =>
-					(this.categories = _.map(
-						payload,
-						(i) => <OperationCategory>{ type: i.type, value: (JSON.parse(i.value) as string[]).join(': ') }
+					(this.contractors = _.map(payload, (i) =>
+						(JSON.parse(i) as string[]).join(': ')
 					))
 			);
 	}
@@ -116,6 +139,10 @@ export class AccountingCrudComponent implements OnInit, OnDestroy {
 
 	public getCategoryLabels(): string[] {
 		return this.categories.map((c) => c.value);
+	}
+
+	public getContractorLabels(): string[] {
+		return this.contractors;
 	}
 
 	public saveRecord(): void {
@@ -157,5 +184,9 @@ export class AccountingCrudComponent implements OnInit, OnDestroy {
 
 	public addCategory(): void {
 		this.categoriesDialogService.openCategories();
+	}
+
+	public addContractor(): void {
+		this.counterpartiesDialogService.openCategories();
 	}
 }

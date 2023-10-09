@@ -4,11 +4,11 @@ import { Action, State, StateContext } from '@ngxs/store';
 import * as _ from 'lodash';
 import { nameof } from 'ts-simple-nameof';
 
-import { ICategorieStateModel } from './models/ICategoriesStateModel';
+import { ICategoriesStateModel } from './models/ICategoriesStateModel';
 import { AddCategory } from './actions/category.actions';
 import { OperationCategory } from '../../../../../../domain/models/accounting/operation-category';
 
-@State<ICategorieStateModel>({
+@State<ICategoriesStateModel>({
 	name: 'categoriesHandbook',
 	defaults: {
 		categories: [],
@@ -19,7 +19,7 @@ import { OperationCategory } from '../../../../../../domain/models/accounting/op
 export class CategoriesState {
 	@Action(AddCategory)
 	AddCategory(
-		{ getState, patchState }: StateContext<ICategorieStateModel>,
+		{ getState, patchState }: StateContext<ICategoriesStateModel>,
 		{ category }: AddCategory
 	): void {
 		const state = getState();
