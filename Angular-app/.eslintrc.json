@@ -21,7 +21,7 @@
 					"error",
 					{
 						"type": "element",
-						"prefix": ["app", "currency-rates"],
+						"prefix": ["app", "currency-rates", ""],
 						"style": "kebab-case"
 					}
 				],
