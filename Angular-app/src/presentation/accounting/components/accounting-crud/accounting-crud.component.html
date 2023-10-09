@@ -31,7 +31,12 @@
 			>
 			</app-form-field>
 
-			<button mat-fab color="primary" aria-label="add a category">
+			<button
+				(click)="addCategory()"
+				mat-fab
+				color="primary"
+				aria-label="add a category"
+			>
 				<mat-icon>add</mat-icon>
 			</button>
 		</div>
