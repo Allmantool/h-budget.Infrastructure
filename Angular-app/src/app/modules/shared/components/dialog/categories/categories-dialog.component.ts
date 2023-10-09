@@ -1,27 +1,17 @@
-import {
-	ChangeDetectionStrategy,
-	Component,
-	ElementRef,
-	Inject,
-	ViewChild,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, Inject, OnDestroy, ViewChild } from '@angular/core';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
-import {
-	FormControl,
-	UntypedFormBuilder,
-	UntypedFormControl,
-	UntypedFormGroup,
-} from '@angular/forms';
+import { FormControl, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
-import { BehaviorSubject, Observable, startWith, take, map } from 'rxjs';
+import { BehaviorSubject, Observable, startWith, take, map, takeUntil, Subject } from 'rxjs';
 import * as _ from 'lodash';
 
 import { DialogContainer } from '../../../models/dialog-container';
 import { Result } from 'core/result';
 import { OperationType } from 'domain/models/accounting/operation-type';
+import { OperationCategory } from '../../../../../../domain/models/accounting/operation-category';
 
 @Component({
 	selector: 'categories-dialog',
@@ -29,15 +19,15 @@ import { OperationType } from 'domain/models/accounting/operation-type';
 	styleUrls: ['./categories-dialog.component.css'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CategoriesDialogComponent {
+export class CategoriesDialogComponent implements OnDestroy {
+	private destroy$ = new Subject();
+
 	private dialogConfiguration: DialogContainer;
 
 	@ViewChild('chipGrid ')
 	chipGrid!: ElementRef<HTMLInputElement>;
 
-	public isLoading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
-		false
-	);
+	public isLoading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
 	public isSaveDisabled: boolean = true;
 
@@ -56,20 +46,23 @@ export class CategoriesDialogComponent {
 		@Inject(MAT_DIALOG_DATA) dialogConfiguration: DialogContainer
 	) {
 		this.dialogFg = fb.group({
-			category: new UntypedFormControl(new String()),
+			categoryType: new UntypedFormControl(OperationType[OperationType.Income]),
 		});
 
 		this.title = dialogConfiguration.title;
 		this.dialogConfiguration = dialogConfiguration;
 
 		this.filteredCategoryNodes = this.categoryCtrl.valueChanges.pipe(
+			takeUntil(this.destroy$),
 			startWith(null),
 			map((categoryNode: string | null) =>
-				categoryNode
-					? _.filter(this.categoryNodes, categoryNode)
-					: this.categoryNodes.slice()
+				categoryNode ? _.filter(this.categoryNodes, categoryNode) : this.categoryNodes.slice()
 			)
 		);
+	}
+	ngOnDestroy(): void {
+		this.destroy$.next({});
+		this.destroy$.complete();
 	}
 
 	public close() {
@@ -88,11 +81,16 @@ export class CategoriesDialogComponent {
 			return;
 		}
 
-		const payloadForSave = JSON.stringify(this.categoryNodes);
+		const categoryType = this.dialogFg.controls['categoryType'].value as string;
+
+		const payloadForSave = {
+			type: OperationType[categoryType as keyof typeof OperationType],
+			value: JSON.stringify(this.categoryNodes),
+		} as OperationCategory;
 
 		this.dialogConfiguration
 			.onSubmit(
-				new Result<string>({
+				new Result<OperationCategory>({
 					payload: payloadForSave,
 					isSucceeded: true,
 				})

@@ -1,18 +1,9 @@
-import {
-	ChangeDetectionStrategy,
-	Component,
-	OnDestroy,
-	OnInit,
-} from '@angular/core';
-import {
-	UntypedFormBuilder,
-	UntypedFormControl,
-	UntypedFormGroup,
-} from '@angular/forms';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 
 import { Select, Store } from '@ngxs/store';
-import { combineLatest, Observable, Subscription, BehaviorSubject } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { combineLatest, Observable, BehaviorSubject, Subject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { Guid } from 'typescript-guid';
 
@@ -24,11 +15,8 @@ import { getAccountingTableOptions } from '../../../../app/modules/shared/store/
 import { getAccountingRecords } from '../../../../app/modules/shared/store/states/accounting/selectors/accounting.selectors';
 import { SetActiveAccountingOperation } from '../../../../app/modules/shared/store/states/accounting/actions/accounting-table-options.actions';
 import { CategoriesDialogService } from '../../../currency-rates/services/categories-dialog.service';
-import {
-	Edit,
-	Add,
-	Delete,
-} from '../../../../app/modules/shared/store/states/accounting/actions/accounting.actions';
+import { Edit, Add, Delete } from '../../../../app/modules/shared/store/states/accounting/actions/accounting.actions';
+import { getCategories } from '../../../../app/modules/shared/store/states/handbooks/selectors/categories.selectors';
 
 @Component({
 	selector: 'accounting-crud',
@@ -37,28 +25,13 @@ import {
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AccountingCrudComponent implements OnInit, OnDestroy {
-	private subs: Subscription[] = [];
+	private destroy$ = new Subject();
 
 	public contractors: string[] = ['Перевозчик: Такси', 'Работа: GodelTech'];
 
-	public categories: OperationCategory[] = [
-		{
-			type: OperationType.Expense,
-			value: 'Транспорт: Общественный транспорт',
-		},
-		{
-			type: OperationType.Expense,
-			value: 'Транспорт: Такси',
-		},
-		{
-			type: OperationType.Income,
-			value: 'Доход: Аванс',
-		},
-	];
+	public categories: OperationCategory[] = [];
 
-	public selectedRecord$ = new BehaviorSubject<
-		AccountingGridRecord | undefined
-	>(undefined);
+	public selectedRecord$ = new BehaviorSubject<AccountingGridRecord | undefined>(undefined);
 
 	public crudRecordFg: UntypedFormGroup;
 
@@ -67,6 +40,9 @@ export class AccountingCrudComponent implements OnInit, OnDestroy {
 
 	@Select(getAccountingRecords)
 	accountingRecords$!: Observable<AccountingGridRecord[]>;
+
+	@Select(getCategories)
+	categories$!: Observable<OperationCategory[]>;
 
 	constructor(
 		private readonly fb: UntypedFormBuilder,
@@ -85,31 +61,20 @@ export class AccountingCrudComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnDestroy(): void {
-		this.subs.forEach((s) => s.unsubscribe());
+		this.destroy$.next({});
+		this.destroy$.complete();
 	}
 
 	ngOnInit(): void {
-		const activeRecordSubscription$ = combineLatest([
-			this.accountingTableOptions$,
-			this.accountingRecords$,
-		])
+		combineLatest([this.accountingTableOptions$, this.accountingRecords$])
 			.pipe(
-				filter(
-					([tableOptions, records]) =>
-						!_.isNil(tableOptions) && !_.isNil(records)
-				)
+				takeUntil(this.destroy$),
+				filter(([tableOptions, records]) => !_.isNil(tableOptions) && !_.isNil(records))
 			)
 			.subscribe(([tableOptions, records]) => {
-				this.selectedRecord$.next(
-					records.find(
-						(r) => tableOptions.selectedRecordGuid === r.id
-					)
-				);
+				this.selectedRecord$.next(records.find((r) => tableOptions.selectedRecordGuid === r.id));
 
-				if (
-					!_.isNil(this.crudRecordFg) &&
-					!_.isNil(this.selectedRecord$.value)
-				) {
+				if (!_.isNil(this.crudRecordFg) && !_.isNil(this.selectedRecord$.value)) {
 					const recordData = this.selectedRecord$.value;
 
 					this.crudRecordFg.patchValue({
@@ -124,23 +89,27 @@ export class AccountingCrudComponent implements OnInit, OnDestroy {
 				}
 			});
 
-		const formChangeSubscription$ =
-			this.crudRecordFg.valueChanges.subscribe((formData) => {
-				this.selectedRecord$.next(formData as AccountingGridRecord);
-			});
+		this.crudRecordFg.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((formData) => {
+			this.selectedRecord$.next(formData as AccountingGridRecord);
+		});
 
-		this.subs.push(activeRecordSubscription$, formChangeSubscription$);
+		this.categories$
+			.pipe(takeUntil(this.destroy$))
+			.subscribe(
+				(payload) =>
+					(this.categories = _.map(
+						payload,
+						(i) => <OperationCategory>{ type: i.type, value: (JSON.parse(i.value) as string[]).join(' :') }
+					))
+			);
 	}
 
 	public isExpenseOperation(): boolean {
 		const selectedCategoryValue: string =
-			this.crudRecordFg.controls['category']?.value ||
-			this.selectedRecord$?.value?.category;
+			(this.crudRecordFg.controls['category']?.value as string) ||
+			(this.selectedRecord$?.value?.category as string);
 
-		const selectedCategory = _.find(
-			this.categories,
-			(c) => c.value === selectedCategoryValue
-		);
+		const selectedCategory = _.find(this.categories, (c) => c.value === selectedCategoryValue);
 
 		return selectedCategory?.type === OperationType.Expense;
 	}

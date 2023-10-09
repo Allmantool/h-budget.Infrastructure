@@ -42,7 +42,7 @@ export class AppFormFieldComponent implements ControlValueAccessor {
 
 	@Input() public title: string = '';
 
-	@Input() public defaultValue: string = '';
+	@Input() public defaultValue: FormInput = '';
 
 	// eslint-disable-next-line @angular-eslint/no-output-on-prefix
 	@Output() public onDataChanged = new EventEmitter<
