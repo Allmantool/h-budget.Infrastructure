@@ -1,5 +1,5 @@
 import { OperationCategory } from '../../../../../../../domain/models/accounting/operation-category';
 
-export interface ICategorieStateModel {
+export interface ICategoriesStateModel {
 	categories: OperationCategory[];
 }

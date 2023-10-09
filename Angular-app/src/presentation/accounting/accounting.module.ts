@@ -13,6 +13,7 @@ import { CategoriesState } from '../../app/modules/shared/store/states/handbooks
 import { HandbbooksState } from '../../app/modules/shared/store/states/handbooks/handbooks.state';
 import { AppSharedModule } from '../../app/modules/shared/shared.module';
 import { AccountingState } from '../../app/modules/shared/store/states/accounting/accounting.state';
+import { CounterpartiesDialogService } from '../currency-rates/services/counterparties-dialog.service';
 
 @NgModule({
 	declarations: [AccountingGridComponent, AccountingCrudComponent],
@@ -27,7 +28,7 @@ import { AccountingState } from '../../app/modules/shared/store/states/accountin
 			CategoriesState,
 		]),
 	],
-	providers: [CategoriesDialogService],
+	providers: [CategoriesDialogService, CounterpartiesDialogService],
 	bootstrap: [],
 })
 export class AccountingModule {}

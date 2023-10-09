@@ -1,9 +1,9 @@
 import { createSelector } from '@ngxs/store';
 
 import { CategoriesState } from '../categories.state';
-import { ICategorieStateModel } from '../models/ICategoriesStateModel';
+import { ICategoriesStateModel } from '../models/ICategoriesStateModel';
 
 export const getCategories = createSelector(
 	[CategoriesState],
-	(state: ICategorieStateModel) => state?.categories
+	(state: ICategoriesStateModel) => state?.categories
 );

@@ -35,9 +35,9 @@ export class CategoriesDialogComponent implements OnDestroy {
 	public title: string;
 
 	public categoryNodes: string[] = [];
-	public filteredCategoryNodes!: Observable<string[]>;
+	public filteredCategoryNodes$!: Observable<string[]>;
 
-	public readonly separatorKeysCodes: number[] = [ENTER, COMMA];
+	public readonly separatorKeysCodes: number[] = [ENTER];
 	public categoryCtrl = new FormControl('');
 
 	constructor(
@@ -52,11 +52,13 @@ export class CategoriesDialogComponent implements OnDestroy {
 		this.title = dialogConfiguration.title;
 		this.dialogConfiguration = dialogConfiguration;
 
-		this.filteredCategoryNodes = this.categoryCtrl.valueChanges.pipe(
+		this.filteredCategoryNodes$ = this.categoryCtrl.valueChanges.pipe(
 			takeUntil(this.destroy$),
 			startWith(null),
 			map((categoryNode: string | null) =>
-				categoryNode ? _.filter(this.categoryNodes, categoryNode) : this.categoryNodes.slice()
+				categoryNode
+					? _.filter(this.categoryNodes, categoryNode)
+					: this.categoryNodes.slice()
 			)
 		);
 	}
