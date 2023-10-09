@@ -99,7 +99,7 @@ export class AccountingCrudComponent implements OnInit, OnDestroy {
 				(payload) =>
 					(this.categories = _.map(
 						payload,
-						(i) => <OperationCategory>{ type: i.type, value: (JSON.parse(i.value) as string[]).join(' :') }
+						(i) => <OperationCategory>{ type: i.type, value: (JSON.parse(i.value) as string[]).join(': ') }
 					))
 			);
 	}
