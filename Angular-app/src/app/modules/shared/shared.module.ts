@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatDividerModule } from '@angular/material/divider';
@@ -15,8 +16,9 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 import { NgApexchartsModule } from 'ng-apexcharts';
 
@@ -31,6 +33,8 @@ import { AppButtonComponent } from './components/button/app-button.component';
 import { AccountingCurrencyFormatPipe } from './pipes/accouting-currency-pipe';
 import { DateRangeDialogComponent } from './components/dialog/dates-rage/dates-range-dialog.component';
 import { ProgressBarComponent } from './components/progress-bar/progress-bar.component';
+import { CategoriesDialogComponent } from './components/dialog/categories/categories-dialog.component';
+import { CounterpartiesDialogComponent } from './components/dialog/counterparties/counterparties-dialog.component';
 
 @NgModule({
 	declarations: [
@@ -40,6 +44,8 @@ import { ProgressBarComponent } from './components/progress-bar/progress-bar.com
 		PageNotFoundComponent,
 		DatepickerComponent,
 		DateRangeDialogComponent,
+		CategoriesDialogComponent,
+		CounterpartiesDialogComponent,
 		AppFormFieldComponent,
 		AppButtonComponent,
 
@@ -54,6 +60,8 @@ import { ProgressBarComponent } from './components/progress-bar/progress-bar.com
 		PageNotFoundComponent,
 		DatepickerComponent,
 		DateRangeDialogComponent,
+		CategoriesDialogComponent,
+		CounterpartiesDialogComponent,
 		AppFormFieldComponent,
 		AppButtonComponent,
 
@@ -67,6 +75,8 @@ import { ProgressBarComponent } from './components/progress-bar/progress-bar.com
 		MatCheckboxModule,
 		MatCardModule,
 		MatButtonModule,
+		MatChipsModule,
+		MatAutocompleteModule,
 		NgApexchartsModule,
 
 		FormsModule,
@@ -89,6 +99,8 @@ import { ProgressBarComponent } from './components/progress-bar/progress-bar.com
 		MatInputModule,
 		MatSelectModule,
 		MatButtonModule,
+		MatChipsModule,
+		MatAutocompleteModule,
 		ReactiveFormsModule,
 	],
 	providers: [],

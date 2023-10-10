@@ -2,22 +2,19 @@
 	<form [formGroup]="crudRecordFg" (ngSubmit)="saveRecord()">
 		<div class="record-crud-section-title">New record:</div>
 		<div class="date-section">
-			<app-datepicker
-				placeholder="Choose a opeation date"
-				formControlName="operationDate"
-			>
+			<app-datepicker placeholder="Choose a opeation date" formControlName="operationDate">
 			</app-datepicker>
 		</div>
 		<div class="contractor-section">
 			<app-form-field
 				formControlName="contractor"
 				[fieldType]="'SELECT'"
-				[title]="'Сontractor:'"
-				[selectOptions]="contractors"
+				[title]="'Contractor:'"
+				[selectOptions]="getContractorLabels()"
 			>
 			</app-form-field>
 
-			<button mat-fab color="primary" aria-label="add a contractor">
+			<button (click)="addContractor()" mat-fab color="primary" aria-label="add a contractor">
 				<mat-icon>add</mat-icon>
 			</button>
 		</div>
@@ -31,7 +28,7 @@
 			>
 			</app-form-field>
 
-			<button mat-fab color="primary" aria-label="add a category">
+			<button (click)="addCategory()" mat-fab color="primary" aria-label="add a category">
 				<mat-icon>add</mat-icon>
 			</button>
 		</div>
@@ -49,11 +46,7 @@
 
 		<ng-template #income>
 			<div class="income-section">
-				<app-form-field
-					formControlName="income"
-					[fieldType]="'INPUT'"
-					[title]="'Income:'"
-				>
+				<app-form-field formControlName="income" [fieldType]="'INPUT'" [title]="'Income:'">
 				</app-form-field>
 			</div>
 		</ng-template>

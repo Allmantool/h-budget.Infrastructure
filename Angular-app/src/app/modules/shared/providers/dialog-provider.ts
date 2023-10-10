@@ -10,7 +10,7 @@ import * as _ from 'lodash';
 export class DialogProvider {
 	constructor(public dialog: MatDialog) {}
 
-	openDialog<T, D, P>(
+	openDialog<T, D>(
 		componentRef: ComponentType<T> | TemplateRef<T>,
 		сonfig?: MatDialogConfig<D>
 	): void {

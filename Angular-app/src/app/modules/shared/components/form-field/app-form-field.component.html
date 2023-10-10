@@ -33,7 +33,7 @@
 		<mat-form-field appearance="outline">
 			<mat-label>{{ title }}</mat-label>
 			<mat-select
-				[value]="data$ | async"
+				[value]="defaultValue ?? (data$ | async)"
 				(selectionChange)="updateValue($event)"
 			>
 				<ng-container
