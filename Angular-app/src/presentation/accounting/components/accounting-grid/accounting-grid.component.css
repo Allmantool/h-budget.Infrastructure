@@ -1,5 +1,5 @@
 .accounting-table {
-	margin-top: 2em;
+	margin-top: 5em;
 }
 
 .row-is-clicked {
@@ -18,7 +18,7 @@
 }
 
 .mat-column-operationDate {
-	width: 10em;
+	width: 12em;
 }
 
 .mat-column-contractor {
