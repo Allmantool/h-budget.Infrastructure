@@ -27,11 +27,11 @@ import '../../../../domain/extensions/handbookExtensions';
 
 @Component({
 	selector: 'accounting-crud',
-	templateUrl: './accounting-crud.component.html',
-	styleUrls: ['./accounting-crud.component.css'],
+	templateUrl: './accounting-operations-crud.component.html',
+	styleUrls: ['./accounting-operations-crud.component.css'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AccountingCrudComponent implements OnInit, OnDestroy {
+export class AccountingOperationsCrudComponent implements OnInit, OnDestroy {
 	private destroy$ = new Subject<void>();
 
 	public contractors: string[] = [];

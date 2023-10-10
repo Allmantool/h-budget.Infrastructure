@@ -3,8 +3,8 @@ import { NgxsModule } from '@ngxs/store';
 
 import {
 	AccountingRoutingModule,
-	AccountingGridComponent,
-	AccountingCrudComponent,
+	AccountingOperatiosGridComponent,
+	AccountingOperationsCrudComponent,
 } from '../accounting';
 import { AccountingTableState } from '../../app/modules/shared/store/states/accounting/accounting-table.state';
 import { CategoriesDialogService } from 'presentation/currency-rates/services/categories-dialog.service';
@@ -16,7 +16,7 @@ import { AccountingState } from '../../app/modules/shared/store/states/accountin
 import { CounterpartiesDialogService } from '../currency-rates/services/counterparties-dialog.service';
 
 @NgModule({
-	declarations: [AccountingGridComponent, AccountingCrudComponent],
+	declarations: [AccountingOperatiosGridComponent, AccountingOperationsCrudComponent],
 	imports: [
 		AppSharedModule,
 		AccountingRoutingModule,

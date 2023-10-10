@@ -2,9 +2,7 @@
 	class="currency-rates-grid__show-button currency-rates-grid__show-button--align-center"
 	*ngIf="todayCurrencyRateGroups$ | async as todayCurrencyRateGroups"
 >
-	<button mat-raised-button (click)="getTodayCurrencyRates()">
-		Get today currency rates
-	</button>
+	<button mat-raised-button (click)="getTodayCurrencyRates()">Get today currency rates</button>
 
 	<ng-container>
 		<mat-button-toggle-group
@@ -32,11 +30,7 @@
 	class="currency-rates-grid currency-rates-grid--width"
 	*ngIf="todayCurrencyRateGroups$ | async as todayCurrencyRateGroups"
 >
-	<table
-		mat-table
-		[dataSource]="todayRatesTableDataSource"
-		class="mat-elevation-z8"
-	>
+	<table mat-table [dataSource]="todayRatesTableDataSource" class="mat-elevation-z8">
 		<caption>
 			Currency rates grid
 		</caption>
@@ -62,38 +56,28 @@
 
 		<ng-container [matColumnDef]="ratesGridColumnOptions.ID">
 			<th mat-header-cell *matHeaderCellDef>
-				{{
-				ratesGridColumnOptions.DESCRIPTIONS.get(ratesGridColumnOptions.ID)
-				}}
+				{{ ratesGridColumnOptions.DESCRIPTIONS.get(ratesGridColumnOptions.ID) }}
 			</th>
 			<td mat-cell *matCellDef="let element">{{ element.currencyId }}</td>
 		</ng-container>
 
 		<ng-container [matColumnDef]="ratesGridColumnOptions.ABBREVIATION">
 			<th mat-header-cell *matHeaderCellDef>
-				{{
-				ratesGridColumnOptions.DESCRIPTIONS.get(ratesGridColumnOptions.ABBREVIATION)
-				}}
+				{{ ratesGridColumnOptions.DESCRIPTIONS.get(ratesGridColumnOptions.ABBREVIATION) }}
 			</th>
-			<td mat-cell *matCellDef="let element">
-				{{ element.abbreviation }}
-			</td>
+			<td mat-cell *matCellDef="let element">{{ element.abbreviation }}</td>
 		</ng-container>
 
 		<ng-container [matColumnDef]="ratesGridColumnOptions.NAME">
 			<th mat-header-cell *matHeaderCellDef>
-				{{
-				ratesGridColumnOptions.DESCRIPTIONS.get(ratesGridColumnOptions.NAME)
-				}}
+				{{ ratesGridColumnOptions.DESCRIPTIONS.get(ratesGridColumnOptions.NAME) }}
 			</th>
 			<td mat-cell *matCellDef="let element">{{ element.name }}</td>
 		</ng-container>
 
 		<ng-container [matColumnDef]="ratesGridColumnOptions.RATE_PER_UNIT">
 			<th mat-header-cell *matHeaderCellDef>
-				{{
-				ratesGridColumnOptions.DESCRIPTIONS.get(ratesGridColumnOptions.RATE_PER_UNIT)
-				}}
+				{{ ratesGridColumnOptions.DESCRIPTIONS.get(ratesGridColumnOptions.RATE_PER_UNIT) }}
 			</th>
 			<td
 				[style.color]="ratesGridColumnOptions.TRENDS[element.currencyTrend]"
@@ -106,8 +90,7 @@
 
 		<ng-container [matColumnDef]="ratesGridColumnOptions.PERCENTAGE_DIFF">
 			<th mat-header-cell *matHeaderCellDef>
-				{{
-				ratesGridColumnOptions.DESCRIPTIONS.get(ratesGridColumnOptions.PERCENTAGE_DIFF)
+				{{ ratesGridColumnOptions.DESCRIPTIONS.get(ratesGridColumnOptions.PERCENTAGE_DIFF)
 				}}
 			</th>
 			<td
@@ -116,27 +99,18 @@
 				*matCellDef="let element"
 			>
 				{{ element.rateDiff ?? 0 }} %
-				<span class="material-icons md-18"
-					>{{ element.currencyTrend }}</span
-				>
+				<span class="material-icons md-18">{{ element.currencyTrend }}</span>
 			</td>
 		</ng-container>
 
 		<ng-container [matColumnDef]="ratesGridColumnOptions.UPDATE_DATE">
 			<th mat-header-cell *matHeaderCellDef>
-				{{
-				ratesGridColumnOptions.DESCRIPTIONS.get(ratesGridColumnOptions.UPDATE_DATE)
-				}}
+				{{ ratesGridColumnOptions.DESCRIPTIONS.get(ratesGridColumnOptions.UPDATE_DATE) }}
 			</th>
-			<td mat-cell *matCellDef="let element">
-				{{ element.updateDate | date }}
-			</td>
+			<td mat-cell *matCellDef="let element">{{ element.updateDate | date }}</td>
 		</ng-container>
 
 		<tr mat-header-row *matHeaderRowDef="ratesGridColumnOptions.NAMES"></tr>
-		<tr
-			mat-row
-			*matRowDef="let row; columns: ratesGridColumnOptions.NAMES"
-		></tr>
+		<tr mat-row *matRowDef="let row; columns: ratesGridColumnOptions.NAMES"></tr>
 	</table>
 </div>

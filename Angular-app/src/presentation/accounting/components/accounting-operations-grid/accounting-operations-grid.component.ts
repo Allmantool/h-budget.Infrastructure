@@ -1,9 +1,4 @@
-import {
-	ChangeDetectionStrategy,
-	Component,
-	OnDestroy,
-	OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 
 import { Select, Store } from '@ngxs/store';
 import { Observable, Subscription, BehaviorSubject } from 'rxjs';
@@ -17,12 +12,12 @@ import { getAccountingTableOptions } from '../../../../app/modules/shared/store/
 import { AccountingTableOptions } from '../../../../app/modules/shared/store/models/accounting/accounting-table-options';
 
 @Component({
-	selector: 'accounting-grid',
-	templateUrl: './accounting-grid.component.html',
-	styleUrls: ['./accounting-grid.component.css'],
+	selector: 'accounting-operarions-grid',
+	templateUrl: './accounting-operations-grid.component.html',
+	styleUrls: ['./accounting-operations-grid.component.css'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AccountingGridComponent implements OnInit, OnDestroy {
+export class AccountingOperatiosGridComponent implements OnInit, OnDestroy {
 	private subs: Subscription[] = [];
 
 	@Select(getAccountingRecords)
@@ -81,8 +76,9 @@ export class AccountingGridComponent implements OnInit, OnDestroy {
 		'comment',
 	];
 
-	public dataSource$: BehaviorSubject<AccountingGridRecord[]> =
-		new BehaviorSubject<AccountingGridRecord[]>([]);
+	public dataSource$: BehaviorSubject<AccountingGridRecord[]> = new BehaviorSubject<
+		AccountingGridRecord[]
+	>([]);
 	public clickedRowGuids = new Set<Guid>();
 
 	@Select(getAccountingTableOptions)
@@ -96,12 +92,10 @@ export class AccountingGridComponent implements OnInit, OnDestroy {
 			this.dataSource$.next(records)
 		);
 
-		const tableOptions$ = this.accountingTableOptions$.subscribe(
-			(options) => {
-				this.clickedRowGuids.clear();
-				this.clickedRowGuids.add(options.selectedRecordGuid);
-			}
-		);
+		const tableOptions$ = this.accountingTableOptions$.subscribe((options) => {
+			this.clickedRowGuids.clear();
+			this.clickedRowGuids.add(options.selectedRecordGuid);
+		});
 
 		this.subs.push(tableDataSource$);
 		this.subs.push(tableOptions$);

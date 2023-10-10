@@ -1,4 +1,4 @@
-export { AccountingGridComponent } from './components/accounting-grid/accounting-grid.component';
-export { AccountingCrudComponent } from './components/accounting-crud/accounting-crud.component';
+export { AccountingOperatiosGridComponent } from './components/accounting-operations-grid/accounting-operations-grid.component';
+export { AccountingOperationsCrudComponent } from './components/accounting-operations-crud/accounting-operations-crud.component';
 export { AccountingRoutingModule } from './accounting-routing.module';
 export { AccountingModule } from './accounting.module';

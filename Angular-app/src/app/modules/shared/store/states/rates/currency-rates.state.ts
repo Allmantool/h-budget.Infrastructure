@@ -5,10 +5,7 @@ import { take, tap } from 'rxjs';
 import * as _ from 'lodash';
 
 import { CurrencyRateValueModel } from 'domain/models/rates/currency-rate-value.model';
-import {
-	AddCurrencyGroups,
-	FetchAllCurrencyRates,
-} from './actions/currency.actions';
+import { AddCurrencyGroups, FetchAllCurrencyRates } from './actions/currency.actions';
 import { ICurrencyRatesStateModel } from './models/currency-rates-state.model';
 import { CurrencyTableState } from './currency-table.state';
 import { CurrencyChartState } from './currency-chart.state';
@@ -24,9 +21,7 @@ import { NationalBankCurrencyProvider } from 'data/providers/rates/national-bank
 })
 @Injectable()
 export class CurrencyRatesState {
-	constructor(
-		private readonly currencyRateProvider: NationalBankCurrencyProvider
-	) {}
+	constructor(private readonly currencyRateProvider: NationalBankCurrencyProvider) {}
 
 	@Action(AddCurrencyGroups)
 	addCurrencyGroups(
@@ -37,8 +32,7 @@ export class CurrencyRatesState {
 
 		const upToDateCurrencyGroups = ratesFromTheState.map((cg) => {
 			const addingRates: CurrencyRateValueModel[] =
-				addedRateGroups.find((i) => i.currencyId == cg.currencyId)
-					?.rateValues ?? [];
+				addedRateGroups.find((i) => i.currencyId == cg.currencyId)?.rateValues ?? [];
 
 			const ratesForUpdate = _.differenceWith(
 				addingRates,
@@ -53,23 +47,14 @@ export class CurrencyRatesState {
 			const notUpdatedOrNewRates = _.filter(
 				cg.rateValues,
 				(cgRate) =>
-					!_.some(
-						addingRates,
-						(addRate) => addRate.updateDate === cgRate.updateDate
-					)
+					!_.some(addingRates, (addRate) => addRate.updateDate === cgRate.updateDate)
 			);
 
 			const updatedCarrencyGroup = _.cloneDeep(cg);
 
-			const upToDateRates = _.concat(
-				notUpdatedOrNewRates,
-				ratesForUpdate
-			);
+			const upToDateRates = _.concat(notUpdatedOrNewRates, ratesForUpdate);
 
-			updatedCarrencyGroup.rateValues = _.orderBy(
-				upToDateRates,
-				(r) => r.updateDate
-			);
+			updatedCarrencyGroup.rateValues = _.orderBy(upToDateRates, (r) => r.updateDate);
 
 			return updatedCarrencyGroup;
 		});
@@ -95,10 +80,7 @@ export class CurrencyRatesState {
 								name: rg.name,
 								abbreviation: rg.abbreviation,
 								scale: rg.scale,
-								rateValues: _.orderBy(
-									rg.rateValues,
-									(i) => i.updateDate
-								),
+								rateValues: _.orderBy(rg.rateValues, (i) => i.updateDate),
 							}) as CurrencyRateGroupModel
 					),
 				})
