@@ -19,6 +19,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 import { NgApexchartsModule } from 'ng-apexcharts';
 
@@ -75,6 +76,7 @@ import { CounterpartiesDialogComponent } from './components/dialog/counterpartie
 		MatCheckboxModule,
 		MatCardModule,
 		MatButtonModule,
+		MatExpansionModule,
 		MatChipsModule,
 		MatAutocompleteModule,
 		NgApexchartsModule,
@@ -99,6 +101,7 @@ import { CounterpartiesDialogComponent } from './components/dialog/counterpartie
 		MatInputModule,
 		MatSelectModule,
 		MatButtonModule,
+		MatExpansionModule,
 		MatChipsModule,
 		MatAutocompleteModule,
 		ReactiveFormsModule,

@@ -20,7 +20,7 @@ import { OperationCategory } from '../../../../../../domain/models/accounting/op
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CategoriesDialogComponent implements OnDestroy {
-	private destroy$ = new Subject();
+	private destroy$ = new Subject<void>();
 
 	private dialogConfiguration: DialogContainer;
 
@@ -63,7 +63,7 @@ export class CategoriesDialogComponent implements OnDestroy {
 		);
 	}
 	ngOnDestroy(): void {
-		this.destroy$.next({});
+		this.destroy$.next();
 		this.destroy$.complete();
 	}
 

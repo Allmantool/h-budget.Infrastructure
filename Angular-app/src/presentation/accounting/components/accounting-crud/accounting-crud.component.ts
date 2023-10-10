@@ -23,6 +23,7 @@ import {
 import { getCategories } from '../../../../app/modules/shared/store/states/handbooks/selectors/categories.selectors';
 import { getContractors } from '../../../../app/modules/shared/store/states/handbooks/selectors/counterparties.selectors';
 import { CounterpartiesDialogService } from '../../../currency-rates/services/counterparties-dialog.service';
+import '../../../../domain/extensions/handbookExtensions';
 
 @Component({
 	selector: 'accounting-crud',
@@ -31,7 +32,7 @@ import { CounterpartiesDialogService } from '../../../currency-rates/services/co
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AccountingCrudComponent implements OnInit, OnDestroy {
-	private destroy$ = new Subject();
+	private destroy$ = new Subject<void>();
 
 	public contractors: string[] = [];
 
@@ -71,7 +72,7 @@ export class AccountingCrudComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnDestroy(): void {
-		this.destroy$.next({});
+		this.destroy$.next();
 		this.destroy$.complete();
 	}
 
@@ -112,7 +113,7 @@ export class AccountingCrudComponent implements OnInit, OnDestroy {
 					(i) =>
 						<OperationCategory>{
 							type: i.type,
-							value: (JSON.parse(i.value) as string[]).join(': '),
+							value: i.value.parseToTreeAsString(),
 						}
 				))
 		);
@@ -120,10 +121,7 @@ export class AccountingCrudComponent implements OnInit, OnDestroy {
 		this.counterparties$
 			.pipe(takeUntil(this.destroy$))
 			.subscribe(
-				(payload) =>
-					(this.contractors = _.map(payload, (i) =>
-						(JSON.parse(i) as string[]).join(': ')
-					))
+				(payload) => (this.contractors = _.map(payload, (i) => i.parseToTreeAsString()))
 			);
 	}
 

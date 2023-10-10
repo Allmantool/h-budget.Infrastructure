@@ -25,7 +25,7 @@ import { Result } from 'core/result';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CounterpartiesDialogComponent implements OnDestroy {
-	private destroy$ = new Subject();
+	private destroy$ = new Subject<void>();
 
 	private dialogConfiguration: DialogContainer;
 
@@ -60,7 +60,7 @@ export class CounterpartiesDialogComponent implements OnDestroy {
 		);
 	}
 	ngOnDestroy(): void {
-		this.destroy$.next({});
+		this.destroy$.next();
 		this.destroy$.complete();
 	}
 

@@ -1,14 +1,22 @@
 <div class="accounting-table mat-elevation-z8" tabindex="0">
+	<mat-accordion class="account-note">
+		<mat-expansion-panel hideToggle>
+			<mat-expansion-panel-header>
+				<mat-panel-title>Visa [BYN]</mat-panel-title>
+				<mat-panel-description>Total Sum: +123 486.29</mat-panel-description>
+			</mat-expansion-panel-header>
+			<p>Main debit account at PriorBank</p>
+		</mat-expansion-panel>
+	</mat-accordion>
+
 	<mat-table #table [dataSource]="dataSource$">
-		<caption>
+		<caption hidden>
 			Accounting grid
 		</caption>
 
 		<ng-container matColumnDef="operationDate">
 			<th mat-header-cell *matHeaderCellDef>Date</th>
-			<td mat-cell *matCellDef="let element">
-				{{ element.operationDate | date }}
-			</td>
+			<td mat-cell *matCellDef="let element">{{ element.operationDate | date }}</td>
 		</ng-container>
 
 		<ng-container matColumnDef="contractor">
@@ -47,10 +55,7 @@
 			<td mat-cell *matCellDef="let element">{{ element.comment }}</td>
 		</ng-container>
 
-		<tr
-			mat-header-row
-			*matHeaderRowDef="displayedColumns; sticky: true"
-		></tr>
+		<tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
 		<tr
 			class="row"
 			mat-row
