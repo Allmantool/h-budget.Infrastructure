@@ -9,11 +9,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class AppRootComponent {
 	constructor(
-		private route: ActivatedRoute,
-		private router: Router
+		private readonly route: ActivatedRoute,
+		private readonly router: Router
 	) {}
 
-	public navigateToDashboard(): void {
-		this.router.navigate(['/'], { relativeTo: this.route });
+	public async navigateToDashboardAsync(): Promise<void> {
+		await this.router.navigate(['/'], { relativeTo: this.route });
 	}
 }

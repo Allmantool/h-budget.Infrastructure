@@ -10,7 +10,7 @@ import { Guid } from 'typescript-guid';
 import { AccountingGridRecord } from '../../models/accounting-grid-record';
 import { OperationCategory } from '../../../../domain/models/accounting/operation-category';
 import { AccountingTableOptions } from 'app/modules/shared/store/models/accounting/accounting-table-options';
-import { OperationType } from '../../../../domain/models/accounting/operation-type';
+import { OperationTypes } from '../../../../domain/models/accounting/operation-types';
 import { getAccountingTableOptions } from '../../../../app/modules/shared/store/states/accounting/selectors/table-options.selectors';
 import { getAccountingRecords } from '../../../../app/modules/shared/store/states/accounting/selectors/accounting.selectors';
 import { SetActiveAccountingOperation } from '../../../../app/modules/shared/store/states/accounting/actions/accounting-table-options.actions';
@@ -132,7 +132,7 @@ export class AccountingOperationsCrudComponent implements OnInit, OnDestroy {
 
 		const selectedCategory = _.find(this.categories, (c) => c.value === selectedCategoryValue);
 
-		return selectedCategory?.type === OperationType.Expense;
+		return selectedCategory?.type === OperationTypes.Expense;
 	}
 
 	public getCategoryLabels(): string[] {

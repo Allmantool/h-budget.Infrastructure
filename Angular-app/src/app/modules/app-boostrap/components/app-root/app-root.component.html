@@ -1,16 +1,12 @@
 <!-- Toolbar -->
-<div class="toolbar" (click)="navigateToDashboard()" role="banner">
-	<img
-		class="toolbar-logo"
-		alt="Angular Logo"
-		src="/assets/angular-logo.png"
-	/>
+<div class="toolbar" (click)="navigateToDashboardAsync()" role="banner">
+	<img class="toolbar-logo" alt="Angular Logo" src="/assets/angular-logo.png" />
 	<span>Welcome to h-budget app</span>
 </div>
 
 <div class="layout-content">
 	<div class="app-root-left-sidebar-outlet">
-		<router-outlet name="left-sidebar"></router-outlet>
+		<router-outlet name="leftSidebar"></router-outlet>
 	</div>
 
 	<div class="app-root-central-outlet">
@@ -18,7 +14,7 @@
 	</div>
 
 	<div class="app-root-right-sidebar-outlet">
-		<router-outlet name="right-sidebar"></router-outlet>
+		<router-outlet name="rightSidebar"></router-outlet>
 	</div>
 </div>
 

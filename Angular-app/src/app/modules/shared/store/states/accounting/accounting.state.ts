@@ -7,13 +7,13 @@ import { nameof } from 'ts-simple-nameof';
 import { AccountingTableState } from './accounting-table.state';
 import { AddRange, Edit, Add, Delete } from './actions/accounting.actions';
 import { IAccountingStateModel } from './models/accounting-state.model';
-import { RatesAbbrevitions } from '../../../constants/rates-abbreviations';
+import { CurrencyAbbrevitions } from '../../../constants/rates-abbreviations';
 import { AccountingGridRecord } from '../../../../../../presentation/accounting/models/accounting-grid-record';
 
 @State<IAccountingStateModel>({
 	name: 'accounting',
 	defaults: {
-		activeCurrency: RatesAbbrevitions.BYN,
+		activeCurrency: CurrencyAbbrevitions.BYN,
 		operationRecords: [],
 	},
 	children: [AccountingTableState],

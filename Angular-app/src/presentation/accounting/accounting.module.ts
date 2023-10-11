@@ -14,9 +14,14 @@ import { HandbbooksState } from '../../app/modules/shared/store/states/handbooks
 import { AppSharedModule } from '../../app/modules/shared/shared.module';
 import { AccountingState } from '../../app/modules/shared/store/states/accounting/accounting.state';
 import { CounterpartiesDialogService } from '../currency-rates/services/counterparties-dialog.service';
+import { AccountComponent } from './components/account/account.component';
 
 @NgModule({
-	declarations: [AccountingOperatiosGridComponent, AccountingOperationsCrudComponent],
+	declarations: [
+		AccountingOperatiosGridComponent,
+		AccountingOperationsCrudComponent,
+		AccountComponent,
+	],
 	imports: [
 		AppSharedModule,
 		AccountingRoutingModule,
