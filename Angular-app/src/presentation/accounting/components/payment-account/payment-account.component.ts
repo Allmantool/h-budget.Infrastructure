@@ -1,23 +1,26 @@
+
 import { ChangeDetectionStrategy, Component, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatListOption, MatSelectionList } from '@angular/material/list';
 import { SelectionModel } from '@angular/cdk/collections';
 
 import { Subject } from 'rxjs';
+import { Store } from '@ngxs/store';
 import { Guid } from 'typescript-guid';
 import * as _ from 'lodash';
 
 import { PaymentAccount } from '../../../../domain/models/accounting/payment-account';
 import { AccountTypes } from '../../../../domain/models/accounting/account-types';
 import { CurrencyAbbrevitions } from '../../../../app/modules/shared/constants/rates-abbreviations';
+import { SetActivePaymentAccount } from '../../../../app/modules/shared/store/states/accounting/actions/payment-acount.actions';
 
 @Component({
-	selector: 'accounting-crud',
-	templateUrl: './account.component.html',
-	styleUrls: ['./account.component.css'],
+	selector: 'payment-accounting-crud',
+	templateUrl: './payment-account.component.html',
+	styleUrls: ['./payment-account.component.css'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AccountComponent implements OnDestroy {
+export class PaymentAccountComponent implements OnDestroy {
 	private destroy$ = new Subject<void>();
 
 	@ViewChild('cash')
@@ -27,7 +30,8 @@ export class AccountComponent implements OnDestroy {
 
 	constructor(
 		private readonly route: ActivatedRoute,
-		private readonly router: Router
+		private readonly router: Router,
+		private readonly store: Store
 	) {}
 
 	public ngOnDestroy(): void {
@@ -97,7 +101,7 @@ export class AccountComponent implements OnDestroy {
 
 		const guid = _.first(selectedOptions.selected)?.value as Guid;
 
-		console.log(guid.toString());
+		this.store.dispatch(new SetActivePaymentAccount(guid.toString()));
 
 		this.isNavigateToOperationsDisabled = false;
 

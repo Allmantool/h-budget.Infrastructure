@@ -1,9 +1,9 @@
 import { createSelector } from '@ngxs/store';
 
-import { AccountingState } from '../accounting.state';
-import { IAccountingStateModel } from '../models/accounting-state.model';
+import { AccountingOperationsState } from '../accounting-operations.state';
+import { IAccountingOperationsStateModel } from '../models/accounting-state.model';
 
 export const getAccountingRecords = createSelector(
-	[AccountingState],
-	(state: IAccountingStateModel) => state?.operationRecords
+	[AccountingOperationsState],
+	(state: IAccountingOperationsStateModel) => state?.operationRecords
 );

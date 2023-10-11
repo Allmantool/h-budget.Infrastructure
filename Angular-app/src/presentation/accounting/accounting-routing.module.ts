@@ -2,10 +2,10 @@ import { NgModule } from '@angular/core';
 import { Routes, provideRouter, withDebugTracing } from '@angular/router';
 
 import { AccountingOperationsCrudComponent, AccountingOperatiosGridComponent } from '../accounting';
-import { AccountComponent } from './components/account/account.component';
+import { PaymentAccountComponent } from './components/payment-account/payment-account.component';
 
 const routes: Routes = [
-	{ path: '', component: AccountComponent },
+	{ path: '', component: PaymentAccountComponent },
 	{ path: 'operations', component: AccountingOperatiosGridComponent },
 	{
 		path: 'operations',

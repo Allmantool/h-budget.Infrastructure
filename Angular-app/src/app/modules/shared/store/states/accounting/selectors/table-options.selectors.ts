@@ -1,9 +1,9 @@
 import { createSelector } from '@ngxs/store';
 
 import { IAccountingTableStateModel } from '../models/accounting-table-state.model';
-import { AccountingTableState } from '../accounting-table.state';
+import { AccountingOperationsTableState } from '../accounting-operations-table.state';
 
 export const getAccountingTableOptions = createSelector(
-	[AccountingTableState],
+	[AccountingOperationsTableState],
 	(state: IAccountingTableStateModel) => state?.tableOptions
 );

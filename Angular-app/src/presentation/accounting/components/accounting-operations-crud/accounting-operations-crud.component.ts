@@ -9,7 +9,7 @@ import { Guid } from 'typescript-guid';
 
 import { AccountingGridRecord } from '../../models/accounting-grid-record';
 import { OperationCategory } from '../../../../domain/models/accounting/operation-category';
-import { AccountingTableOptions } from 'app/modules/shared/store/models/accounting/accounting-table-options';
+import { AccountingOperationsTableOptions } from 'app/modules/shared/store/models/accounting/accounting-table-options';
 import { OperationTypes } from '../../../../domain/models/accounting/operation-types';
 import { getAccountingTableOptions } from '../../../../app/modules/shared/store/states/accounting/selectors/table-options.selectors';
 import { getAccountingRecords } from '../../../../app/modules/shared/store/states/accounting/selectors/accounting.selectors';
@@ -43,7 +43,7 @@ export class AccountingOperationsCrudComponent implements OnInit, OnDestroy {
 	public crudRecordFg: UntypedFormGroup;
 
 	@Select(getAccountingTableOptions)
-	accountingTableOptions$!: Observable<AccountingTableOptions>;
+	accountingTableOptions$!: Observable<AccountingOperationsTableOptions>;
 
 	@Select(getAccountingRecords)
 	accountingRecords$!: Observable<AccountingGridRecord[]>;

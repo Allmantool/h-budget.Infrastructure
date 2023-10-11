@@ -9,7 +9,7 @@ import { getAccountingRecords } from '../../../../app/modules/shared/store/state
 import { AddRange } from '../../../../app/modules/shared/store/states/accounting/actions/accounting.actions';
 import { SetActiveAccountingOperation } from '../../../../app/modules/shared/store/states/accounting/actions/accounting-table-options.actions';
 import { getAccountingTableOptions } from '../../../../app/modules/shared/store/states/accounting/selectors/table-options.selectors';
-import { AccountingTableOptions } from '../../../../app/modules/shared/store/models/accounting/accounting-table-options';
+import { AccountingOperationsTableOptions } from '../../../../app/modules/shared/store/models/accounting/accounting-table-options';
 
 @Component({
 	selector: 'accounting-operarions-grid',
@@ -82,7 +82,7 @@ export class AccountingOperatiosGridComponent implements OnInit, OnDestroy {
 	public clickedRowGuids = new Set<Guid>();
 
 	@Select(getAccountingTableOptions)
-	accountingTableOptions$!: Observable<AccountingTableOptions>;
+	accountingTableOptions$!: Observable<AccountingOperationsTableOptions>;
 
 	constructor(private store: Store) {
 		this.store.dispatch(new AddRange(this.ELEMENT_DATA));
