@@ -21,6 +21,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatListModule } from '@angular/material/list';
+import { MatStepperModule } from '@angular/material/stepper';
 
 import { NgApexchartsModule } from 'ng-apexcharts';
 
@@ -77,6 +78,7 @@ import { CounterpartiesDialogComponent } from './components/dialog/counterpartie
 		MatChipsModule,
 		MatAutocompleteModule,
 		MatListModule,
+		MatStepperModule,
 		NgApexchartsModule,
 
 		FormsModule,
@@ -103,6 +105,7 @@ import { CounterpartiesDialogComponent } from './components/dialog/counterpartie
 		MatChipsModule,
 		MatAutocompleteModule,
 		MatListModule,
+		MatStepperModule,
 		ReactiveFormsModule,
 	],
 	providers: [],

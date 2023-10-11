@@ -16,12 +16,14 @@ import { AccountingOperationsState } from '../../app/modules/shared/store/states
 import { CounterpartiesDialogService } from '../currency-rates/services/counterparties-dialog.service';
 import { PaymentAccountComponent } from './components/payment-account/payment-account.component';
 import { PaymentAccountState } from '../../app/modules/shared/store/states/accounting/payment-account.state';
+import { PaymentAccountCrudComponent } from './components/payment-account-crud/payment-account-crud.component';
 
 @NgModule({
 	declarations: [
 		AccountingOperatiosGridComponent,
 		AccountingOperationsCrudComponent,
 		PaymentAccountComponent,
+		PaymentAccountCrudComponent,
 	],
 	imports: [
 		AppSharedModule,

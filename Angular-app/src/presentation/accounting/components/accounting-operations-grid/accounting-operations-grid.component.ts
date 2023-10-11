@@ -10,6 +10,8 @@ import { AddRange } from '../../../../app/modules/shared/store/states/accounting
 import { SetActiveAccountingOperation } from '../../../../app/modules/shared/store/states/accounting/actions/accounting-table-options.actions';
 import { getAccountingTableOptions } from '../../../../app/modules/shared/store/states/accounting/selectors/table-options.selectors';
 import { AccountingOperationsTableOptions } from '../../../../app/modules/shared/store/models/accounting/accounting-table-options';
+import { getPaymentAccountId } from '../../../../app/modules/shared/store/states/accounting/selectors/payment-account.selector';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
 	selector: 'accounting-operarions-grid',
@@ -22,6 +24,9 @@ export class AccountingOperatiosGridComponent implements OnInit, OnDestroy {
 
 	@Select(getAccountingRecords)
 	accountingRecords$!: Observable<AccountingGridRecord[]>;
+
+	@Select(getPaymentAccountId)
+	paymentAccountId$!: Observable<string>;
 
 	public ELEMENT_DATA: AccountingGridRecord[] = [
 		{
@@ -84,7 +89,11 @@ export class AccountingOperatiosGridComponent implements OnInit, OnDestroy {
 	@Select(getAccountingTableOptions)
 	accountingTableOptions$!: Observable<AccountingOperationsTableOptions>;
 
-	constructor(private store: Store) {
+	constructor(
+		private readonly route: ActivatedRoute,
+		private readonly router: Router,
+		private readonly store: Store
+	) {
 		this.store.dispatch(new AddRange(this.ELEMENT_DATA));
 	}
 	ngOnInit(): void {
@@ -107,5 +116,19 @@ export class AccountingOperatiosGridComponent implements OnInit, OnDestroy {
 
 	public selectRow(record: AccountingGridRecord): void {
 		this.store.dispatch(new SetActiveAccountingOperation(record.id));
+	}
+
+	public async navigateToPaymentAccountsAsync(): Promise<void> {
+		await this.router.navigate(['..'], { relativeTo: this.route });
+		/*
+		await this.router.navigate(
+			[
+				{
+					outlets: { primary: ['..'], rightSidebar: ['..'] },
+				},
+			],
+			{ relativeTo: this.route }
+		);
+		*/
 	}
 }

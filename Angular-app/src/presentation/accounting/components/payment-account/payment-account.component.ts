@@ -15,7 +15,7 @@ import { CurrencyAbbrevitions } from '../../../../app/modules/shared/constants/r
 import { SetActivePaymentAccount } from '../../../../app/modules/shared/store/states/accounting/actions/payment-acount.actions';
 
 @Component({
-	selector: 'payment-accounting-crud',
+	selector: 'payment-accounts',
 	templateUrl: './payment-account.component.html',
 	styleUrls: ['./payment-account.component.css'],
 	changeDetection: ChangeDetectionStrategy.OnPush,

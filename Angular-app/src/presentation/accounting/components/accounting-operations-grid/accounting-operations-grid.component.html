@@ -1,9 +1,9 @@
 <div class="accounting-table mat-elevation-z8" tabindex="0">
 	<mat-accordion class="account-note">
 		<mat-expansion-panel hideToggle>
-			<mat-expansion-panel-header>
-				<mat-panel-title>Visa [BYN]</mat-panel-title>
-				<mat-panel-description>Total Sum: +123 486.29</mat-panel-description>
+			<mat-expansion-panel-header (click)="navigateToPaymentAccountsAsync()">
+				<mat-panel-title>Visa [BYN] {{paymentAccountId$ | async }} </mat-panel-title>
+				<mat-panel-description>Total Sum: +123 486.29 </mat-panel-description>
 			</mat-expansion-panel-header>
 			<p>Main debit account at PriorBank</p>
 		</mat-expansion-panel>
