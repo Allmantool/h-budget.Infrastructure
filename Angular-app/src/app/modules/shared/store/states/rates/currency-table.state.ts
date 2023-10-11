@@ -8,10 +8,7 @@ import { CurrencyTableOptions } from '../../models/currency-rates/currency-table
 import { RatesGridDefaultOptions } from '../../../constants/rates-grid-default-options';
 import { CurrencyDateRange } from '../../models/currency-rates/currency-date-range';
 import { CurrencyTableItem } from '../../models/currency-rates/currency-table-item';
-import {
-	SetActiveCurrency,
-	SetCurrencyDateRange,
-} from './actions/currency-table-options.actions';
+import { SetActiveCurrency, SetCurrencyDateRange } from './actions/currency-table-options.actions';
 
 @State<ICurrencyTableStateModel>({
 	name: 'currencyTableState',
@@ -22,10 +19,7 @@ import {
 				abbreviation: RatesGridDefaultOptions.CURRENCY_ABBREVIATION,
 			} as CurrencyTableItem,
 			selectedDateRange: {
-				start: addMonths(
-					new Date(),
-					-RatesGridDefaultOptions.PERIOD_IN_MONTHS_AMMOUNT
-				),
+				start: addMonths(new Date(), -RatesGridDefaultOptions.PERIOD_IN_MONTHS_AMMOUNT),
 				end: new Date(),
 				diffInMonths: RatesGridDefaultOptions.PERIOD_IN_MONTHS_AMMOUNT,
 			} as CurrencyDateRange,
@@ -58,12 +52,14 @@ export class CurrencyTableState {
 		{ getState, patchState }: StateContext<ICurrencyTableStateModel>,
 		{ amountOfMonths }: SetCurrencyDateRange
 	): void {
+		const currentDate = new Date();
+
 		patchState({
 			tableOptions: {
 				selectedItem: getState().tableOptions.selectedItem,
 				selectedDateRange: {
-					start: addMonths(new Date(), -amountOfMonths),
-					end: new Date(),
+					start: addMonths(currentDate, -amountOfMonths),
+					end: currentDate,
 					diffInMonths: amountOfMonths,
 				} as CurrencyDateRange,
 			} as CurrencyTableOptions,

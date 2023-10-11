@@ -1,8 +1,20 @@
-import { ChangeDetectionStrategy, Component, ElementRef, Inject, OnDestroy, ViewChild } from '@angular/core';
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import {
+	ChangeDetectionStrategy,
+	Component,
+	ElementRef,
+	Inject,
+	OnDestroy,
+	ViewChild,
+} from '@angular/core';
+import { ENTER } from '@angular/cdk/keycodes';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
-import { FormControl, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import {
+	FormControl,
+	UntypedFormBuilder,
+	UntypedFormControl,
+	UntypedFormGroup,
+} from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 import { BehaviorSubject, Observable, startWith, take, map, takeUntil, Subject } from 'rxjs';
@@ -10,7 +22,7 @@ import * as _ from 'lodash';
 
 import { DialogContainer } from '../../../models/dialog-container';
 import { Result } from 'core/result';
-import { OperationType } from 'domain/models/accounting/operation-type';
+import { OperationTypes } from 'domain/models/accounting/operation-types';
 import { OperationCategory } from '../../../../../../domain/models/accounting/operation-category';
 
 @Component({
@@ -20,7 +32,7 @@ import { OperationCategory } from '../../../../../../domain/models/accounting/op
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CategoriesDialogComponent implements OnDestroy {
-	private destroy$ = new Subject();
+	private destroy$ = new Subject<void>();
 
 	private dialogConfiguration: DialogContainer;
 
@@ -46,7 +58,7 @@ export class CategoriesDialogComponent implements OnDestroy {
 		@Inject(MAT_DIALOG_DATA) dialogConfiguration: DialogContainer
 	) {
 		this.dialogFg = fb.group({
-			categoryType: new UntypedFormControl(OperationType[OperationType.Income]),
+			categoryType: new UntypedFormControl(OperationTypes[OperationTypes.Income]),
 		});
 
 		this.title = dialogConfiguration.title;
@@ -63,7 +75,7 @@ export class CategoriesDialogComponent implements OnDestroy {
 		);
 	}
 	ngOnDestroy(): void {
-		this.destroy$.next({});
+		this.destroy$.next();
 		this.destroy$.complete();
 	}
 
@@ -72,7 +84,7 @@ export class CategoriesDialogComponent implements OnDestroy {
 	}
 
 	public getCategoryTypes(): string[] {
-		return Object.keys(OperationType).filter((v) => isNaN(Number(v)));
+		return Object.keys(OperationTypes).filter((v) => isNaN(Number(v)));
 	}
 
 	public save(): void {
@@ -86,7 +98,7 @@ export class CategoriesDialogComponent implements OnDestroy {
 		const categoryType = this.dialogFg.controls['categoryType'].value as string;
 
 		const payloadForSave = {
-			type: OperationType[categoryType as keyof typeof OperationType],
+			type: OperationTypes[categoryType as keyof typeof OperationTypes],
 			value: JSON.stringify(this.categoryNodes),
 		} as OperationCategory;
 

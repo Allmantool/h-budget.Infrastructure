@@ -19,14 +19,13 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatListModule } from '@angular/material/list';
+import { MatStepperModule } from '@angular/material/stepper';
 
 import { NgApexchartsModule } from 'ng-apexcharts';
 
-import {
-	AppDividerComponent,
-	ProgressSpinnerComponent,
-	PageNotFoundComponent,
-} from '../shared';
+import { AppDividerComponent, ProgressSpinnerComponent, PageNotFoundComponent } from '../shared';
 import { DatepickerComponent } from './components/datepicker/app-datepicker.component';
 import { AppFormFieldComponent } from './components/form-field/app-form-field.component';
 import { AppButtonComponent } from './components/button/app-button.component';
@@ -75,8 +74,11 @@ import { CounterpartiesDialogComponent } from './components/dialog/counterpartie
 		MatCheckboxModule,
 		MatCardModule,
 		MatButtonModule,
+		MatExpansionModule,
 		MatChipsModule,
 		MatAutocompleteModule,
+		MatListModule,
+		MatStepperModule,
 		NgApexchartsModule,
 
 		FormsModule,
@@ -99,8 +101,11 @@ import { CounterpartiesDialogComponent } from './components/dialog/counterpartie
 		MatInputModule,
 		MatSelectModule,
 		MatButtonModule,
+		MatExpansionModule,
 		MatChipsModule,
 		MatAutocompleteModule,
+		MatListModule,
+		MatStepperModule,
 		ReactiveFormsModule,
 	],
 	providers: [],

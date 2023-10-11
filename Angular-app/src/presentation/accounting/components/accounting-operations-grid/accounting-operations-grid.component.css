@@ -1,5 +1,13 @@
+.account-note {
+	display: flex;
+	flex-direction: column;
+	align-items: end;
+	text-wrap: nowrap;
+    flex-shrink: 0;
+}
+
 .accounting-table {
-	margin-top: 2em;
+	margin-top: 1em;
 }
 
 .row-is-clicked {
@@ -18,7 +26,7 @@
 }
 
 .mat-column-operationDate {
-	width: 10em;
+	width: 12em;
 }
 
 .mat-column-contractor {

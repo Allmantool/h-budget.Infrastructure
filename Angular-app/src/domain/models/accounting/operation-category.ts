@@ -1,6 +1,6 @@
-import { OperationType } from './operation-type';
+import { OperationTypes } from './operation-types';
 
 export interface OperationCategory {
-	type: OperationType;
+	type: OperationTypes;
 	value: string;
 }

@@ -11,15 +11,8 @@ import {
 import { Select, Store } from '@ngxs/store';
 import * as _ from 'lodash';
 import { ChartComponent } from 'ng-apexcharts';
-import {
-	BehaviorSubject,
-	combineLatest,
-	from,
-	Observable,
-	Subject,
-	Subscription,
-} from 'rxjs';
-import { filter, take } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, from, Observable, Subject, Subscription } from 'rxjs';
+import { filter, map, take } from 'rxjs/operators';
 
 import { CurrencyGridRateModel } from '../../models/currency-grid-rate.model';
 import { LineChartService } from '../../services/line-chart.service';
@@ -39,11 +32,9 @@ import { getCurrencyTableOptions } from '../../../../app/modules/shared/store/st
 	styleUrls: ['./currency-rates-line-chart.component.css'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CurrencyRatesLineChartComponent
-	implements AfterViewInit, OnInit, OnDestroy
-{
+export class CurrencyRatesLineChartComponent implements AfterViewInit, OnInit, OnDestroy {
 	@Select(getCurrencyRatesGroupByCurrencyId)
-	ratesGroup$!: Observable<(id: number) => CurrencyRateGroupModel>;
+	currencyRatesGroupByCurrencyId$!: Observable<(id: number) => CurrencyRateGroupModel>;
 
 	@Select(getCurrencyTableOptions)
 	currencyTableOptions$!: Observable<CurrencyTableOptions>;
@@ -57,8 +48,7 @@ export class CurrencyRatesLineChartComponent
 	@Input() public chartWidth = '500%';
 	@Input() public chartHeight = '360';
 
-	public isChartInitialized$: BehaviorSubject<boolean> =
-		new BehaviorSubject<boolean>(false);
+	public isChartInitialized$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
 	public currencyRates$: Subject<CurrencyGridRateModel[]> = new Subject<
 		CurrencyGridRateModel[]
@@ -93,24 +83,24 @@ export class CurrencyRatesLineChartComponent
 
 	private populateChartOptions(): void {
 		this.subs.push(
-			combineLatest([this.ratesGroup$, this.currencyTableOptions$])
+			combineLatest([this.currencyRatesGroupByCurrencyId$, this.currencyTableOptions$])
 				.pipe(
-					filter(([getCurrencies, tableOptions]) => {
-						const rateValues = getCurrencies(
+					map(([ratesGroupByCurrencyId, tableOptions]) => {
+						const ratesGroup = ratesGroupByCurrencyId(
 							tableOptions.selectedItem.currencyId
-						)?.rateValues;
+						);
 
-						return !_.isEmpty(rateValues);
-					})
+						return {
+							ratesGroup: ratesGroup,
+							tableOptions: tableOptions,
+						};
+					}),
+					filter((payload) => !_.isEmpty(payload.ratesGroup?.rateValues))
 				)
-				.subscribe(([data, tableOptions]) => {
-					const rateValues = data(
-						tableOptions.selectedItem.currencyId
-					)?.rateValues;
-
+				.subscribe((payload) => {
 					this.chartOptions = this.linechartService.getChartOptions(
-						rateValues ?? [],
-						tableOptions,
+						payload.ratesGroup?.rateValues ?? [],
+						payload.tableOptions,
 						this.lineChartOptions
 					);
 
@@ -122,9 +112,7 @@ export class CurrencyRatesLineChartComponent
 			this.currencyChartOptions$
 				.pipe()
 				.subscribe((chartOptions) =>
-					from(
-						this.updateTitle(chartOptions.activeCurrencyTrendTitle)
-					)
+					from(this.updateTitle(chartOptions.activeCurrencyTrendTitle))
 						.pipe(take(1))
 						.subscribe()
 				)

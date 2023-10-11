@@ -27,9 +27,7 @@ export class LineChartService {
 		});
 	}
 
-	private chartCurrencyTrendTitle$ = new BehaviorSubject(
-		{} as CurrencyChartTitle
-	);
+	private chartCurrencyTrendTitle$ = new BehaviorSubject({} as CurrencyChartTitle);
 
 	private charOptions$ = new BehaviorSubject({} as ChartOptions);
 
@@ -45,8 +43,7 @@ export class LineChartService {
 		const ratesForPeriod = _.filter(
 			ratesFilterByDateRange,
 			(r) =>
-				r.updateDate! >= selectedDateRange.start &&
-				r.updateDate! <= selectedDateRange.end
+				r.updateDate! >= selectedDateRange.start && r.updateDate! <= selectedDateRange.end
 		);
 
 		const abbreviation = tableOptions.selectedItem.abbreviation;
@@ -69,21 +66,12 @@ export class LineChartService {
 				events: {
 					zoomed: (chartContext, { xaxis }) => {
 						const dataPyaload: number[] =
-							LineChartService.getRatesFromChartContext(
-								chartContext
-							);
+							LineChartService.getRatesFromChartContext(chartContext);
 
-						const zoomedData = _.slice(
-							dataPyaload,
-							xaxis.min - 1,
-							xaxis.max
-						);
+						const zoomedData = _.slice(dataPyaload, xaxis.min - 1, xaxis.max);
 
 						this.chartCurrencyTrendTitle$.next(
-							LineChartTitleService.calculateTitle(
-								abbreviation,
-								zoomedData
-							)
+							LineChartTitleService.calculateTitle(abbreviation, zoomedData)
 						);
 
 						this.store.dispatch(
@@ -99,9 +87,7 @@ export class LineChartService {
 			},
 			title: this.chartCurrencyTrendTitle$.value,
 			xaxis: {
-				categories: _.map(ratesForPeriod, (r) =>
-					format(r.updateDate!, options.dateFormat)
-				),
+				categories: _.map(ratesForPeriod, (r) => format(r.updateDate!, options.dateFormat)),
 			},
 		});
 

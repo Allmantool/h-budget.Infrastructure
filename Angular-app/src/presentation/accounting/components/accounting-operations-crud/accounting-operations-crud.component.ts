@@ -9,8 +9,8 @@ import { Guid } from 'typescript-guid';
 
 import { AccountingGridRecord } from '../../models/accounting-grid-record';
 import { OperationCategory } from '../../../../domain/models/accounting/operation-category';
-import { AccountingTableOptions } from 'app/modules/shared/store/models/accounting/accounting-table-options';
-import { OperationType } from '../../../../domain/models/accounting/operation-type';
+import { AccountingOperationsTableOptions } from 'app/modules/shared/store/models/accounting/accounting-table-options';
+import { OperationTypes } from '../../../../domain/models/accounting/operation-types';
 import { getAccountingTableOptions } from '../../../../app/modules/shared/store/states/accounting/selectors/table-options.selectors';
 import { getAccountingRecords } from '../../../../app/modules/shared/store/states/accounting/selectors/accounting.selectors';
 import { SetActiveAccountingOperation } from '../../../../app/modules/shared/store/states/accounting/actions/accounting-table-options.actions';
@@ -23,15 +23,16 @@ import {
 import { getCategories } from '../../../../app/modules/shared/store/states/handbooks/selectors/categories.selectors';
 import { getContractors } from '../../../../app/modules/shared/store/states/handbooks/selectors/counterparties.selectors';
 import { CounterpartiesDialogService } from '../../../currency-rates/services/counterparties-dialog.service';
+import '../../../../domain/extensions/handbookExtensions';
 
 @Component({
 	selector: 'accounting-crud',
-	templateUrl: './accounting-crud.component.html',
-	styleUrls: ['./accounting-crud.component.css'],
+	templateUrl: './accounting-operations-crud.component.html',
+	styleUrls: ['./accounting-operations-crud.component.css'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AccountingCrudComponent implements OnInit, OnDestroy {
-	private destroy$ = new Subject();
+export class AccountingOperationsCrudComponent implements OnInit, OnDestroy {
+	private destroy$ = new Subject<void>();
 
 	public contractors: string[] = [];
 
@@ -42,7 +43,7 @@ export class AccountingCrudComponent implements OnInit, OnDestroy {
 	public crudRecordFg: UntypedFormGroup;
 
 	@Select(getAccountingTableOptions)
-	accountingTableOptions$!: Observable<AccountingTableOptions>;
+	accountingTableOptions$!: Observable<AccountingOperationsTableOptions>;
 
 	@Select(getAccountingRecords)
 	accountingRecords$!: Observable<AccountingGridRecord[]>;
@@ -71,7 +72,7 @@ export class AccountingCrudComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnDestroy(): void {
-		this.destroy$.next({});
+		this.destroy$.next();
 		this.destroy$.complete();
 	}
 
@@ -112,7 +113,7 @@ export class AccountingCrudComponent implements OnInit, OnDestroy {
 					(i) =>
 						<OperationCategory>{
 							type: i.type,
-							value: (JSON.parse(i.value) as string[]).join(': '),
+							value: i.value.parseToTreeAsString(),
 						}
 				))
 		);
@@ -120,10 +121,7 @@ export class AccountingCrudComponent implements OnInit, OnDestroy {
 		this.counterparties$
 			.pipe(takeUntil(this.destroy$))
 			.subscribe(
-				(payload) =>
-					(this.contractors = _.map(payload, (i) =>
-						(JSON.parse(i) as string[]).join(': ')
-					))
+				(payload) => (this.contractors = _.map(payload, (i) => i.parseToTreeAsString()))
 			);
 	}
 
@@ -134,7 +132,7 @@ export class AccountingCrudComponent implements OnInit, OnDestroy {
 
 		const selectedCategory = _.find(this.categories, (c) => c.value === selectedCategoryValue);
 
-		return selectedCategory?.type === OperationType.Expense;
+		return selectedCategory?.type === OperationTypes.Expense;
 	}
 
 	public getCategoryLabels(): string[] {

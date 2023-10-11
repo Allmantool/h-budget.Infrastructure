@@ -31,9 +31,7 @@ export class NationalBankCurrencyProvider implements BankCurrencyProvider {
 		const parametersSegmentUri = `${format(payload.startDate,'yyyy-MM-dd')}/${format(payload.endDate, 'yyyy-MM-dd')}`;
 
 		return this.http
-			.get<Result<RatesGroupEntity[]>>(
-				`${ratesUrl}/${parametersSegmentUri}`
-			)
+			.get<Result<RatesGroupEntity[]>>(`${ratesUrl}/${parametersSegmentUri}`)
 			.pipe(
 				map(
 					(responseResult) =>
@@ -47,16 +45,11 @@ export class NationalBankCurrencyProvider implements BankCurrencyProvider {
 			);
 	}
 
-	public saveCurrencies(
-		rates: CurrencyGridRateModel[]
-	): Observable<Result<number>> {
+	public saveCurrencies(rates: CurrencyGridRateModel[]): Observable<Result<number>> {
 		return this.http
-			.post<Result<number>>(
-				`${RoutesSegments.HOME_BUDGET_APP_HOST}/currencyRates`,
-				{
-					currencyRates: rates,
-				}
-			)
+			.post<Result<number>>(`${RoutesSegments.HOME_BUDGET_APP_HOST}/currencyRates`, {
+				currencyRates: rates,
+			})
 			.pipe(
 				tap((result: Result<number>) =>
 					console.log(`Affected rows count: ${result.payload}`)
@@ -67,9 +60,7 @@ export class NationalBankCurrencyProvider implements BankCurrencyProvider {
 
 	public getCurrencies(): Observable<CurrencyRateGroupModel[]> {
 		return this.http
-			.get<Result<RatesGroupEntity[]>>(
-				`${RoutesSegments.HOME_BUDGET_APP_HOST}/currencyRates`
-			)
+			.get<Result<RatesGroupEntity[]>>(`${RoutesSegments.HOME_BUDGET_APP_HOST}/currencyRates`)
 			.pipe(
 				map(
 					(responseResult) =>

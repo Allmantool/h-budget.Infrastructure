@@ -3,29 +3,38 @@ import { NgxsModule } from '@ngxs/store';
 
 import {
 	AccountingRoutingModule,
-	AccountingGridComponent,
-	AccountingCrudComponent,
+	AccountingOperatiosGridComponent,
+	AccountingOperationsCrudComponent,
 } from '../accounting';
-import { AccountingTableState } from '../../app/modules/shared/store/states/accounting/accounting-table.state';
+import { AccountingOperationsTableState } from '../../app/modules/shared/store/states/accounting/accounting-operations-table.state';
 import { CategoriesDialogService } from 'presentation/currency-rates/services/categories-dialog.service';
 import { CounterpartiesState } from '../../app/modules/shared/store/states/handbooks/counterparties.state';
 import { CategoriesState } from '../../app/modules/shared/store/states/handbooks/categories.state';
 import { HandbbooksState } from '../../app/modules/shared/store/states/handbooks/handbooks.state';
 import { AppSharedModule } from '../../app/modules/shared/shared.module';
-import { AccountingState } from '../../app/modules/shared/store/states/accounting/accounting.state';
+import { AccountingOperationsState } from '../../app/modules/shared/store/states/accounting/accounting-operations.state';
 import { CounterpartiesDialogService } from '../currency-rates/services/counterparties-dialog.service';
+import { PaymentAccountComponent } from './components/payment-account/payment-account.component';
+import { PaymentAccountState } from '../../app/modules/shared/store/states/accounting/payment-account.state';
+import { PaymentAccountCrudComponent } from './components/payment-account-crud/payment-account-crud.component';
 
 @NgModule({
-	declarations: [AccountingGridComponent, AccountingCrudComponent],
+	declarations: [
+		AccountingOperatiosGridComponent,
+		AccountingOperationsCrudComponent,
+		PaymentAccountComponent,
+		PaymentAccountCrudComponent,
+	],
 	imports: [
 		AppSharedModule,
 		AccountingRoutingModule,
 		NgxsModule.forFeature([
-			AccountingState,
-			AccountingTableState,
+			AccountingOperationsState,
+			AccountingOperationsTableState,
 			HandbbooksState,
 			CounterpartiesState,
 			CategoriesState,
+			PaymentAccountState,
 		]),
 	],
 	providers: [CategoriesDialogService, CounterpartiesDialogService],

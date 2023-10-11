@@ -4,25 +4,25 @@ import { Action, State, StateContext } from '@ngxs/store';
 import * as _ from 'lodash';
 import { nameof } from 'ts-simple-nameof';
 
-import { AccountingTableState } from './accounting-table.state';
+import { AccountingOperationsTableState } from './accounting-operations-table.state';
 import { AddRange, Edit, Add, Delete } from './actions/accounting.actions';
-import { IAccountingStateModel } from './models/accounting-state.model';
-import { RatesAbbrevitions } from '../../../constants/rates-abbreviations';
+import { IAccountingOperationsStateModel } from './models/accounting-state.model';
+import { CurrencyAbbrevitions } from '../../../constants/rates-abbreviations';
 import { AccountingGridRecord } from '../../../../../../presentation/accounting/models/accounting-grid-record';
 
-@State<IAccountingStateModel>({
-	name: 'accounting',
+@State<IAccountingOperationsStateModel>({
+	name: 'accountingOperations',
 	defaults: {
-		activeCurrency: RatesAbbrevitions.BYN,
+		activeCurrency: CurrencyAbbrevitions.BYN,
 		operationRecords: [],
 	},
-	children: [AccountingTableState],
+	children: [AccountingOperationsTableState],
 })
 @Injectable()
-export class AccountingState {
+export class AccountingOperationsState {
 	@Action(Add)
 	add(
-		{ getState, patchState }: StateContext<IAccountingStateModel>,
+		{ getState, patchState }: StateContext<IAccountingOperationsStateModel>,
 		{ accountingRecord }: Add
 	): void {
 		const state = getState();
@@ -40,18 +40,14 @@ export class AccountingState {
 
 	@Action(AddRange)
 	addRange(
-		{ getState, patchState }: StateContext<IAccountingStateModel>,
+		{ getState, patchState }: StateContext<IAccountingOperationsStateModel>,
 		{ accountingRecord }: AddRange
 	): void {
 		const state = getState();
 
 		const records = _.concat(
 			state.operationRecords,
-			_.differenceWith(
-				accountingRecord,
-				state.operationRecords,
-				_.isEqual.bind(this)
-			)
+			_.differenceWith(accountingRecord, state.operationRecords, _.isEqual.bind(this))
 		);
 
 		patchState({
@@ -67,15 +63,12 @@ export class AccountingState {
 
 	@Action(Edit)
 	edit(
-		{ getState, patchState }: StateContext<IAccountingStateModel>,
+		{ getState, patchState }: StateContext<IAccountingOperationsStateModel>,
 		{ accountingRecord }: Edit
 	): void {
 		const records = [...getState().operationRecords];
 
-		const updatedItemIndex = _.findIndex(
-			records,
-			(r) => r.id === accountingRecord.id
-		);
+		const updatedItemIndex = _.findIndex(records, (r) => r.id === accountingRecord.id);
 
 		records.splice(updatedItemIndex, 1, accountingRecord);
 
@@ -92,7 +85,7 @@ export class AccountingState {
 
 	@Action(Delete)
 	delete(
-		{ getState, patchState }: StateContext<IAccountingStateModel>,
+		{ getState, patchState }: StateContext<IAccountingOperationsStateModel>,
 		{ accountingGuid }: Delete
 	): void {
 		const state = getState();
