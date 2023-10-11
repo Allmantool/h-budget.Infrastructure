@@ -1,18 +1,12 @@
-import {
-	ChangeDetectionStrategy,
-	Component,
-	ElementRef,
-	Inject,
-	OnDestroy,
-	ViewChild,
-} from '@angular/core';
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { ChangeDetectionStrategy, Component, ElementRef, Inject, ViewChild } from '@angular/core';
+import { ENTER } from '@angular/cdk/keycodes';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
-import { BehaviorSubject, Observable, startWith, take, map, takeUntil, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, startWith, take, map } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import * as _ from 'lodash';
 
 import { DialogContainer } from '../../../models/dialog-container';
@@ -24,9 +18,7 @@ import { Result } from 'core/result';
 	styleUrls: ['./counterparties-dialog.component.css'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CounterpartiesDialogComponent implements OnDestroy {
-	private destroy$ = new Subject<void>();
-
+export class CounterpartiesDialogComponent {
 	private dialogConfiguration: DialogContainer;
 
 	@ViewChild('chipGrid ')
@@ -52,16 +44,12 @@ export class CounterpartiesDialogComponent implements OnDestroy {
 		this.dialogConfiguration = dialogConfiguration;
 
 		this.filteredPartyNodes$ = this.partyCtrl.valueChanges.pipe(
-			takeUntil(this.destroy$),
+			takeUntilDestroyed(),
 			startWith(null),
 			map((partyNode: string | null) =>
 				partyNode ? _.filter(this.partyNodes, partyNode) : this.partyNodes.slice()
 			)
 		);
-	}
-	ngOnDestroy(): void {
-		this.destroy$.next();
-		this.destroy$.complete();
 	}
 
 	public close() {
