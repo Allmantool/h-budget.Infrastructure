@@ -6,12 +6,12 @@
     <ProjectGuid>02959501-a337-4d60-bb5b-a0fa36543db0</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger</DockerServiceUrl>
-    <DockerServiceName>homebudget-web-api</DockerServiceName>
+    <DockerServiceName>homebudget-rates-Api</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.yml" />
     <None Include=".dockerignore" />
-    <None Include="DockerFiles\Webapi_Dockerfile" />
+    <None Include="DockerFiles\dockerfile" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="DockerFiles\**" />
