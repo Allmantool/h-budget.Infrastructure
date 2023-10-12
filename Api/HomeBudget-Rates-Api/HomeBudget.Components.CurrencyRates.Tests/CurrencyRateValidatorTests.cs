@@ -2,9 +2,10 @@
 using System.Threading.Tasks;
 
 using FluentValidation.TestHelper;
+using NUnit.Framework;
+
 using HomeBudget.Rates.Api.Models;
 using HomeBudget.Rates.Api.Validators;
-using NUnit.Framework;
 
 namespace HomeBudget.Components.CurrencyRates.Tests
 {

@@ -5,6 +5,7 @@ using AutoMapper;
 using Moq;
 using MediatR;
 using NUnit.Framework;
+
 using HomeBudget.Components.CurrencyRates.CQRS.Queries.Models;
 using HomeBudget.Rates.Api.Controllers;
 using HomeBudget.Rates.Api.Models;
