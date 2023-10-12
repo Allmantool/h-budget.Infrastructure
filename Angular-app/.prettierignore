@@ -1,6 +1,0 @@
-package.json
-package-lock.json
-yarn.lock
-dist
-build
-e2e
