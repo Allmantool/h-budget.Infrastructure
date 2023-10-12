@@ -2,5 +2,5 @@ Storage/*
 .vscode
 Store/MSSql/
 
-**/Angular-app/*
-Angular-app/*
+Test-app
+Angular-app
