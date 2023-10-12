@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./WebApi-app/HomeBudget-Web-API
+        working-directory: ./Api/HomeBudget-Rates-Api
 
     steps:
       - name: Set up JDK 17
