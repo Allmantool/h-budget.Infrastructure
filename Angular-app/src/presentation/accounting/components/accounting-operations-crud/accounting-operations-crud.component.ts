@@ -2,9 +2,8 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 
 import { Select, Store } from '@ngxs/store';
-import { combineLatest, Observable, BehaviorSubject } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { filter } from 'rxjs/operators';
+import { combineLatest, Observable, BehaviorSubject, Subject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { Guid } from 'typescript-guid';
 
@@ -33,6 +32,8 @@ import '../../../../domain/extensions/handbookExtensions';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AccountingOperationsCrudComponent implements OnInit {
+	private destroy$ = new Subject<void>();
+
 	public contractors: string[] = [];
 
 	public categories: OperationCategory[] = [];
@@ -70,10 +71,15 @@ export class AccountingOperationsCrudComponent implements OnInit {
 		});
 	}
 
+	ngOnDestroy(): void {
+		this.destroy$.next();
+		this.destroy$.complete();
+	}
+
 	ngOnInit(): void {
 		combineLatest([this.accountingTableOptions$, this.accountingRecords$])
 			.pipe(
-				takeUntilDestroyed(),
+				takeUntil(this.destroy$),
 				filter(([tableOptions, records]) => !_.isNil(tableOptions) && !_.isNil(records))
 			)
 			.subscribe(([tableOptions, records]) => {
@@ -96,11 +102,11 @@ export class AccountingOperationsCrudComponent implements OnInit {
 				}
 			});
 
-		this.crudRecordFg.valueChanges.pipe(takeUntilDestroyed()).subscribe((formData) => {
+		this.crudRecordFg.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((formData) => {
 			this.selectedRecord$.next(formData as AccountingGridRecord);
 		});
 
-		this.categories$.pipe(takeUntilDestroyed()).subscribe(
+		this.categories$.pipe(takeUntil(this.destroy$)).subscribe(
 			(payload) =>
 				(this.categories = _.map(
 					payload,
@@ -113,7 +119,7 @@ export class AccountingOperationsCrudComponent implements OnInit {
 		);
 
 		this.counterparties$
-			.pipe(takeUntilDestroyed())
+			.pipe(takeUntil(this.destroy$))
 			.subscribe(
 				(payload) => (this.contractors = _.map(payload, (i) => i.parseToTreeAsString()))
 			);
