@@ -17,7 +17,8 @@ import {
 } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
-import { BehaviorSubject, Observable, startWith, take, map, takeUntil, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, startWith, take, map, Subject } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import * as _ from 'lodash';
 
 import { DialogContainer } from '../../../models/dialog-container';
@@ -65,7 +66,7 @@ export class CategoriesDialogComponent implements OnDestroy {
 		this.dialogConfiguration = dialogConfiguration;
 
 		this.filteredCategoryNodes$ = this.categoryCtrl.valueChanges.pipe(
-			takeUntil(this.destroy$),
+			takeUntilDestroyed(),
 			startWith(null),
 			map((categoryNode: string | null) =>
 				categoryNode

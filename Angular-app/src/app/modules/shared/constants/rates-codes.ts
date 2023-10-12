@@ -1,3 +1,3 @@
 export class RatesCodes {
-	public static readonly USA: number = 431;
+	public static readonly USD: number = 431;
 }

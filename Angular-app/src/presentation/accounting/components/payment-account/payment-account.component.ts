@@ -52,9 +52,9 @@ export class PaymentAccountComponent implements OnDestroy {
 			id: Guid.create(),
 			type: AccountTypes.WalletCache,
 			balance: 978.24,
-			currency: CurrencyAbbrevitions.USA,
+			currency: CurrencyAbbrevitions.USD,
 			agent: '',
-			description: `Cache ${CurrencyAbbrevitions.USA}`,
+			description: `Cache ${CurrencyAbbrevitions.USD}`,
 		},
 		{
 			id: Guid.create(),
