@@ -3,6 +3,7 @@ Storage/*
 Store/MSSql/
 
 Angular-app
+UI
 Api
 Api/*
 Api/HomeBudget-Accounting-Api
