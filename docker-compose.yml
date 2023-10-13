@@ -84,8 +84,8 @@ services:
     image: ${DOCKER_REGISTRY-}homebudget-rates-api:v0.0.85
     container_name: homebudget-rates-api
     build:
-      context: .
-      dockerfile: Api\HomeBudget-Rates-Api\dockerfile
+      context: Api\HomeBudget-Rates-Api\
+      dockerfile: dockerfile
       args:
         - SONAR_TOKEN=${SONAR_TOKEN}
         - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
