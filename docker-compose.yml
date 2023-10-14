@@ -81,7 +81,7 @@ services:
       - elasticsearch
 
   homebudget-rates-api:
-    image: ${DOCKER_REGISTRY-}homebudget-rates-api:v0.0.86
+    image: allmantool/homebudget-rates-api:v0.0.86
     container_name: homebudget-rates-api
     build:
       context: Api\HomeBudget-Rates-Api\
