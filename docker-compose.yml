@@ -81,7 +81,7 @@ services:
       - elasticsearch
 
   homebudget-rates-api:
-    image: allmantool/homebudget-rates-api:v0.0.86
+    image: allmantool/homebudget-rates-api:${RATES_API_IMAGE_V}
     container_name: homebudget-rates-api
     build:
       context: Api\HomeBudget-Rates-Api\
@@ -104,6 +104,7 @@ services:
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+      - ${RATES_API_JSON_PATH}:/app/appsettings.json:ro
     networks:
       - elastic-network
       - sonar-network
