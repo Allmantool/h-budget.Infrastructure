@@ -1,4 +1,4 @@
-version: '3.9'
+version: "3.9"
 
 services:
   elasticsearch:
@@ -14,7 +14,7 @@ services:
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - discovery.type=single-node
     networks:
-     - elastic-network
+      - elastic-network
 
   homebudget-sql-server:
     image: "mcr.microsoft.com/mssql/server:2019-latest"
@@ -111,13 +111,14 @@ services:
       - redis-network
       - mssql-network
       - rates-api-network
+      - ui-network
     depends_on:
       - homebudget-sql-server
       - redis_server
       - sonarCube
       - elasticsearch
       - kibana
-      
+
   homebudget-accounting-api:
     image: allmantool/homebudget-accounting-api:${ACCOUNTING_API_IMAGE_V}
     container_name: homebudget-accounting-api
@@ -149,6 +150,35 @@ services:
       - redis-network
       - mssql-network
       - accounting-api-network
+      - ui-network
+    depends_on:
+      - homebudget-sql-server
+      - redis_server
+      - sonarCube
+      - elasticsearch
+      - kibana
+
+  homebudget-ui:
+    image: allmantool/homebudget-ui:${UI_IMAGE_V}
+    container_name: homebudget-ui
+    build:
+      context: UI\
+      dockerfile: dockerfile
+      args:
+        - SONAR_TOKEN=${SONAR_TOKEN}
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+    ports:
+      - "5407:80"
+      - "5408:443"
+    volumes:
+      - ${UI_JSON_PATH}:/usr/share/nginx/html/config.json:ro
+      - ${UI_NGINX_CONFIG}:/etc/nginx/nginx.conf:ro
+    networks:
+      - elastic-network
+      - accounting-api-network
+      - rates-api-network
+      - ui-network
     depends_on:
       - homebudget-sql-server
       - redis_server
@@ -168,6 +198,8 @@ networks:
   redis-network:
     driver: bridge
   mssql-network:
+    driver: bridge
+  ui-network:
     driver: bridge
 
 volumes:
