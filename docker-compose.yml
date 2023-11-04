@@ -173,6 +173,7 @@ services:
       - "5408:443"
     volumes:
       - ${UI_JSON_PATH}:/usr/share/nginx/html/config.json:ro
+      - $(UI-NGINX_CONFIG):/etc/nginx/nginx.conf:ro
     networks:
       - elastic-network
       - accounting-api-network
