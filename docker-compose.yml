@@ -1,6 +1,18 @@
 version: "3.9"
 
 services:
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:v2.52.0
+    networks:
+      - rates-api-network
+    ports:
+      - 9090:9090
+    volumes:
+      - ${PROMETHEUS_CONFIG}:/etc/prometheus/prometheus.yml
+    depends_on:
+      - homebudget-rates-api
+
   event-store-db:
     image: eventstore/eventstore:23.10.0-jammy
     container_name: event-store-db
@@ -36,8 +48,6 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
     networks:
       - kafka-net
-    depends_on:
-      - homebudget-rates-api
 
   kafka:
     image: confluentinc/cp-kafka:7.4.3
@@ -117,17 +127,17 @@ services:
     networks:
       - mssql-network
 
-  homebudget-mongo-db: 
+  homebudget-mongo-db:
     image: mongo:7.0.5-rc0-jammy
     container_name: homebudget-mongo-db
     restart: always
     logging:
-        options:
-            max-size: 1g
+      options:
+        max-size: 1g
     environment:
-    - MONGO_INITDB_ROOT_USERNAME=mongoadmin
-    - MONGO_INITDB_ROOT_PASSWORD=${MONGO_DB_PASSWORD}
-    - MONGO_INITDB_DATABASE=admin
+      - MONGO_INITDB_ROOT_USERNAME=mongoadmin
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_DB_PASSWORD}
+      - MONGO_INITDB_DATABASE=admin
     ports:
       - "27017:27017"
     volumes:
@@ -205,6 +215,7 @@ services:
       - redis_server
       - elasticsearch
       - kibana
+      - kafka
 
   homebudget-accounting-api:
     image: allmantool/homebudget-accounting-api:${ACCOUNTING_API_IMAGE_V}
