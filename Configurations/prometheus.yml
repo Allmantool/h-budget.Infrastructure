@@ -1,8 +1,14 @@
+global:
+  scrape_interval: 5s
+
 scrape_configs:
   # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
-  - job_name: "rates-api-job"
+  - job_name: "api-job"
     # metrics_path defaults to '/metrics'
     # scheme defaults to 'http'.
-    scrape_interval: 30s # poll very quickly for a more responsive demo
     static_configs:
-      - targets: ["rates-api:5207"]
+      - targets: ["homebudget-rates-api:80", "homebudget-accounting-api:80"]
+
+  - job_name: "mongodb-job"
+    static_configs:
+      - targets: ["mongo-db-exporter:9216"]
