@@ -6,12 +6,31 @@ services:
     image: prom/prometheus:v2.52.0
     networks:
       - rates-api-network
+      - mongo-network
     ports:
       - 9090:9090
     volumes:
       - ${PROMETHEUS_CONFIG}:/etc/prometheus/prometheus.yml
     depends_on:
       - homebudget-rates-api
+      - homebudget-accounting-api
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:11.0.0-ubuntu
+    networks:
+      - rates-api-network
+      - accounting-api-network
+      - mongo-network
+    restart: unless-stopped
+    environment:
+      GF_INSTALL_PLUGINS: "grafana-clock-panel,grafana-simple-json-datasource,grafana-worldmap-panel,grafana-piechart-panel"
+    ports:
+      - 3000:3000
+    volumes:
+      - ${GRAFANA_CONFIG}:/etc/grafana/provisioning.yml
+    depends_on:
+      - prometheus
 
   event-store-db:
     image: eventstore/eventstore:23.10.0-jammy
@@ -144,6 +163,27 @@ services:
       - ${MONGO_DB_VOLUME_PATH}:/data/db
     networks:
       - mongo-network
+
+  mongo-db-exporter:
+    image: percona/mongodb_exporter:0.40
+    container_name: mongo-db-exporter
+    command:
+      - "--mongodb.global-conn-pool"
+      - "--collector.diagnosticdata"
+      - "--discovering-mode"
+      - "--compatible-mode"
+      - "--mongodb.collstats-colls=admin.companies,admin.restaurnts"
+      - "--collect-all"
+    environment:
+      - MONGODB_URI=mongodb://mongoadmin:${MONGO_DB_PASSWORD}@homebudget-mongo-db:27017
+    restart: unless-stopped
+    ports:
+      - "9216:9216"
+      - "17001:17001"
+    networks:
+      - mongo-network
+    depends_on:
+      - prometheus
 
   flyway:
     image: flyway/flyway:8.5.2

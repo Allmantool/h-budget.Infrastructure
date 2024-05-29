@@ -21,18 +21,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Git Semantic Version
         id: tag_version
-        uses: PaulHatch/semantic-version@v5.3.0
+        uses: PaulHatch/semantic-version@v5.4.0
         with:
           tag_prefix: "v"
           version_format: "${major}.${minor}.${patch}-build${increment}"
           bump_each_commit: true
-          version_from_branch: true
+          version_from_branch: false
+          namespace: inf
+          minor_pattern: "(MINOR)"
+          major_pattern: "(MAJOR)"
           debug: true
 
       - name: Tag Release (vX.Y.Z)
