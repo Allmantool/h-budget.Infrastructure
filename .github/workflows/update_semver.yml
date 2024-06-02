@@ -3,22 +3,25 @@ name: Update Semver
 on:
   push:
     branches:
+      - master
+
+    tags: ["v*.*.*"]
+
+  pull_request:
+    branches:
+      - master
       - developed
       - feature/*
       - test/*
       - hotfix/*
       - fix/*
-      - tech/*
-    tags:
-      - "v*"
-
-  pull_request:
-    branches:
-      - master
-    types: [closed]
+      - tech/
+    types: [opened, synchronize, closed]
 
 jobs:
   update-semver:
+    if: ${{ github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged }}
+    name: Git tag release
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
