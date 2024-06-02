@@ -1,13 +1,14 @@
 include:
-  - docker.compose.networks.yaml
-  - docker-compose.volumes.yaml
-  - docker-compose.monitoring.yaml
-  - docker-compose.logging.yaml
-  - docker-compose.db.yaml
-  - docker-compose.rates.yaml
-  - docker-compose.accounting.yaml
-  - docker-compose.ui.yaml
+  - Infrastructure/docker-compose.networks.yaml
+  - Infrastructure/docker-compose.volumes.yaml
+  - Infrastructure/docker-compose.monitoring.yaml
+  - Infrastructure/docker-compose.logging.yaml
+  - Db/docker-compose.db.yaml
+  - Api/docker-compose.rates.yaml
+  - Api/docker-compose.accounting.yaml
+  - UI/docker-compose.ui.yaml
 
+name: home-budget
 services:
   kafka-ui:
     container_name: kafka-ui
