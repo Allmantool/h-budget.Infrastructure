@@ -3,7 +3,6 @@ name: Update Semver
 on:
   push:
     branches:
-      - master
       - developed
       - feature/*
       - test/*
@@ -14,6 +13,8 @@ on:
       - "v*"
 
   pull_request:
+    branches:
+      - master
     types: [closed]
 
 jobs:
