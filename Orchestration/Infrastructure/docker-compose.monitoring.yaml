@@ -1,7 +1,4 @@
-include:
-  - docker.compose.networks.yaml
-  - docker-compose.volumes.yaml
-
+name: monitoring
 services:
   prometheus:
     container_name: prometheus
@@ -29,7 +26,7 @@ services:
     restart: unless-stopped
     environment:
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
-      GF_INSTALL_PLUGINS: "grafana-clock-panel,grafana-simple-json-datasource,grafana-worldmap-panel,grafana-piechart-panel"
+      GF_INSTALL_PLUGINS: "grafana-clock-panel"
     ports:
       - 3000:3000
     volumes:
