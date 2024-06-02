@@ -31,7 +31,9 @@ jobs:
         with:
           tag_prefix: "v"
           version_format: "${major}.${minor}.${patch}-build${increment}"
-          bump_each_commit: true
+          user_format_type: "csv"
+          bump_each_commit: false
+          search_commit_body: true
           version_from_branch: false
           namespace: inf
           minor_pattern: "(MINOR)"

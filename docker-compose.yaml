@@ -1,0 +1,47 @@
+include:
+  - docker.compose.networks.yaml
+  - docker-compose.volumes.yaml
+  - docker-compose.monitoring.yaml
+  - docker-compose.logging.yaml
+  - docker-compose.db.yaml
+  - docker-compose.rates.yaml
+  - docker-compose.accounting.yaml
+  - docker-compose.ui.yaml
+
+services:
+  kafka-ui:
+    container_name: kafka-ui
+    image: provectuslabs/kafka-ui:v0.7.2
+    ports:
+      - 8082:8080
+    environment:
+      DYNAMIC_CONFIG_ENABLED: true
+    networks:
+      - kafka-net
+    depends_on:
+      - zookeeper
+
+  flyway:
+    image: flyway/flyway:8.5.2
+    container_name: homebudget-flyway-migration
+    command:
+      - -url=jdbc:sqlserver://homebudget-sql-server
+      - -schemas=homebudget-schema -mixed=true
+      - -baselineOnMigrate=true -user=sa -password=${SQL_PASSWORD}
+      - -connectRetries=5 migrate
+    volumes:
+      - ${FLYWAY_SCRIPTS_PATH}:/flyway/sql
+    networks:
+      - mssql-network
+    depends_on:
+      - homebudget-sql-server
+
+  redis_server:
+    image: redis:7.0.7
+    container_name: homebudget-cache
+    ports:
+      - "6379:6379"
+    networks:
+      - redis-network
+    depends_on:
+      - homebudget-sql-server

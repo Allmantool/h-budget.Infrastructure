@@ -1,5 +1,6 @@
 global:
   scrape_interval: 5s
+  evaluation_interval: 15s
 
 scrape_configs:
   # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
@@ -12,3 +13,8 @@ scrape_configs:
   - job_name: "mongodb-job"
     static_configs:
       - targets: ["mongo-db-exporter:9216"]
+
+  - job_name: "kafka"
+    static_configs:
+      - targets:
+          - kafka-exporter:9308
