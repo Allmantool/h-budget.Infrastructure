@@ -1,0 +1,42 @@
+name: accounting-api
+services:
+  homebudget-accounting-api:
+    image: allmantool/homebudget-accounting-api:${ACCOUNTING_API_IMAGE_V}
+    container_name: homebudget-accounting-api
+    build:
+      context: .\..\..\Api\HomeBudget-Accounting-Api\
+      dockerfile: dockerfile
+      args:
+        - SONAR_TOKEN=${SONAR_TOKEN}
+        - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+        - GITHUB_RUN_ID=${GITHUB_RUN_ID}
+        - PULL_REQUEST_ID=${PULL_REQUEST_ID}
+        - PULL_REQUEST_SOURCE_BRANCH=${PULL_REQUEST_SOURCE_BRANCH}
+        - PULL_REQUEST_TARGET_BRANCH=${PULL_REQUEST_TARGET_BRANCH}
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      # - ASPNETCORE_HTTPS_PORT=5008
+      # - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_URLS=http://+:80
+    ports:
+      - "5307:80"
+      - "5308:443"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+      - ${ACCOUNTING_API_JSON_PATH}:/app/appsettings.json:ro
+    networks:
+      - elastic-network
+      - redis-network
+      - mssql-network
+      - mongo-network
+      - accounting-api-network
+      - ui-network
+      - kafka-net
+      - event-store-db-net
+    depends_on:
+      - homebudget-sql-server
+      - redis_server
+      - elasticsearch
+      - kibana
+      - kafka

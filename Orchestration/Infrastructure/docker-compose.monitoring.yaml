@@ -10,6 +10,7 @@ services:
       - kafka-net
       - mssql-network
       - redis-network
+      - ui-network
     ports:
       - 9090:9090
     volumes:
@@ -28,6 +29,7 @@ services:
       - kafka-net
       - mssql-network
       - redis-network
+      - ui-network
     restart: unless-stopped
     environment:
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
