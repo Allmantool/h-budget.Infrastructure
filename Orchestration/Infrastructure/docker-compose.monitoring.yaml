@@ -107,3 +107,16 @@ services:
     depends_on:
       - prometheus
       - redis_server
+
+  nginx_exporter:
+    image: nginx/nginx-prometheus-exporter:1.1.0
+    container_name: nginx-exporter
+    command:
+      - "--nginx.scrape-uri=http://localhost:5407/stub_status"
+    ports:
+      - 9113:9113
+    networks:
+      - ui-network
+    depends_on:
+      - prometheus
+      - homebudget-ui
