@@ -9,3 +9,5 @@
 ./Api/HomeBudget-Rates-Api
 
 Configurations/Grafana/Lib/
+
+.fake
