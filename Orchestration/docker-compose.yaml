@@ -23,15 +23,20 @@ services:
       - zookeeper
 
   flyway:
-    image: flyway/flyway:8.5.2
+    image: flyway/flyway:10.17.2
     container_name: homebudget-flyway-migration
-    command:
-      - -url=jdbc:sqlserver://homebudget-sql-server
-      - -schemas=homebudget-schema -mixed=true
-      - -baselineOnMigrate=true -user=sa -password=${SQL_PASSWORD}
-      - -connectRetries=5 migrate
+    command: >
+      -mixed=true 
+      -baselineOnMigrate=true
+      -connectRetries=5 
+      migrate
+    environment:
+      - FLYWAY_USER=sa
+      - FLYWAY_PASSWORD=${SQL_PASSWORD}
+      - FLYWAY_URL=jdbc:sqlserver://homebudget-sql-server:1433;encrypt=true;trustServerCertificate=true;
     volumes:
       - ${FLYWAY_SCRIPTS_PATH}:/flyway/sql
+      - ${FLYWAY_CONFIG_PATH}:/flyway/conf
     networks:
       - mssql-network
     depends_on:
