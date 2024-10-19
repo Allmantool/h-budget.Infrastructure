@@ -1,0 +1,39 @@
+name: rates-api
+services:
+  homebudget-rates-api:
+    image: allmantool/homebudget-rates-api:${RATES_API_IMAGE_V}
+    container_name: homebudget-rates-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      # - ASPNETCORE_HTTPS_PORT=5008
+      # - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_URLS=http://+:80
+    ports:
+      - "5207:80"
+      - "5208:443"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+      - ${RATES_API_JSON_PATH}:/app/appsettings.json:ro
+    networks:
+      - elastic-network
+      - redis-network
+      - mssql-network
+      - rates-api-network
+      - ui-network
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 10
+        delay: 5s
+        window: 180s
+      resources:
+        limits:
+          cpus: "1"
+          memory: "512M"
+    depends_on:
+      - homebudget-ui
+      - homebudget-sql-server
+      - redis_server
+      - elasticsearch
+      - kibana

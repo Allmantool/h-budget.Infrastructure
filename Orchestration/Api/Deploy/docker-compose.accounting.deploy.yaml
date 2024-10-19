@@ -1,0 +1,42 @@
+name: accounting-api
+services:
+  homebudget-accounting-api:
+    image: allmantool/homebudget-accounting-api:${ACCOUNTING_API_IMAGE_V}
+    container_name: homebudget-accounting-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      # - ASPNETCORE_HTTPS_PORT=5008
+      # - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_URLS=http://+:80
+    ports:
+      - "5307:80"
+      - "5308:443"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+      - ${ACCOUNTING_API_JSON_PATH}:/app/appsettings.json:ro
+    networks:
+      - elastic-network
+      - redis-network
+      - mssql-network
+      - mongo-network
+      - accounting-api-network
+      - ui-network
+      - kafka-net
+      - event-store-db-net
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 10
+        delay: 5s
+        window: 180s
+      resources:
+        limits:
+          cpus: "1"
+          memory: "512M"
+    depends_on:
+      - homebudget-sql-server
+      - redis_server
+      - elasticsearch
+      - kibana
+      - kafka

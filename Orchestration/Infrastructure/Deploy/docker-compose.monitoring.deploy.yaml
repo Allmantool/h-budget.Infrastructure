@@ -1,0 +1,122 @@
+name: monitoring
+services:
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:v2.52.0
+    networks:
+      - rates-api-network
+      - accounting-api-network
+      - mongo-network
+      - kafka-net
+      - mssql-network
+      - redis-network
+      - ui-network
+    ports:
+      - 9090:9090
+    volumes:
+      - ${PROMETHEUS_CONFIG}:/etc/prometheus/prometheus.yml
+    depends_on:
+      - homebudget-rates-api
+      - homebudget-accounting-api
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:11.0.0-ubuntu
+    networks:
+      - rates-api-network
+      - accounting-api-network
+      - mongo-network
+      - kafka-net
+      - mssql-network
+      - redis-network
+      - ui-network
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
+      GF_INSTALL_PLUGINS: "https://github.com/raintank/crate-datasource/archive/master.zip;crate-datasource,grafana-clock-panel,grafana-worldmap-panel,natel-plotly-panel"
+    ports:
+      - 3000:3000
+    volumes:
+      - ${GRAFANA_CONFIG}:/etc/grafana/provisioning.yml
+      - ${GF_PATHS_LOGS}:/var/log/grafana
+      - ${GF_STORAGE}:/var/lib/grafana
+      - ${GF_PATHS_PROVISIONING}:/etc/grafana/provisioning
+    depends_on:
+      - prometheus
+
+  mongo-db-exporter:
+    image: percona/mongodb_exporter:0.40
+    container_name: prometheus-mongo-db-exporter
+    command:
+      - "--mongodb.global-conn-pool"
+      - "--collector.diagnosticdata"
+      - "--discovering-mode"
+      - "--compatible-mode"
+      - "--mongodb.collstats-colls=admin.companies,admin.restaurnts"
+      - "--collect-all"
+    environment:
+      - MONGODB_URI=mongodb://mongoadmin:${MONGO_DB_PASSWORD}@homebudget-mongo-db:27017
+    restart: unless-stopped
+    ports:
+      - "9216:9216"
+      - "17001:17001"
+    networks:
+      - mongo-network
+    depends_on:
+      - prometheus
+      - homebudget-mongo-db
+
+  kafka-exporter:
+    image: bitnami/kafka-exporter:1.7.0
+    container_name: prometheus-kafka-exporter
+    command:
+      - "--kafka.server=kafka:9092"
+    ports:
+      - 9308:9308
+    networks:
+      - kafka-net
+    depends_on:
+      - prometheus
+      - kafka
+
+  mssql-exporter:
+    image: awaragi/prometheus-mssql-exporter:v1.3.0
+    container_name: prometheus-mssql-exporter
+    environment:
+      SERVER: homebudget-sql-server
+      PORT: 1433
+      USERNAME: SA
+      PASSWORD: ${SQL_PASSWORD}
+    ports:
+      - 4000:4000
+    networks:
+      - mssql-network
+    depends_on:
+      - prometheus
+      - homebudget-sql-server
+
+  redis-exporter:
+    image: oliver006/redis_exporter:v1.60.0
+    container_name: prometheus-redis-exporter
+    environment:
+      REDIS_ADDR: redis_server:6379
+    ports:
+      - 9121:9121
+    networks:
+      - redis-network
+    depends_on:
+      - prometheus
+      - redis_server
+
+  nginx_exporter:
+    image: nginx/nginx-prometheus-exporter:1.1.0
+    container_name: nginx-exporter
+    command:
+      - "--nginx.scrape-uri=http://localhost:5407/stub_status"
+    ports:
+      - 9113:9113
+    networks:
+      - ui-network
+    depends_on:
+      - prometheus
+      - homebudget-ui

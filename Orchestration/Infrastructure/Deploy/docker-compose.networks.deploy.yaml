@@ -1,0 +1,19 @@
+networks:
+  accounting-api-network:
+    driver: bridge
+  rates-api-network:
+    driver: bridge
+  elastic-network:
+    driver: bridge
+  redis-network:
+    driver: bridge
+  mssql-network:
+    driver: bridge
+  mongo-network:
+    driver: bridge
+  ui-network:
+    driver: bridge
+  kafka-net:
+    driver: bridge
+  event-store-db-net:
+    driver: bridge
