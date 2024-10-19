@@ -1,0 +1,5 @@
+volumes:
+  elasticsearch-data:
+  registry:
+  eventstore-data:
+  eventstore-logs:

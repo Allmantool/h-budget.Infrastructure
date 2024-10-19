@@ -3,11 +3,6 @@ services:
   homebudget-ui:
     image: allmantool/homebudget-ui:${UI_IMAGE_V}
     container_name: homebudget-ui
-    build:
-      context: .\..\..\UI
-      dockerfile: dockerfile
-      args:
-        - SONAR_TOKEN=${SONAR_TOKEN}
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
     ports:
@@ -23,6 +18,11 @@ services:
       - ui-network
       - kafka-net
       - event-store-db-net
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: "256M"
     depends_on:
       - homebudget-sql-server
       - redis_server
