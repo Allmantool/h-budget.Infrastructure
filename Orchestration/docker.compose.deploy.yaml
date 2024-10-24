@@ -1,12 +1,13 @@
 include:
-  - Infrastructure/Deploy/docker-compose.networks.yaml
-  - Infrastructure/Deploy/docker-compose.volumes.yaml
-  - Infrastructure/Deploy/docker-compose.monitoring.yaml
-  - Infrastructure/Deploy/docker-compose.logging.yaml
-  - Db/Deploy/docker-compose.db.yaml
-  - Api/Deploy/docker-compose.rates.yaml
-  - Api/Deploy/docker-compose.accounting.yaml
+  - Infrastructure/Deploy/docker-compose.networks.deploy.yaml
+  - Infrastructure/Deploy/docker-compose.volumes.deploy.yaml
+  - Infrastructure/Deploy/docker-compose.monitoring.deploy.yaml
+  - Infrastructure/Deploy/docker-compose.logging.deploy.yaml
+  - Db/Deploy/docker-compose.db.deploy.yaml
+  - Api/Deploy/docker-compose.rates.deploy.yaml
+  - Api/Deploy/docker-compose.accounting.deploy.yaml
   - UI/Deploy/docker-compose.ui.yaml
+  - Gateway/Deploy/docker-compose.api.gateway.deploy.yaml
 
 name: home-budget
 services:
