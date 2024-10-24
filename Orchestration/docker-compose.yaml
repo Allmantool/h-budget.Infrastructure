@@ -7,6 +7,7 @@ include:
   - Api/docker-compose.rates.yaml
   - Api/docker-compose.accounting.yaml
   - UI/docker-compose.ui.yaml
+  - Gateway/docker-compose.api.gateway.yaml
 
 name: home-budget
 services:
