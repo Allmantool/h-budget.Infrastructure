@@ -6,7 +6,7 @@ include:
   - Db/Deploy/docker-compose.db.deploy.yaml
   - Api/Deploy/docker-compose.rates.deploy.yaml
   - Api/Deploy/docker-compose.accounting.deploy.yaml
-  - UI/Deploy/docker-compose.ui.yaml
+  - UI/Deploy/docker-compose.ui.deploy.yaml
   - Gateway/Deploy/docker-compose.api.gateway.deploy.yaml
 
 name: home-budget
