@@ -5,20 +5,21 @@ services:
     container_name: gateway-api
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-      # - ASPNETCORE_HTTPS_PORT=5008
-      # - ASPNETCORE_URLS=https://+:443;http://+:80
-      - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_URLS=https://+:7298
     ports:
-      - "5207:80"
-      - "5208:443"
+      - "7298:7298"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
       - ${GATEWAY_API_JSON_PATH}:/app/appsettings.json:ro
+      - ${GATEWAY_API_OCELOT_PATH}:/app/ocelot.json:ro
+      - ${GATEWAY_API_CERTIFICATE_PATH}:/app/hbudgetcert.pfx:ro
     networks:
       - rates-api-network
       - accounting-api-network
       - ui-network
+      - elastic-network
+      - redis-network
     depends_on:
       - homebudget-ui
       - homebudget-accounting-api
