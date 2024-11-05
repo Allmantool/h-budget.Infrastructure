@@ -15,9 +15,9 @@ services:
         - PULL_REQUEST_TARGET_BRANCH=${PULL_REQUEST_TARGET_BRANCH}
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-      - ASPNETCORE_URLS=https://+:7298
+      - ASPNETCORE_URLS=https://+:7398
     ports:
-      - "7298:7298"
+      - "7398:7398"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
