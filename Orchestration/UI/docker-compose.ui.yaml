@@ -10,12 +10,15 @@ services:
         - SONAR_TOKEN=${SONAR_TOKEN}
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - CERT_PASSWORD=${UI_CERTIFICATE_PASSWORD}
     ports:
       - "5407:80"
       - "5408:443"
     volumes:
       - ${UI_JSON_PATH}:/usr/share/nginx/html/assets/config.json:ro
       - ${NGINX_CONFIG}:/etc/nginx/nginx.conf:ro
+      - ${UI_CERTIFICATE_PATH}:/etc/ssl/certs/${UI_CERTIFICATE_NAME}
+      - ${UI_CERTIFICATE_KEY_PATH}:/etc/ssl/certs/${UI_CERTIFICATE_KEY_NAME}
     networks:
       - elastic-network
       - accounting-api-network
