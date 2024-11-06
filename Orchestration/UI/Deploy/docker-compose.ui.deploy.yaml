@@ -11,6 +11,8 @@ services:
     volumes:
       - ${UI_JSON_PATH}:/usr/share/nginx/html/assets/config.json:ro
       - ${NGINX_CONFIG}:/etc/nginx/nginx.conf:ro
+      - ${UI_CERTIFICATE_PATH}:/etc/ssl/certs/${UI_CERTIFICATE_NAME}
+      - ${UI_CERTIFICATE_KEY_PATH}:/etc/ssl/certs/${UI_CERTIFICATE_KEY_NAME}
     networks:
       - elastic-network
       - accounting-api-network
