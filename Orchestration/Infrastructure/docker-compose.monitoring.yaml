@@ -55,7 +55,7 @@ services:
       - "--mongodb.collstats-colls=admin.companies,admin.restaurnts"
       - "--collect-all"
     environment:
-      - MONGODB_URI=mongodb://mongoadmin:${MONGO_DB_PASSWORD}@homebudget-mongo-db:27017
+      - MONGODB_URI=mongodb://mongoadmin:${MONGO_DB_PASSWORD}@homebudget-mongo-db:27017/?maxPoolSize=1000&waitQueueTimeoutMS=5000
     restart: unless-stopped
     ports:
       - "9216:9216"
