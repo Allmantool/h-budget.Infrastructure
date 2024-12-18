@@ -11,6 +11,7 @@ services:
       - mssql-network
       - redis-network
       - ui-network
+      - event-store-db-net
     ports:
       - 9090:9090
     volumes:
@@ -108,7 +109,7 @@ services:
       - prometheus
       - redis_server
 
-  nginx_exporter:
+  nginx-exporter:
     image: nginx/nginx-prometheus-exporter:1.1.0
     container_name: nginx-exporter
     command:
@@ -120,3 +121,19 @@ services:
     depends_on:
       - prometheus
       - homebudget-ui
+
+  event-store-db-exporter:
+    image: marcinbudny/eventstore_exporter:0.15.4
+    container_name: event-store-db-exporter
+    environment:
+    - EVENTSTORE_URL=http://event-store-db:2113
+    - EVENTSTORE_USER=admin
+    - EVENTSTORE_PASSWORD=changeit
+    - ENABLE_PARKED_MESSAGES_STATS=True
+    ports:
+    - 9448:9448
+    networks:
+      - event-store-db-net
+    depends_on:
+      - prometheus
+      - event-store-db
