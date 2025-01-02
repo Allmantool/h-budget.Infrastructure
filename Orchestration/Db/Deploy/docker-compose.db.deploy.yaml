@@ -114,7 +114,7 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: "4"
+          cpus: "3"
           memory: "2g"
 
   homebudget-sql-server:
