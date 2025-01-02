@@ -32,7 +32,7 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: "1"
+          cpus: "2"
           memory: "512M"
     depends_on:
       - homebudget-sql-server

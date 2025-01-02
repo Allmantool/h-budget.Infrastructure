@@ -11,6 +11,16 @@ services:
       - elastic-network
     depends_on:
       - elasticsearch
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 10
+        delay: 25s
+        window: 180s
+      resources:
+        limits:
+          cpus: "1"
+          memory: "1g"
 
   elasticsearch:
     image: elasticsearch:8.15.3
@@ -34,5 +44,5 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: "1"
-          memory: "1GB"
+          cpus: "2"
+          memory: "2GB"

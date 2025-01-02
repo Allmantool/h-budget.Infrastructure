@@ -24,3 +24,13 @@ services:
       - homebudget-ui
       - homebudget-accounting-api
       - homebudget-rates-api
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 10
+        delay: 25s
+        window: 180s
+      resources:
+        limits:
+          cpus: "1"
+          memory: "256M"

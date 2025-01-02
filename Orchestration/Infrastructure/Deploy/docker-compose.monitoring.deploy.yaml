@@ -19,6 +19,16 @@ services:
     depends_on:
       - homebudget-rates-api
       - homebudget-accounting-api
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 10
+        delay: 25s
+        window: 180s
+      resources:
+        limits:
+          cpus: "1"
+          memory: "512M"
 
   grafana:
     container_name: grafana
