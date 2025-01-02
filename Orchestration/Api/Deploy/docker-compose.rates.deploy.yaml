@@ -30,7 +30,7 @@ services:
       resources:
         limits:
           cpus: "1"
-          memory: "512M"
+          memory: "512m"
     depends_on:
       - homebudget-ui
       - homebudget-sql-server

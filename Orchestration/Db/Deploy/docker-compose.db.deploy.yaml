@@ -22,6 +22,16 @@ services:
         target: /var/log/eventstore
     networks:
       - event-store-db-net
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 10
+        delay: 25s
+        window: 180s
+      resources:
+        limits:
+          cpus: "3"
+          memory: "2g"
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.4.3
@@ -33,6 +43,16 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
     networks:
       - kafka-net
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 10
+        delay: 25s
+        window: 180s
+      resources:
+        limits:
+          cpus: "1"
+          memory: "512m"
 
   kafka:
     image: confluentinc/cp-kafka:7.4.3
@@ -58,6 +78,16 @@ services:
       - kafka-net
     depends_on:
       - zookeeper
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 10
+        delay: 25s
+        window: 180s
+      resources:
+        limits:
+          cpus: "2"
+          memory: "2g"
 
   homebudget-mongo-db:
     image: mongo:7.0.5-rc0-jammy
@@ -76,6 +106,16 @@ services:
       - ${MONGO_DB_VOLUME_PATH}:/data/db
     networks:
       - mongo-network
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 10
+        delay: 25s
+        window: 180s
+      resources:
+        limits:
+          cpus: "3"
+          memory: "2g"
 
   homebudget-sql-server:
     image: "mcr.microsoft.com/mssql/server:2022-latest"
@@ -89,3 +129,13 @@ services:
       - ${SQL_VOLUME_PATH}:/var/opt/mssql/data
     networks:
       - mssql-network
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 10
+        delay: 25s
+        window: 180s
+      resources:
+        limits:
+          cpus: "1"
+          memory: "1G"

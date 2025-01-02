@@ -22,6 +22,16 @@ services:
       - kafka-net
     depends_on:
       - zookeeper
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 10
+        delay: 25s
+        window: 180s
+      resources:
+        limits:
+          cpus: "1"
+          memory: "512m"
 
   flyway:
     image: flyway/flyway:10.17.2
@@ -52,3 +62,13 @@ services:
       - redis-network
     depends_on:
       - homebudget-sql-server
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 10
+        delay: 25s
+        window: 180s
+      resources:
+        limits:
+          cpus: "1"
+          memory: "512m"
