@@ -19,6 +19,16 @@ services:
     depends_on:
       - homebudget-rates-api
       - homebudget-accounting-api
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 10
+        delay: 5s
+        window: 180s
+      resources:
+        limits:
+          cpus: "1"
+          memory: "512m"
 
   grafana:
     container_name: grafana
@@ -44,6 +54,16 @@ services:
       - ${GF_PATHS_PROVISIONING}:/etc/grafana/provisioning
     depends_on:
       - prometheus
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 10
+        delay: 5s
+        window: 180s
+      resources:
+        limits:
+          cpus: "1"
+          memory: "1g"
 
   mongo-db-exporter:
     image: percona/mongodb_exporter:0.40
@@ -66,6 +86,16 @@ services:
     depends_on:
       - prometheus
       - homebudget-mongo-db
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 10
+        delay: 5s
+        window: 180s
+      resources:
+        limits:
+          cpus: "1"
+          memory: "64m"
 
   kafka-exporter:
     image: bitnami/kafka-exporter:1.7.0
@@ -79,6 +109,16 @@ services:
     depends_on:
       - prometheus
       - kafka
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 10
+        delay: 5s
+        window: 180s
+      resources:
+        limits:
+          cpus: "1"
+          memory: "64m"
 
   mssql-exporter:
     image: awaragi/prometheus-mssql-exporter:v1.3.0
@@ -95,6 +135,16 @@ services:
     depends_on:
       - prometheus
       - homebudget-sql-server
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 10
+        delay: 5s
+        window: 180s
+      resources:
+        limits:
+          cpus: "1"
+          memory: "64m"
 
   redis-exporter:
     image: oliver006/redis_exporter:v1.60.0
@@ -108,6 +158,16 @@ services:
     depends_on:
       - prometheus
       - redis_server
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 10
+        delay: 5s
+        window: 180s
+      resources:
+        limits:
+          cpus: "1"
+          memory: "64m"
 
   nginx-exporter:
     image: nginx/nginx-prometheus-exporter:1.1.0
@@ -121,6 +181,16 @@ services:
     depends_on:
       - prometheus
       - homebudget-ui
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 10
+        delay: 5s
+        window: 180s
+      resources:
+        limits:
+          cpus: "1"
+          memory: "64m"
 
   event-store-db-exporter:
     image: marcinbudny/eventstore_exporter:0.15.4
@@ -137,3 +207,13 @@ services:
     depends_on:
       - prometheus
       - event-store-db
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 10
+        delay: 5s
+        window: 180s
+      resources:
+        limits:
+          cpus: "1"
+          memory: "64m"

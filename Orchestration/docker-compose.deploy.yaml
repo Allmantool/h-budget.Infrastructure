@@ -31,7 +31,7 @@ services:
       resources:
         limits:
           cpus: "1"
-          memory: "512M"
+          memory: "512m"
 
   flyway:
     image: flyway/flyway:10.17.2
@@ -71,4 +71,4 @@ services:
       resources:
         limits:
           cpus: "1"
-          memory: "512M"
+          memory: "512m"

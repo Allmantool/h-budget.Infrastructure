@@ -28,7 +28,7 @@ services:
       resources:
         limits:
           cpus: "1"
-          memory: "512M"
+          memory: "512m"
 
   grafana:
     container_name: grafana

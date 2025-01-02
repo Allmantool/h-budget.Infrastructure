@@ -52,7 +52,7 @@ services:
       resources:
         limits:
           cpus: "1"
-          memory: "512M"
+          memory: "512m"
 
   kafka:
     image: confluentinc/cp-kafka:7.4.3
