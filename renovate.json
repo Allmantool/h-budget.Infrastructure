@@ -1,0 +1,15 @@
+{
+    "extends": [
+        "config:base"
+    ],
+    "packageRules": [
+        {
+            "managers": [
+                "docker-compose"
+            ],
+            "packagePatterns": [
+                "*"
+            ]
+        }
+    ]
+}
