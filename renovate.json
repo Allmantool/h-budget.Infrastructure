@@ -1,15 +1,14 @@
 {
     "extends": [
-        "config:base",
-        "docker"
+        "config:base"
     ],
     "packageRules": [
         {
-            "packagePatterns": [
-                ".*"
-            ],
             "managers": [
                 "docker-compose"
+            ],
+            "packagePatterns": [
+                "*"
             ]
         }
     ]
