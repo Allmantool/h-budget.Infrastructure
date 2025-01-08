@@ -28,7 +28,7 @@ services:
       - elastic-network
 
   filebeat:
-    image: elastic/filebeat:8.15.3
+    image: elastic/filebeat:8.17.0
     container_name: homebudget-filebeat
     ports:
       - 9350:80
