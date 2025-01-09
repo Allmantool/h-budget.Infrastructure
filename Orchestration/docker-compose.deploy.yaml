@@ -54,7 +54,7 @@ services:
       - homebudget-sql-server
 
   redis_server:
-    image: redis:7.0.7
+    image: redis:7.4.2
     container_name: homebudget-cache
     ports:
       - "6379:6379"
