@@ -66,7 +66,7 @@ services:
           memory: "1g"
 
   mongo-db-exporter:
-    image: percona/mongodb_exporter:0.43
+    image: percona/mongodb_exporter:2.37
     container_name: prometheus-mongo-db-exporter
     command:
       - "--mongodb.global-conn-pool"
