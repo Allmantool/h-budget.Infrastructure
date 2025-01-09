@@ -56,7 +56,7 @@ services:
       - prometheus
 
   mongo-db-exporter:
-    image: percona/mongodb_exporter:0.40
+    image: percona/mongodb_exporter:0.43
     container_name: prometheus-mongo-db-exporter
     command:
       - "--mongodb.global-conn-pool"
