@@ -170,7 +170,7 @@ services:
           memory: "64m"
 
   nginx-exporter:
-    image: nginx/nginx-prometheus-exporter:1.4.0
+    image: nginx/nginx-prometheus-exporter:1.4.1
     container_name: nginx-exporter
     command:
       - "--nginx.scrape-uri=http://localhost:5407/stub_status"
