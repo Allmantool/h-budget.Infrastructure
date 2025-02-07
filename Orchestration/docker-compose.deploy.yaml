@@ -34,7 +34,7 @@ services:
           memory: "512m"
 
   flyway:
-    image: flyway/flyway:11.3.0
+    image: flyway/flyway:11.3.1
     container_name: homebudget-flyway-migration
     command: >
       -mixed=true 
