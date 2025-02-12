@@ -23,7 +23,7 @@ services:
           memory: "1g"
 
   elasticsearch:
-    image: elasticsearch:8.17.1
+    image: elasticsearch:8.17.2
     container_name: homebudget-elasticsearch
     ports:
       - 9250:9200
