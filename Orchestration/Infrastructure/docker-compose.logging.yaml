@@ -13,7 +13,7 @@ services:
       - elasticsearch
 
   elasticsearch:
-    image: elasticsearch:8.17.2
+    image: elasticsearch:8.17.3
     container_name: homebudget-elasticsearch
     ports:
       - 9250:9200
