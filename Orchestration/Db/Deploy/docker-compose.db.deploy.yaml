@@ -1,7 +1,7 @@
 name: db
 services:
   event-store-db:
-    image: eventstore/eventstore:24.10.3-jammy
+    image: eventstore/eventstore:24.10.4-jammy
     container_name: event-store-db
     environment:
       - EVENTSTORE_INSECURE=true # Allow insecure mode (no certificates)
