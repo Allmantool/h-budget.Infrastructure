@@ -35,7 +35,7 @@ services:
           cpus: "2"
           memory: "512m"
     depends_on:
-      - homebudget-sql-server
+      - ${SQL_SERVER}
       - redis_server
       - elasticsearch
       - kibana

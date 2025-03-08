@@ -34,14 +34,14 @@ services:
     environment:
       - FLYWAY_USER=sa
       - FLYWAY_PASSWORD=${SQL_PASSWORD}
-      - FLYWAY_URL=jdbc:sqlserver://homebudget-sql-server:1433;encrypt=true;trustServerCertificate=true;
+      - FLYWAY_URL=jdbc:sqlserver://${SQL_SERVER}:${SQL_SERVER_PORT};encrypt=true;trustServerCertificate=true;
     volumes:
       - ${FLYWAY_SCRIPTS_PATH}:/flyway/sql
       - ${FLYWAY_CONFIG_PATH}:/flyway/conf
     networks:
       - mssql-network
     depends_on:
-      - homebudget-sql-server
+      - ${SQL_SERVER}
 
   redis_server:
     image: redis:7.4.2
@@ -51,4 +51,4 @@ services:
     networks:
       - redis-network
     depends_on:
-      - homebudget-sql-server
+      - ${SQL_SERVER}

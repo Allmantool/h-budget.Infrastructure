@@ -77,15 +77,30 @@ services:
     networks:
       - mongo-network
 
-  homebudget-sql-server:
+#
+#  homebudget-sql-server:
+#    image: "mcr.microsoft.com/mssql/server:2022-latest"
+#    container_name: homebudget-sql-server
+#    environment:
+#      ACCEPT_EULA: "Y"
+#      SA_PASSWORD: ${SQL_PASSWORD}
+#    ports:
+#      - "1433:1433"
+#    volumes:
+#      - ${SQL_VOLUME_PATH}:/var/opt/mssql/data
+#    networks:
+#      - mssql-network
+#
+
+  wms-sql-server:
     image: "mcr.microsoft.com/mssql/server:2022-latest"
-    container_name: homebudget-sql-server
+    container_name: wms-sql-server
     environment:
       ACCEPT_EULA: "Y"
-      SA_PASSWORD: ${SQL_PASSWORD}
+      SA_PASSWORD: ${WMS_SQL_PASSWORD}
     ports:
-      - "1433:1433"
+      - "${SQL_SERVER_PORT}:1433"
     volumes:
-      - ${SQL_VOLUME_PATH}:/var/opt/mssql/data
+      - ${SQL_WMS_VOLUME_PATH}:/var/opt/mssql/data
     networks:
       - mssql-network
