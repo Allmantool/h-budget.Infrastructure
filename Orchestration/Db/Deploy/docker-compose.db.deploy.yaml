@@ -31,7 +31,7 @@ services:
       resources:
         limits:
           cpus: "3"
-          memory: "2g"
+          memory: "2.5g"
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.9.0
@@ -87,7 +87,7 @@ services:
       resources:
         limits:
           cpus: "2"
-          memory: "2g"
+          memory: "2.5g"
 
   homebudget-mongo-db:
     image: mongo:7.0.17-rc0-jammy
@@ -115,7 +115,7 @@ services:
       resources:
         limits:
           cpus: "3"
-          memory: "2g"
+          memory: "2.5g"
 #
 #  homebudget-sql-server:
 #    image: "mcr.microsoft.com/mssql/server:2022-latest"
@@ -148,9 +148,11 @@ services:
       ACCEPT_EULA: "Y"
       SA_PASSWORD: ${WMS_SQL_PASSWORD}
     ports:
-      - "1633:1433"
+      - "${SQL_SERVER_PORT}:1433"
     volumes:
       - ${SQL_WMS_VOLUME_PATH}:/var/opt/mssql/data
+    networks:
+      - mssql-network
     deploy:
       restart_policy:
         condition: on-failure
