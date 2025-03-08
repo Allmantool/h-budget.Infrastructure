@@ -77,15 +77,47 @@ services:
     networks:
       - mongo-network
 
-  homebudget-sql-server:
+#
+#  homebudget-sql-server:
+#    image: "mcr.microsoft.com/mssql/server:2022-latest"
+#    container_name: homebudget-sql-server
+#    environment:
+#      ACCEPT_EULA: "Y"
+#      SA_PASSWORD: ${SQL_PASSWORD}
+#    ports:
+#      - "1433:1433"
+#    volumes:
+#      - ${SQL_VOLUME_PATH}:/var/opt/mssql/data
+#    networks:
+#      - mssql-network
+#
+
+  wms-sql-server:
     image: "mcr.microsoft.com/mssql/server:2022-latest"
-    container_name: homebudget-sql-server
+    container_name: wms-sql-server
     environment:
       ACCEPT_EULA: "Y"
-      SA_PASSWORD: ${SQL_PASSWORD}
+      SA_PASSWORD: ${WMS_SQL_PASSWORD}
     ports:
-      - "1433:1433"
+      - "1633:1433"
     volumes:
-      - ${SQL_VOLUME_PATH}:/var/opt/mssql/data
-    networks:
-      - mssql-network
+      - ${SQL_WMS_VOLUME_PATH}:/var/opt/mssql/data
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 10
+        delay: 5s
+        window: 180s
+      resources:
+        limits:
+          cpus: "2"
+          memory: "7g"
+        reservations:
+          cpus: "1"
+          memory: "3g"
+    healthcheck:
+      test: ["CMD", "sqlcmd", "-S", "localhost", "-U", "sa", "-P", "$$WMS_SQL_PASSWORD", "-Q", "SELECT 1"]
+      interval: 10s
+      retries: 3
+      start_period: 30s
+      timeout: 5s

@@ -125,8 +125,8 @@ services:
     image: awaragi/prometheus-mssql-exporter:v1.3.0
     container_name: prometheus-mssql-exporter
     environment:
-      SERVER: homebudget-sql-server
-      PORT: 1433
+      SERVER:  ${SQL_SERVER}
+      PORT: ${SQL_SERVER_PORT}
       USERNAME: SA
       PASSWORD: ${SQL_PASSWORD}
     ports:
@@ -135,7 +135,7 @@ services:
       - mssql-network
     depends_on:
       - prometheus
-      - homebudget-sql-server
+      - ${SQL_SERVER}
     deploy:
       restart_policy:
         condition: on-failure

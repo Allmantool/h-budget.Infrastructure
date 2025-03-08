@@ -33,7 +33,7 @@ services:
           memory: "512m"
     depends_on:
       - homebudget-ui
-      - homebudget-sql-server
+      - ${SQL_SERVER}
       - redis_server
       - elasticsearch
       - kibana
