@@ -27,7 +27,7 @@ services:
       - kafka-net
       - event-store-db-net
     depends_on:
-      - homebudget-sql-server
+      - ${SQL_SERVER}
       - redis_server
       - elasticsearch
       - kibana

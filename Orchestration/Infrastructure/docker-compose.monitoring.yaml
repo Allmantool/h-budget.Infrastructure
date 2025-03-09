@@ -95,7 +95,7 @@ services:
       - mssql-network
     depends_on:
       - prometheus
-      - homebudget-sql-server
+      - ${SQL_SERVER}
 
   redis-exporter:
     image: oliver006/redis_exporter:v1.68.0
