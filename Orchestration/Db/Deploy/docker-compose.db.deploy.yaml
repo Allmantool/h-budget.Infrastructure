@@ -90,7 +90,7 @@ services:
           memory: "2.5g"
 
   homebudget-mongo-db:
-    image: mongo:7.0.17-rc0-jammy
+    image: mongo:7.0.18-rc0-jammy
     container_name: homebudget-mongo-db
     restart: always
     logging:
