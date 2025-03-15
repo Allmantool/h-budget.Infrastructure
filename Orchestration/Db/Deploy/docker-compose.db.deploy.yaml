@@ -115,7 +115,7 @@ services:
       resources:
         limits:
           cpus: "3"
-          memory: "2.5g"
+          memory: "2g"
 #
 #  homebudget-sql-server:
 #    image: "mcr.microsoft.com/mssql/server:2022-latest"
@@ -149,10 +149,12 @@ services:
       SA_PASSWORD: ${WMS_SQL_PASSWORD}
     ports:
       - "${SQL_SERVER_PORT}:1433"
+      - "1433:1433"
     volumes:
       - ${SQL_WMS_VOLUME_PATH}:/var/opt/mssql/data
     networks:
       - mssql-network
+      - rates-api-network
     deploy:
       restart_policy:
         condition: on-failure
