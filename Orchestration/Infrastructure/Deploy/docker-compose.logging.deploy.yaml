@@ -32,7 +32,7 @@ services:
     environment:
       - xpack.watcher.enabled=false
       - xpack.security.enabled=false
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
       - discovery.type=single-node
     networks:
       - elastic-network
