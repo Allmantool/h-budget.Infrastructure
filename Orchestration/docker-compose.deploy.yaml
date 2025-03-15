@@ -31,7 +31,7 @@ services:
       resources:
         limits:
           cpus: "1"
-          memory: "512m"
+          memory: "256m"
 
   flyway:
     image: flyway/flyway:11.4.0
@@ -52,6 +52,16 @@ services:
       - mssql-network
     depends_on:
       - ${SQL_SERVER}
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 10
+        delay: 25s
+        window: 180s
+      resources:
+        limits:
+          cpus: "1"
+          memory: "128m"
 
   redis_server:
     image: redis:7.4.2

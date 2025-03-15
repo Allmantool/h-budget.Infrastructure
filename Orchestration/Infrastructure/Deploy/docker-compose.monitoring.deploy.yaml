@@ -125,7 +125,7 @@ services:
     image: awaragi/prometheus-mssql-exporter:v1.3.0
     container_name: prometheus-mssql-exporter
     environment:
-      SERVER:  ${SQL_SERVER}
+      SERVER: ${SQL_SERVER}
       PORT: ${SQL_SERVER_PORT}
       USERNAME: SA
       PASSWORD: ${SQL_PASSWORD}
@@ -191,18 +191,18 @@ services:
       resources:
         limits:
           cpus: "1"
-          memory: "64m"
+          memory: "128m"
 
   event-store-db-exporter:
     image: marcinbudny/eventstore_exporter:0.15.4
     container_name: event-store-db-exporter
     environment:
-    - EVENTSTORE_URL=http://event-store-db:2113
-    - EVENTSTORE_USER=admin
-    - EVENTSTORE_PASSWORD=changeit
-    - ENABLE_PARKED_MESSAGES_STATS=True
+      - EVENTSTORE_URL=http://event-store-db:2113
+      - EVENTSTORE_USER=admin
+      - EVENTSTORE_PASSWORD=changeit
+      - ENABLE_PARKED_MESSAGES_STATS=True
     ports:
-    - 9448:9448
+      - 9448:9448
     networks:
       - event-store-db-net
     depends_on:

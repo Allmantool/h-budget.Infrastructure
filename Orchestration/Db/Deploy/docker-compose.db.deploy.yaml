@@ -31,7 +31,7 @@ services:
       resources:
         limits:
           cpus: "3"
-          memory: "2.5g"
+          memory: "2g"
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.9.0
@@ -52,7 +52,7 @@ services:
       resources:
         limits:
           cpus: "1"
-          memory: "1g"
+          memory: "256mb"
 
   kafka:
     image: confluentinc/cp-kafka:7.9.0
@@ -87,7 +87,7 @@ services:
       resources:
         limits:
           cpus: "2"
-          memory: "2.5g"
+          memory: "1g"
 
   homebudget-mongo-db:
     image: mongo:7.0.18-rc0-jammy
@@ -115,31 +115,31 @@ services:
       resources:
         limits:
           cpus: "3"
-          memory: "2g"
-#
-#  homebudget-sql-server:
-#    image: "mcr.microsoft.com/mssql/server:2022-latest"
-#    container_name: homebudget-sql-server
-#    environment:
-#      ACCEPT_EULA: "Y"
-#      SA_PASSWORD: ${SQL_PASSWORD}
-#    ports:
-#      - "1433:1433"
-#    volumes:
-#      - ${SQL_VOLUME_PATH}:/var/opt/mssql/data
-#    networks:
-#      - mssql-network
-#    deploy:
-#      restart_policy:
-#        condition: on-failure
-#        max_attempts: 10
-#        delay: 25s
-#        window: 180s
-#      resources:
-#        limits:
-#          cpus: "1"
-#          memory: "2G"
-#
+          memory: "1.5g"
+  #
+  #  homebudget-sql-server:
+  #    image: "mcr.microsoft.com/mssql/server:2022-latest"
+  #    container_name: homebudget-sql-server
+  #    environment:
+  #      ACCEPT_EULA: "Y"
+  #      SA_PASSWORD: ${SQL_PASSWORD}
+  #    ports:
+  #      - "1433:1433"
+  #    volumes:
+  #      - ${SQL_VOLUME_PATH}:/var/opt/mssql/data
+  #    networks:
+  #      - mssql-network
+  #    deploy:
+  #      restart_policy:
+  #        condition: on-failure
+  #        max_attempts: 10
+  #        delay: 25s
+  #        window: 180s
+  #      resources:
+  #        limits:
+  #          cpus: "1"
+  #          memory: "2G"
+  #
 
   wms-sql-server:
     image: "mcr.microsoft.com/mssql/server:2022-latest"
@@ -164,7 +164,7 @@ services:
       resources:
         limits:
           cpus: "2"
-          memory: "5g"
+          memory: "4g"
         reservations:
           cpus: "1"
           memory: "3g"
