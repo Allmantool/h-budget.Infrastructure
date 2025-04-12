@@ -26,7 +26,8 @@ services:
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
       - ${RATES_API_JSON_PATH}:/app/appsettings.json:ro
     networks:
-      - elastic-network
+      # - elastic-network
+      - seq-network
       - redis-network
       - mssql-network
       - rates-api-network
@@ -35,5 +36,3 @@ services:
       - homebudget-ui
       - ${SQL_SERVER}
       - redis_server
-      - elasticsearch
-      - kibana

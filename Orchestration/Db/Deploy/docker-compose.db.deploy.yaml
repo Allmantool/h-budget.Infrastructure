@@ -87,7 +87,7 @@ services:
       resources:
         limits:
           cpus: "2"
-          memory: "1g"
+          memory: "1.2g"
 
   homebudget-mongo-db:
     image: mongo:7.0.18-rc0-jammy
