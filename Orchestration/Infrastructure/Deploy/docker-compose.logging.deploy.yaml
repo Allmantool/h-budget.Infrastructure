@@ -1,48 +1,92 @@
 name: logging
 services:
-  kibana:
-    image: kibana:8.17.4
-    container_name: homebudget-kibana
+  # kibana:
+  #   image: kibana:8.17.4
+  #   container_name: homebudget-kibana
+  #   ports:
+  #     - 5601:5601
+  #   environment:
+  #     - ELASTICSEARCH_HOSTS=http://elasticsearch:9200  # Use internal port 9200
+  #     - XPACK_MONITORING_ENABLED=false
+  #     - XPACK_SECURITY_ENABLED=false
+  #     # Increase migration timeouts
+  #     - ELASTICSEARCH_REQUEST_TIMEOUT=120000
+  #     - ELASTICSEARCH_PING_TIMEOUT=120000
+  #   networks:
+  #   - elastic-network
+  #   depends_on:
+  #     elasticsearch:
+  #       condition: service_healthy
+  #   healthcheck:
+  #     test: ["CMD", "wget", "-q", "--spider", "http://localhost:5601/api/status"]
+  #     interval: 10s
+  #     timeout: 10s
+  #     retries: 30
+  #   deploy:
+  #     restart_policy:
+  #       condition: on-failure
+  #       max_attempts: 10
+  #       delay: 25s
+  #       window: 180s
+  #     resources:
+  #       limits:
+  #         cpus: "1"
+  #         memory: "1g"
+
+  # elasticsearch:
+  #   image: elasticsearch:8.17.4
+  #   container_name: homebudget-elasticsearch
+  #   ports:
+  #     - 9250:9200
+  #   volumes:
+  #     - ${ELASTIC_VOLUME_PATH}:/usr/share/elasticsearch/data
+  #   environment:
+  #     - xpack.security.enabled=false
+  #     - discovery.type=single-node
+  #     - ES_JAVA_OPTS=-Xms2g -Xmx2g  # Align with container memory (2GB)
+  #   networks:
+  #     - elastic-network
+  #   healthcheck:
+  #     test: ["CMD", "wget", "-q", "--spider", "http://localhost:9250/_cluster/health"]
+  #     interval: 10s
+  #     timeout: 10s
+  #     retries: 30
+  #   deploy:
+  #     restart_policy:
+  #       condition: on-failure
+  #       max_attempts: 10
+  #       delay: 5s
+  #       window: 180s
+  #     resources:
+  #       limits:
+  #         cpus: "2"
+  #         memory: "2g"
+
+  seq:
+    image: datalust/seq:5.1.3200
+    container_name: logging-seq
     ports:
-      - 5601:5601
+      - 5341:80
+      - 5342:5341
     environment:
-      - ELASTICSEARCH_URL=http://elasticsearch:9250
+      - ACCEPT_EULA=${SEQ_DEFAULT_USER}
+      - SEQ_FIRSTRUN_ADMINPASSWORD=${SEQ_DEFAULT_PASSWORD}
     networks:
-      - elastic-network
-    depends_on:
-      - elasticsearch
+      - seq-network
+    volumes:
+      - ${SEQ_VOLUME_PATH}:/data
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:80/api/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 30
     deploy:
       restart_policy:
         condition: on-failure
         max_attempts: 10
-        delay: 25s
+        delay: 10s
         window: 180s
       resources:
         limits:
           cpus: "1"
           memory: "1g"
-
-  elasticsearch:
-    image: elasticsearch:8.17.4
-    container_name: homebudget-elasticsearch
-    ports:
-      - 9250:9200
-    volumes:
-      - ${ELASTIC_VOLUME_PATH}:/usr/share/elasticsearch/data
-    environment:
-      - xpack.watcher.enabled=false
-      - xpack.security.enabled=false
-      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
-      - discovery.type=single-node
-    networks:
-      - elastic-network
-    deploy:
-      restart_policy:
-        condition: on-failure
-        max_attempts: 10
-        delay: 5s
-        window: 180s
-      resources:
-        limits:
-          cpus: "2"
-          memory: "2g"

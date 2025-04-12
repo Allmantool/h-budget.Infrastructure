@@ -14,7 +14,8 @@ services:
       - ${UI_CERTIFICATE_PATH}:/etc/ssl/certs/${UI_CERTIFICATE_NAME}
       - ${UI_CERTIFICATE_KEY_PATH}:/etc/ssl/certs/${UI_CERTIFICATE_KEY_NAME}
     networks:
-      - elastic-network
+      # - elastic-network
+      - seq-network
       - accounting-api-network
       - rates-api-network
       - ui-network
@@ -28,5 +29,3 @@ services:
     depends_on:
       - ${SQL_SERVER}
       - redis_server
-      - elasticsearch
-      - kibana

@@ -3,9 +3,11 @@ networks:
     driver: bridge
   rates-api-network:
     driver: bridge
-  elastic-network:
-    driver: bridge
+  # elastic-network:
+  #   driver: bridge
   redis-network:
+    driver: bridge
+  seq-network:
     driver: bridge
   mssql-network:
     driver: bridge
