@@ -63,7 +63,7 @@ services:
   #         memory: "2g"
 
   seq:
-    image: datalust/seq:2024.3.13545
+    image: datalust/seq:2022.1
     container_name: logging-seq
     ports:
       - 5341:80
@@ -88,5 +88,5 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: "1"
-          memory: "1g"
+          cpus: "3"
+          memory: "1.5g"
