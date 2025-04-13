@@ -41,7 +41,7 @@ services:
   #     - elastic-network
 
   seq:
-    image: datalust/seq:2024.3.13545
+    image: datalust/seq:5.1.3364
     container_name: logging-seq
     ports:
       - 5341:80
