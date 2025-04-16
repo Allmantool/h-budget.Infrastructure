@@ -32,8 +32,8 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: "2"
-          memory: "512m"
+          cpus: "3"
+          memory: "1g"
     depends_on:
       - redis_server
       - kafka

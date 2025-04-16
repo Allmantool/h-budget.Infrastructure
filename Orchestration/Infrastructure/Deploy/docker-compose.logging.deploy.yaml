@@ -68,9 +68,14 @@ services:
     ports:
       - 5341:80
       - 5342:5341
+    init: true 
     environment:
       - ACCEPT_EULA=${SEQ_DEFAULT_USER}
       - SEQ_FIRSTRUN_ADMINPASSWORD=${SEQ_DEFAULT_PASSWORD}
+      - SEQ_API_TIMEOUT=00:05:00
+      - SEQ_DISABLE_MEMORY_CACHING=false
+      - SEQ_CACHE_COMPACTION_INTERVAL=00:10:00
+      - SEQ_STORAGE_BUFFER_SIZE=512
     networks:
       - seq-network
     volumes:
@@ -89,4 +94,4 @@ services:
       resources:
         limits:
           cpus: "3"
-          memory: "1.5g"
+          memory: "1g"
