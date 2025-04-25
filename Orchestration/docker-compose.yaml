@@ -24,7 +24,7 @@ services:
       - zookeeper
 
   flyway:
-    image: flyway/flyway:11.7.2
+    image: flyway/flyway:11.8.0
     container_name: homebudget-flyway-migration
     command: >
       -mixed=true 
