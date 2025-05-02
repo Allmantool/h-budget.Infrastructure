@@ -22,6 +22,7 @@ services:
       - kafka-net
     depends_on:
       - zookeeper
+      - kafka
     deploy:
       restart_policy:
         condition: on-failure
@@ -31,7 +32,7 @@ services:
       resources:
         limits:
           cpus: "1"
-          memory: "256m"
+          memory: "512m"
 
   flyway:
     image: flyway/flyway:11.8.0
