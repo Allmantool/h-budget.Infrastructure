@@ -27,7 +27,7 @@ services:
       resources:
         limits:
           cpus: "3"
-          memory: "2g"
+          memory: "1.5g"
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.9.0
