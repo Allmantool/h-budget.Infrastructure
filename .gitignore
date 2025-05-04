@@ -12,3 +12,4 @@ Configurations/Grafana/Lib/
 
 .fake
 node_modules/
+Configurations/prometheus-data/

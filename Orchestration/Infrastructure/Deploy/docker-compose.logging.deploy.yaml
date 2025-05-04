@@ -78,6 +78,7 @@ services:
       - SEQ_STORAGE_BUFFER_SIZE=512
     networks:
       - seq-network
+      - shared-monitoring-net
     volumes:
       - ${SEQ_VOLUME_PATH}:/data
     healthcheck:

@@ -18,6 +18,7 @@ services:
       - ${EVENT_DB_LOG_PATH}:/var/log/eventstore
     networks:
       - event-store-db-net
+      - shared-monitoring-net
     deploy:
       restart_policy:
         condition: on-failure
@@ -39,6 +40,7 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
     networks:
       - kafka-net
+      - shared-monitoring-net
     deploy:
       restart_policy:
         condition: on-failure
@@ -72,6 +74,7 @@ services:
       KAFKA_JMX_HOSTNAME: kafka
     networks:
       - kafka-net
+      - shared-monitoring-net
     depends_on:
       - zookeeper
     deploy:
@@ -85,13 +88,15 @@ services:
           cpus: "2"
           memory: "2g"
 
-  homebudget-mongo-db:
+  shared-mongo-db:
     image: mongo:7.0.18-rc0-jammy
-    container_name: homebudget-mongo-db
+    container_name: shared-mongo-db
     restart: always
     logging:
+      driver: json-file
       options:
         max-size: 1g
+        max-file: "30"
     environment:
       - MONGO_INITDB_ROOT_USERNAME=mongoadmin
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_DB_PASSWORD}
@@ -102,6 +107,12 @@ services:
       - ${MONGO_DB_VOLUME_PATH}:/data/db
     networks:
       - mongo-network
+      - shared-monitoring-net
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
     deploy:
       restart_policy:
         condition: on-failure
@@ -151,6 +162,7 @@ services:
     networks:
       - mssql-network
       - rates-api-network
+      - shared-monitoring-net
     deploy:
       restart_policy:
         condition: on-failure

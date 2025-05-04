@@ -12,10 +12,12 @@ services:
       - redis-network
       - ui-network
       - event-store-db-net
+      - shared-monitoring-net
     ports:
       - 9090:9090
     volumes:
       - ${PROMETHEUS_CONFIG}:/etc/prometheus/prometheus.yml
+      - ${PROMETHEUS_DATA}:/prometheus
     depends_on:
       - homebudget-rates-api
       - homebudget-accounting-api
@@ -41,6 +43,7 @@ services:
       - mssql-network
       - redis-network
       - ui-network
+      - shared-monitoring-net
     restart: unless-stopped
     environment:
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
@@ -65,6 +68,30 @@ services:
           cpus: "1"
           memory: "1g"
 
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    ports:
+      - 8080:8080
+    networks:
+      - shared-monitoring-net
+    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 10
+        delay: 5s
+        window: 180s
+      resources:
+        limits:
+          cpus: "1"
+          memory: "512m"
+
   mongo-db-exporter:
     image: percona/mongodb_exporter:2.37
     container_name: prometheus-mongo-db-exporter
@@ -76,16 +103,17 @@ services:
       - "--mongodb.collstats-colls=admin.companies,admin.restaurnts"
       - "--collect-all"
     environment:
-      - MONGODB_URI=mongodb://mongoadmin:${MONGO_DB_PASSWORD}@homebudget-mongo-db:27017/?maxPoolSize=1000&waitQueueTimeoutMS=5000
+      - MONGODB_URI=mongodb://mongoadmin:${MONGO_DB_PASSWORD}@shared-mongo-db:27017/?maxPoolSize=1000&waitQueueTimeoutMS=5000
     restart: unless-stopped
     ports:
       - "9216:9216"
       - "17001:17001"
     networks:
       - mongo-network
+      - shared-monitoring-net
     depends_on:
       - prometheus
-      - homebudget-mongo-db
+      - shared-mongo-db
     deploy:
       restart_policy:
         condition: on-failure
@@ -106,6 +134,7 @@ services:
       - 9308:9308
     networks:
       - kafka-net
+      - shared-monitoring-net
     depends_on:
       - prometheus
       - zookeeper
@@ -133,6 +162,7 @@ services:
       - 4000:4000
     networks:
       - mssql-network
+      - shared-monitoring-net
     depends_on:
       - prometheus
       - ${SQL_SERVER}
@@ -156,6 +186,7 @@ services:
       - 9121:9121
     networks:
       - redis-network
+      - shared-monitoring-net
     depends_on:
       - prometheus
       - redis_server
@@ -205,6 +236,7 @@ services:
       - 9448:9448
     networks:
       - event-store-db-net
+      - shared-monitoring-net
     depends_on:
       - prometheus
       - event-store-db
