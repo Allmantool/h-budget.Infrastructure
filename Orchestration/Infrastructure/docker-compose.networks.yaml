@@ -17,3 +17,5 @@ networks:
     driver: bridge
   event-store-db-net:
     driver: bridge
+  shared-monitoring-net:
+    external: true

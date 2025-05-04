@@ -33,6 +33,7 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
     networks:
       - kafka-net
+      - shared-monitoring-net
 
   kafka:
     image: confluentinc/cp-kafka:7.9.0
@@ -56,12 +57,13 @@ services:
       KAFKA_JMX_HOSTNAME: kafka
     networks:
       - kafka-net
+      - shared-monitoring-net
     depends_on:
       - zookeeper
 
-  homebudget-mongo-db:
+  shared-mongo-db:
     image: mongo:7.0.18-rc0-jammy
-    container_name: homebudget-mongo-db
+    container_name: shared-mongo-db
     restart: always
     logging:
       options:
@@ -76,6 +78,7 @@ services:
       - ${MONGO_DB_VOLUME_PATH}:/data/db
     networks:
       - mongo-network
+      - shared-monitoring-net
 
 #
 #  homebudget-sql-server:
@@ -104,3 +107,4 @@ services:
       - ${SQL_WMS_VOLUME_PATH}:/var/opt/mssql/data
     networks:
       - mssql-network
+      - shared-monitoring-net

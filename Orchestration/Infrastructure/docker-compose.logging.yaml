@@ -51,5 +51,6 @@ services:
       - SEQ_FIRSTRUN_ADMINPASSWORD=${SEQ_DEFAULT_PASSWORD}
     networks:
       - seq-network
+      - shared-monitoring-net
     volumes:
       - ${SEQ_VOLUME_PATH}:/data
