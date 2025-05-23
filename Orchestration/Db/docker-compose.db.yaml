@@ -62,7 +62,7 @@ services:
       - zookeeper
 
   shared-mongo-db:
-    image: mongo:7.0.18-rc0-jammy
+    image: mongo:7.0.21-rc0-jammy
     container_name: shared-mongo-db
     restart: always
     logging:
