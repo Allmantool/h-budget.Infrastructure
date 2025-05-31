@@ -65,7 +65,7 @@ services:
           memory: "128m"
 
   redis_server:
-    image: redis:8.0.1
+    image: redis:8.0.2
     container_name: homebudget-cache
     ports:
       - "6379:6379"
