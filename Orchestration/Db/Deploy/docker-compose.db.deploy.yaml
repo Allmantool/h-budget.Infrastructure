@@ -41,6 +41,8 @@ services:
     networks:
       - kafka-net
       - shared-monitoring-net
+    volumes:
+      -  ${KAFKA_ZOOKEEPER_STORE}:/var/lib/zookeeper
     deploy:
       restart_policy:
         condition: on-failure
@@ -72,9 +74,16 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_JMX_PORT: 9997
       KAFKA_JMX_HOSTNAME: kafka
+      KAFKA_LOG_RETENTION_HOURS: 48
+      KAFKA_LOG_RETENTION_BYTES: 1073741824
+      KAFKA_LOG_SEGMENT_BYTES: 134217728
+      KAFKA_LOG_CLEANUP_POLICY: delete
+      KAFKA_DELETE_TOPIC_ENABLE: "true"
     networks:
       - kafka-net
       - shared-monitoring-net
+    volumes:
+      - ${KAFKA_STORE}:/var/lib/kafka
     depends_on:
       - zookeeper
     deploy:
@@ -85,8 +94,8 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: "2"
-          memory: "2g"
+          cpus: "1.5"
+          memory: "1.5g"
 
   shared-mongo-db:
     image: mongo:7.0.21-rc0-jammy
