@@ -42,7 +42,7 @@ services:
       - kafka-net
       - shared-monitoring-net
     volumes:
-      -  ${KAFKA_ZOOKEEPER_STORE}:/var/lib/zookeeper
+      - ${KAFKA_ZOOKEEPER_STORE}:/var/lib/zookeeper
     deploy:
       restart_policy:
         condition: on-failure
@@ -74,11 +74,13 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_JMX_PORT: 9997
       KAFKA_JMX_HOSTNAME: kafka
-      KAFKA_LOG_RETENTION_HOURS: 48
       KAFKA_LOG_RETENTION_BYTES: 1073741824
-      KAFKA_LOG_SEGMENT_BYTES: 134217728
       KAFKA_LOG_CLEANUP_POLICY: delete
       KAFKA_DELETE_TOPIC_ENABLE: "true"
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_LOG_RETENTION_HOURS: 168
+      KAFKA_LOG_SEGMENT_BYTES: 1073741824
+      KAFKA_LOG_RETENTION_CHECK_INTERVAL_MS: 300000
     networks:
       - kafka-net
       - shared-monitoring-net
@@ -96,6 +98,22 @@ services:
         limits:
           cpus: "1.5"
           memory: "1.5g"
+
+  kafka-init:
+    image: confluentinc/cp-kafka:8.0.0
+    container_name: kafka-init
+    depends_on:
+      - kafka
+    entrypoint: ["/bin/sh", "-c"]
+    command: >
+      "
+      echo 'Waiting for Kafka...';
+      cub kafka-ready -b kafka:29092 1 30 &&
+      kafka-topics --create --if-not-exists --bootstrap-server kafka:29092 --replication-factor 1 --partitions 1 --topic accounting.accounts &&
+      kafka-topics --create --if-not-exists --bootstrap-server kafka:29092 --replication-factor 1 --partitions 3 --topic accounting.payments
+      "
+    networks:
+      - kafka-net
 
   shared-mongo-db:
     image: mongo:7.0.21-rc0-jammy

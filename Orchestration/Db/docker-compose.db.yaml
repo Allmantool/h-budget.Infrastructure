@@ -55,11 +55,13 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_JMX_PORT: 9997
       KAFKA_JMX_HOSTNAME: kafka
-      KAFKA_LOG_RETENTION_HOURS: 48
       KAFKA_LOG_RETENTION_BYTES: 1073741824
-      KAFKA_LOG_SEGMENT_BYTES: 134217728
       KAFKA_LOG_CLEANUP_POLICY: delete
       KAFKA_DELETE_TOPIC_ENABLE: "true"
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_LOG_RETENTION_HOURS: 168
+      KAFKA_LOG_SEGMENT_BYTES: 1073741824
+      KAFKA_LOG_RETENTION_CHECK_INTERVAL_MS: 300000
     networks:
       - kafka-net
       - shared-monitoring-net
@@ -85,20 +87,20 @@ services:
       - mongo-network
       - shared-monitoring-net
 
-#
-#  homebudget-sql-server:
-#    image: "mcr.microsoft.com/mssql/server:2022-latest"
-#    container_name: homebudget-sql-server
-#    environment:
-#      ACCEPT_EULA: "Y"
-#      SA_PASSWORD: ${SQL_PASSWORD}
-#    ports:
-#      - "1433:1433"
-#    volumes:
-#      - ${SQL_VOLUME_PATH}:/var/opt/mssql/data
-#    networks:
-#      - mssql-network
-#
+  #
+  #  homebudget-sql-server:
+  #    image: "mcr.microsoft.com/mssql/server:2022-latest"
+  #    container_name: homebudget-sql-server
+  #    environment:
+  #      ACCEPT_EULA: "Y"
+  #      SA_PASSWORD: ${SQL_PASSWORD}
+  #    ports:
+  #      - "1433:1433"
+  #    volumes:
+  #      - ${SQL_VOLUME_PATH}:/var/opt/mssql/data
+  #    networks:
+  #      - mssql-network
+  #
 
   wms-sql-server:
     image: "mcr.microsoft.com/mssql/server:2025-latest"
