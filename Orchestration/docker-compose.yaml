@@ -20,8 +20,6 @@ services:
       DYNAMIC_CONFIG_ENABLED: true
     networks:
       - kafka-net
-    depends_on:
-      - zookeeper
 
   flyway:
     image: flyway/flyway:11.9.1

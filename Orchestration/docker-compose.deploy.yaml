@@ -21,7 +21,6 @@ services:
     networks:
       - kafka-net
     depends_on:
-      - zookeeper
       - kafka
     deploy:
       restart_policy:

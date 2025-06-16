@@ -137,7 +137,6 @@ services:
       - shared-monitoring-net
     depends_on:
       - prometheus
-      - zookeeper
       - kafka
     deploy:
       restart_policy:
