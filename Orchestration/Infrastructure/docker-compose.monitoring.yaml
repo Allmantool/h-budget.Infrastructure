@@ -97,7 +97,6 @@ services:
       - shared-monitoring-net
     depends_on:
       - prometheus
-      - zookeeper
       - kafka
 
   mssql-exporter:
