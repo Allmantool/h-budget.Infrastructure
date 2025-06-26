@@ -27,51 +27,58 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: "3"
-          memory: "1.5g"
+          cpus: "2"
+          memory: "1g"
 
   kafka:
     image: confluentinc/cp-kafka:8.0.0
     container_name: kafka
     ports:
       - "9092:9092"
+      - "9093:9093"
       - "9997:9997"
     environment:
+      KAFKA_KRAFT_MODE: "true"
       KAFKA_NODE_ID: 1
-      CLUSTER_ID: 'kraft-cluster-1'
-      KAFKA_CLUSTER_ID: 'kraft-cluster-1'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka:9093"
+      CLUSTER_ID: '5Y7pZQq4Td6Jv4n3z2Z8Zg'
+      KAFKA_CLUSTER_ID: '5Y7pZQq4Td6Jv4n3z2Z8Zg'  # Remove duplicate (only need one)
       KAFKA_PROCESS_ROLES: broker,controller
-      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:29093
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,PLAINTEXT_HOST://0.0.0.0:9092,CONTROLLER://0.0.0.0:29093
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://${HOME_SERVER}:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_JMX_PORT: 9997
       KAFKA_JMX_HOSTNAME: kafka
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+      # Additional recommended settings:
       KAFKA_LOG_RETENTION_BYTES: 1073741824
       KAFKA_LOG_CLEANUP_POLICY: delete
-      KAFKA_DELETE_TOPIC_ENABLE: "true"
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
-      KAFKA_LOG_RETENTION_HOURS: 168
-      KAFKA_LOG_SEGMENT_BYTES: 1073741824
-      KAFKA_LOG_RETENTION_CHECK_INTERVAL_MS: 300000
-      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    user: "0"  # Run as root temporarily to fix permissions
     networks:
       - kafka-net
       - shared-monitoring-net
     volumes:
-      - ${KAFKA_STORE}:/var/lib/kafka
+      - ${KAFKA_STORE}/data:/var/lib/kafka/data:Z  # SELinux context flag
+      # Remove redundant volumes:
+      # - ${KAFKA_STORE}:/var/lib/kafka  <-- REDUNDANT
+      # - /var/run/docker.sock <-- UNNECESSARY FOR KAFKA
+    healthcheck:
+      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9092"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
     deploy:
       restart_policy:
         condition: on-failure
-        max_attempts: 10
-        delay: 25s
-        window: 180s
-      resources:
-        limits:
-          cpus: "1.5"
-          memory: "1.5g"
+    command: 
+      - bash
+      - -c
+      - |
+        chown -R appuser:appuser /var/lib/kafka/data
+        exec /etc/confluent/docker/run
 
   kafka-init:
     image: confluentinc/cp-kafka:8.0.0
