@@ -2,7 +2,7 @@ name: monitoring
 services:
   prometheus:
     container_name: prometheus
-    image: prom/prometheus:v3.4.1
+    image: prom/prometheus:v3.4.2
     networks:
       - rates-api-network
       - accounting-api-network
