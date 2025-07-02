@@ -89,9 +89,9 @@ services:
     command: >
       "
       echo 'Waiting for Kafka...';
-      cub kafka-ready -b kafka:29092 1 30 &&
-      kafka-topics --create --if-not-exists --bootstrap-server kafka:29092 --replication-factor 1 --partitions 1 --topic accounting.accounts &&
-      kafka-topics --create --if-not-exists --bootstrap-server kafka:29092 --replication-factor 1 --partitions 3 --topic accounting.payments
+      cub kafka-ready -b kafka:9092 1 30 &&
+      kafka-topics --create --if-not-exists --bootstrap-server kafka:9092 --replication-factor 1 --partitions 1 --topic accounting.accounts &&
+      kafka-topics --create --if-not-exists --bootstrap-server kafka:9092 --replication-factor 1 --partitions 10 --topic accounting.payments
       "
     networks:
       - kafka-net
