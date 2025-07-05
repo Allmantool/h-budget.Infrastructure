@@ -92,10 +92,12 @@ services:
       - kafka
     entrypoint: ["/bin/sh", "-c"]
     command: >
+      "
       echo 'Waiting for Kafka...';
       cub kafka-ready -b kafka:29092 1 30 &&
       kafka-topics --create --if-not-exists --bootstrap-server kafka:29092 --replication-factor 1 --partitions 1 --topic accounting.accounts &&
       kafka-topics --create --if-not-exists --bootstrap-server kafka:29092 --replication-factor 1 --partitions 5 --topic accounting.payments
+      "
     networks:
       - kafka-net
 
