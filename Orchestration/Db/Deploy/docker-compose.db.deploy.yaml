@@ -35,24 +35,25 @@ services:
     container_name: kafka
     ports:
       - "9092:9092"
-      - "9093:9093"
-      - "9997:9997"
     environment:
       KAFKA_KRAFT_MODE: "true"
       KAFKA_NODE_ID: 1
-      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka:9093"
       CLUSTER_ID: '5Y7pZQq4Td6Jv4n3z2Z8Zg'
-      KAFKA_CLUSTER_ID: '5Y7pZQq4Td6Jv4n3z2Z8Zg'  # Remove duplicate (only need one)
       KAFKA_PROCESS_ROLES: broker,controller
-      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,CONTROLLER://0.0.0.0:29093,PLAINTEXT_HOST://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka:29093"
+
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+
       KAFKA_JMX_PORT: 9997
       KAFKA_JMX_HOSTNAME: kafka
-      KAFKA_LOG_DIRS: /var/lib/kafka/data
-      # Additional recommended settings:
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_OFFSETS_TOPIC_NUM_PARTITIONS: 30
+
+      KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
       KAFKA_LOG_RETENTION_BYTES: 1073741824
       KAFKA_LOG_CLEANUP_POLICY: delete
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
@@ -61,10 +62,7 @@ services:
       - kafka-net
       - shared-monitoring-net
     volumes:
-      - ${KAFKA_STORE}/data:/var/lib/kafka/data:Z  # SELinux context flag
-      # Remove redundant volumes:
-      # - ${KAFKA_STORE}:/var/lib/kafka  <-- REDUNDANT
-      # - /var/run/docker.sock <-- UNNECESSARY FOR KAFKA
+      - ${KAFKA_STORE}/data:/var/lib/kafka/data:Z
     healthcheck:
       test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9092"]
       interval: 10s
@@ -73,6 +71,13 @@ services:
     deploy:
       restart_policy:
         condition: on-failure
+        max_attempts: 10
+        delay: 25s
+        window: 180s
+      resources:
+        limits:
+          cpus: "2"
+          memory: "1g"
     command: 
       - bash
       - -c
@@ -87,12 +92,10 @@ services:
       - kafka
     entrypoint: ["/bin/sh", "-c"]
     command: >
-      "
       echo 'Waiting for Kafka...';
-      cub kafka-ready -b kafka:9092 1 30 &&
-      kafka-topics --create --if-not-exists --bootstrap-server kafka:9092 --replication-factor 1 --partitions 1 --topic accounting.accounts &&
-      kafka-topics --create --if-not-exists --bootstrap-server kafka:9092 --replication-factor 1 --partitions 10 --topic accounting.payments
-      "
+      cub kafka-ready -b kafka:29092 1 30 &&
+      kafka-topics --create --if-not-exists --bootstrap-server kafka:29092 --replication-factor 1 --partitions 1 --topic accounting.accounts &&
+      kafka-topics --create --if-not-exists --bootstrap-server kafka:29092 --replication-factor 1 --partitions 5 --topic accounting.payments
     networks:
       - kafka-net
 
