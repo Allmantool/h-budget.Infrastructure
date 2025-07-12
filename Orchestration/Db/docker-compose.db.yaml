@@ -69,7 +69,7 @@ services:
         exec /etc/confluent/docker/run
   
   shared-mongo-db:
-    image: mongo:7.0.21-rc0-jammy
+    image: mongo:7.0.22-rc0-jammy
     container_name: shared-mongo-db
     restart: always
     logging:
