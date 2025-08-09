@@ -177,7 +177,7 @@ services:
           memory: "128m"
 
   redis-exporter:
-    image: oliver006/redis_exporter:v1.74.0
+    image: oliver006/redis_exporter:v1.75.0
     container_name: prometheus-redis-exporter
     environment:
       REDIS_ADDR: redis_server:6379
