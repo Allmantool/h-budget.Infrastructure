@@ -169,7 +169,6 @@ services:
       SA_PASSWORD: ${WMS_SQL_PASSWORD}
     ports:
       - "${SQL_SERVER_PORT}:1433"
-      - "1433:1433"
     volumes:
       - ${SQL_WMS_VOLUME_PATH}:/var/opt/mssql/data
     networks:
@@ -185,7 +184,7 @@ services:
       resources:
         limits:
           cpus: "2"
-          memory: "4g"
+          memory: "5g"
         reservations:
           cpus: "1"
           memory: "3g"

@@ -1,12 +1,10 @@
 global:
-  scrape_interval: 5s
-  evaluation_interval: 15s
+  scrape_timeout: 30s
+  scrape_interval: 300s
+  evaluation_interval: 120s
 
 scrape_configs:
-  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
   - job_name: "api-job"
-    # metrics_path defaults to '/metrics'
-    # scheme defaults to 'http'.
     static_configs:
       - targets: ["homebudget-rates-api:80", "homebudget-accounting-api:80"]
 
@@ -15,6 +13,7 @@ scrape_configs:
       - targets: ["mongo-db-exporter:9216"]
 
   - job_name: "mssql-job"
+    scrape_timeout: 210s
     static_configs:
       - targets: ["mssql-exporter:4000"]
 
