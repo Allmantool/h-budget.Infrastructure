@@ -41,7 +41,7 @@ services:
       CLUSTER_ID: '5Y7pZQq4Td6Jv4n3z2Z8Zg'
       KAFKA_PROCESS_ROLES: broker,controller
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,CONTROLLER://0.0.0.0:29093,PLAINTEXT_HOST://0.0.0.0:9092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://${HOME_SERVER}:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT,CONTROLLER:PLAINTEXT
       KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka:29093"
 
@@ -78,6 +78,9 @@ services:
         limits:
           cpus: "2"
           memory: "1g"
+        reservations:
+          cpus: "1"
+          memory: "512mb"
     command: 
       - bash
       - -c
@@ -134,8 +137,11 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: "3"
+          cpus: "2"
           memory: "1.5g"
+        reservations:
+          cpus: "1"
+          memory: "512mb"
   #
   #  homebudget-sql-server:
   #    image: "mcr.microsoft.com/mssql/server:2022-latest"
