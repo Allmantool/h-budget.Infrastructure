@@ -126,7 +126,7 @@ services:
           memory: "128m"
 
   kafka-exporter:
-    image: bitnami/kafka-exporter:1.7.0
+    image: danielqsj/kafka-exporter:v1.9.0
     container_name: prometheus-kafka-exporter
     command:
       - "--kafka.server=kafka:29092"
