@@ -8,20 +8,22 @@ services:
       - EVENTSTORE_HTTP_PORT=2113 # Admin UI port
       - EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP=true # Enable AtomPub
       - EVENTSTORE_CLUSTER_SIZE=1 # Single-node cluster
-      - EVENTSTORE_RUN_PROJECTIONS=System # Enable all projections
+      - EVENTSTORE_RUN_PROJECTIONS=System
       - EVENTSTORE_START_STANDARD_PROJECTIONS=true # Start standard projections
     ports:
-      - "1113:1113" # map internal tcp port
-      - "2113:2113" # map internal admin ui port
+      - "1113:1113" # Map gRPC port
+      - "2113:2113" # Map HTTP admin UI port
     volumes:
-      - type: volume
-        source: eventstore-data
-        target: /var/lib/eventstore
-      - type: volume
-        source: eventstore-logs
-        target: /var/log/eventstore
+      - ${EVENT_DB_VOLUME_PATH}:/var/lib/eventstore
+      - ${EVENT_DB_LOG_PATH}:/var/log/eventstore
     networks:
       - event-store-db-net
+      - shared-monitoring-net
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://127.0.0.1:12201"
+        tag: "eventstore"
 
   kafka:
     image: confluentinc/cp-kafka:8.0.0

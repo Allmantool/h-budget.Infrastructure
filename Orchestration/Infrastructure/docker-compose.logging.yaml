@@ -40,12 +40,24 @@ services:
   #   networks:
   #     - elastic-network
 
+  seq-input-gelf:
+    image: datalust/seq-input-gelf:3
+    container_name: seq-input-gelf
+    restart: always
+    networks:
+      - shared-monitoring-net
+    environment:
+      - SEQ_ADDRESS=http://logging-seq:5341
+    ports:
+      - "12201:12201/udp"
+
   seq:
     image: datalust/seq:2025.2
     container_name: logging-seq
     ports:
       - 5341:80
       - 5342:5341
+    init: true
     environment:
       - ACCEPT_EULA=${SEQ_DEFAULT_USER}
       - SEQ_FIRSTRUN_ADMINPASSWORD=${SEQ_DEFAULT_PASSWORD}
