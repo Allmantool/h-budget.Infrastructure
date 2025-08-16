@@ -68,7 +68,7 @@ services:
     ports:
       - 5341:80
       - 5342:5341
-    init: true 
+    init: true
     environment:
       - ACCEPT_EULA=${SEQ_DEFAULT_USER}
       - SEQ_FIRSTRUN_ADMINPASSWORD=${SEQ_DEFAULT_PASSWORD}
@@ -76,7 +76,9 @@ services:
       - SEQ_DISABLE_MEMORY_CACHING=false
       - SEQ_CACHE_COMPACTION_INTERVAL=00:10:00
       - SEQ_STORAGE_BUFFER_SIZE=512
-      - SEQ_RETENTION_SPACE_QUOTA=35
+      - SEQ_RETENTION_SPACE_QUOTA=20
+      - SEQ_RETENTION_EVENT_AGE=7.00:00:00
+      - SEQ_STORAGE_COMPACT_INTERVAL=00:10:00
     networks:
       - seq-network
       - shared-monitoring-net
