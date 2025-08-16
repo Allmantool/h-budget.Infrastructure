@@ -76,6 +76,7 @@ services:
       - SEQ_DISABLE_MEMORY_CACHING=false
       - SEQ_CACHE_COMPACTION_INTERVAL=00:10:00
       - SEQ_STORAGE_BUFFER_SIZE=512
+      - SEQ_RETENTION_SPACE_QUOTA=35
     networks:
       - seq-network
       - shared-monitoring-net
