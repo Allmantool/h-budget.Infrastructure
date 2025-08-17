@@ -33,7 +33,7 @@ services:
       resources:
         limits:
           cpus: "3"
-          memory: "1.5g"
+          memory: "1g"
     depends_on:
       - redis_server
       - kafka

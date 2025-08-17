@@ -10,6 +10,7 @@ services:
       - EVENTSTORE_CLUSTER_SIZE=1 # Single-node cluster
       - EVENTSTORE_RUN_PROJECTIONS=System
       - EVENTSTORE_START_STANDARD_PROJECTIONS=true # Start standard projections
+      - EVENTSTORE_COMMIT_TIMEOUT_MS=30000
     ports:
       - "1113:1113" # Map gRPC port
       - "2113:2113" # Map HTTP admin UI port

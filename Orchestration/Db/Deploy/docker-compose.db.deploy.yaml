@@ -4,15 +4,16 @@ services:
     image: eventstore/eventstore:24.10.6-jammy
     container_name: event-store-db
     environment:
-      - EVENTSTORE_INSECURE=true # Allow insecure mode (no certificates)
-      - EVENTSTORE_HTTP_PORT=2113 # Admin UI port
-      - EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP=true # Enable AtomPub
-      - EVENTSTORE_CLUSTER_SIZE=1 # Single-node cluster
+      - EVENTSTORE_INSECURE=true
+      - EVENTSTORE_HTTP_PORT=2113
+      - EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP=true
+      - EVENTSTORE_CLUSTER_SIZE=1
       - EVENTSTORE_RUN_PROJECTIONS=System
-      - EVENTSTORE_START_STANDARD_PROJECTIONS=true # Start standard projections
+      - EVENTSTORE_START_STANDARD_PROJECTIONS=true
+      - EVENTSTORE_COMMIT_TIMEOUT_MS=30000
     ports:
-      - "1113:1113" # Map gRPC port
-      - "2113:2113" # Map HTTP admin UI port
+      - "1113:1113"
+      - "2113:2113"
     volumes:
       - ${EVENT_DB_VOLUME_PATH}:/var/lib/eventstore
       - ${EVENT_DB_LOG_PATH}:/var/log/eventstore
@@ -32,8 +33,8 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: "3"
-          memory: "4g"
+          cpus: "2"
+          memory: "2g"
 
   kafka:
     image: confluentinc/cp-kafka:8.0.0
@@ -82,7 +83,7 @@ services:
       resources:
         limits:
           cpus: "2"
-          memory: "1g"
+          memory: "2g"
         reservations:
           cpus: "1"
           memory: "512mb"
@@ -143,7 +144,7 @@ services:
       resources:
         limits:
           cpus: "2"
-          memory: "1.5g"
+          memory: "1g"
         reservations:
           cpus: "1"
           memory: "512mb"
