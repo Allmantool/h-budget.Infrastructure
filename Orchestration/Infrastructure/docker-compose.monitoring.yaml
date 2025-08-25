@@ -117,7 +117,7 @@ services:
       - ${SQL_SERVER}
 
   redis-exporter:
-    image: oliver006/redis_exporter:v1.75.0
+    image: oliver006/redis_exporter:v1.76.0
     container_name: prometheus-redis-exporter
     environment:
       REDIS_ADDR: redis_server:6379
