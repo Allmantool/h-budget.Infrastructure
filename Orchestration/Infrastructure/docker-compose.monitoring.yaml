@@ -51,16 +51,17 @@ services:
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
     container_name: cadvisor
+    privileged: true   # required for blkio metrics
     volumes:
       - /:/rootfs:ro
-      - /var/run:/var/run:ro
+      - /var/run:/var/run:rw
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro   # ensure cgroups blkio metrics
     ports:
       - 8080:8080
     networks:
       - shared-monitoring-net
-    restart: unless-stopped
 
   mongo-db-exporter:
     image: percona/mongodb_exporter:2.37

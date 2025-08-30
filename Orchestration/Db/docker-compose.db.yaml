@@ -4,13 +4,22 @@ services:
     image: eventstore/eventstore:24.10.6-jammy
     container_name: event-store-db
     environment:
-      - EVENTSTORE_INSECURE=true # Allow insecure mode (no certificates)
-      - EVENTSTORE_HTTP_PORT=2113 # Admin UI port
-      - EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP=true # Enable AtomPub
-      - EVENTSTORE_CLUSTER_SIZE=1 # Single-node cluster
+      - EVENTSTORE_INSECURE=true
+      - EVENTSTORE_HTTP_PORT=2113
+      - EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP=true
+      - EVENTSTORE_CLUSTER_SIZE=1
       - EVENTSTORE_RUN_PROJECTIONS=System
-      - EVENTSTORE_START_STANDARD_PROJECTIONS=true # Start standard projections
-      - EVENTSTORE_COMMIT_TIMEOUT_MS=30000
+      - EVENTSTORE_START_STANDARD_PROJECTIONS=true
+      - EVENTSTORE_COMMIT_TIMEOUT_MS=60000
+      - EVENTSTORE_WRITE_TIMEOUT_MS=60000
+      - EVENTSTORE_READ_TIMEOUT_MS=60000
+      - EVENTSTORE_DISABLE_HTTP_CACHING=true
+      - EVENTSTORE_MAX_MEM_TABLE_SIZE=100000
+      - EVENTSTORE_CACHED_CHUNKS_SIZE=512
+      - EVENTSTORE_MIN_FLUSH_DELAY_MS=2000
+      - EVENTSTORE_STATS_PERIOD_SEC=60
+      - EVENTSTORE_LOG_FAILED_AUTH_ATTEMPTS=false
+      - EVENTSTORE_SKIP_DB_VERIFY=true
     ports:
       - "1113:1113" # Map gRPC port
       - "2113:2113" # Map HTTP admin UI port

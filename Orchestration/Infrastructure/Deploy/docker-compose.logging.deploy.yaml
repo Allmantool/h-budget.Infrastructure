@@ -87,7 +87,7 @@ services:
       - SEQ_DISABLE_MEMORY_CACHING=false
       - SEQ_CACHE_COMPACTION_INTERVAL=00:10:00
       - SEQ_STORAGE_BUFFER_SIZE=512
-      - SEQ_RETENTION_SPACE_QUOTA=20
+      - SEQ_RETENTION_SPACE_QUOTA=30GB
       - SEQ_RETENTION_EVENT_AGE=7.00:00:00
       - SEQ_STORAGE_COMPACT_INTERVAL=00:10:00
     networks:
@@ -109,4 +109,4 @@ services:
       resources:
         limits:
           cpus: "3"
-          memory: "1g"
+          memory: "1.5g"

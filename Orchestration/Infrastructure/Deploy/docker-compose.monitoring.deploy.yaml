@@ -71,11 +71,13 @@ services:
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
     container_name: cadvisor
+    privileged: true   # required for blkio metrics
     volumes:
       - /:/rootfs:ro
-      - /var/run:/var/run:ro
+      - /var/run:/var/run:rw
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro   # ensure cgroups blkio metrics
     ports:
       - 8080:8080
     networks:
@@ -174,7 +176,7 @@ services:
       resources:
         limits:
           cpus: "1"
-          memory: "128m"
+          memory: "256m"
 
   redis-exporter:
     image: oliver006/redis_exporter:v1.76.0
