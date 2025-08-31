@@ -12,13 +12,11 @@ services:
       - EVENTSTORE_START_STANDARD_PROJECTIONS=true
       - EVENTSTORE_COMMIT_TIMEOUT_MS=60000
       - EVENTSTORE_WRITE_TIMEOUT_MS=60000
-      - EVENTSTORE_READ_TIMEOUT_MS=60000
       - EVENTSTORE_DISABLE_HTTP_CACHING=true
       - EVENTSTORE_MAX_MEM_TABLE_SIZE=100000
-      - EVENTSTORE_CACHED_CHUNKS_SIZE=512
+      - EVENTSTORE_CACHED_CHUNKS=512
       - EVENTSTORE_MIN_FLUSH_DELAY_MS=2000
       - EVENTSTORE_STATS_PERIOD_SEC=60
-      - EVENTSTORE_LOG_FAILED_AUTH_ATTEMPTS=false
       - EVENTSTORE_SKIP_DB_VERIFY=true
     ports:
       - "1113:1113" # Map gRPC port
@@ -43,7 +41,7 @@ services:
     environment:
       KAFKA_KRAFT_MODE: "true"
       KAFKA_NODE_ID: 1
-      CLUSTER_ID: '5Y7pZQq4Td6Jv4n3z2Z8Zg'
+      CLUSTER_ID: "5Y7pZQq4Td6Jv4n3z2Z8Zg"
       KAFKA_PROCESS_ROLES: broker,controller
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,CONTROLLER://0.0.0.0:29093,PLAINTEXT_HOST://0.0.0.0:9092
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://${HOME_SERVER}:9092s
@@ -62,7 +60,7 @@ services:
       KAFKA_LOG_RETENTION_BYTES: 1073741824
       KAFKA_LOG_CLEANUP_POLICY: delete
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
-    user: "0"  # Run as root temporarily to fix permissions
+    user: "0" # Run as root temporarily to fix permissions
     networks:
       - kafka-net
       - shared-monitoring-net
@@ -73,13 +71,13 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
-    command: 
+    command:
       - bash
       - -c
       - |
         chown -R appuser:appuser /var/lib/kafka/data
         exec /etc/confluent/docker/run
-  
+
   shared-mongo-db:
     image: mongo:7.0.22-rc0-jammy
     container_name: shared-mongo-db
