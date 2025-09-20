@@ -181,15 +181,17 @@ services:
   #
 
   wms-sql-server:
-    image: "mcr.microsoft.com/mssql/server:2025-latest"
+    image: "mcr.microsoft.com/mssql/server:${SQL_WMS_2025_VERSION}"
     container_name: wms-sql-server
     environment:
       ACCEPT_EULA: "Y"
       SA_PASSWORD: ${WMS_SQL_PASSWORD}
     ports:
-      - "${SQL_SERVER_PORT}:1433"
+      - "${SQL_SERVER_2025_PORT}:1433"
     volumes:
-      - ${SQL_WMS_VOLUME_PATH}:/var/opt/mssql/data
+        - ${SQL_WMS_VOLUME_2025_PATH}:/var/opt/mssql/data
+      # - wms_sql_data:/var/opt/mssql/data
+        - ${SQL_WMS_VOLUME_2025_PATH_BACKUPS}:/var/opt/mssql/data/backups
     networks:
       - mssql-network
       - rates-api-network

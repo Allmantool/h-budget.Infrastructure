@@ -156,7 +156,7 @@ services:
     container_name: prometheus-mssql-exporter
     environment:
       SERVER: ${SQL_SERVER}
-      PORT: ${SQL_SERVER_PORT}
+      PORT: ${SQL_SERVER_2025_PORT}
       USERNAME: SA
       PASSWORD: ${WMS_SQL_PASSWORD}
     ports:
