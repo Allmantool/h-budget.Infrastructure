@@ -34,7 +34,7 @@ services:
         tag: "eventstore"
 
   kafka:
-    image: confluentinc/cp-kafka:8.0.0
+    image: confluentinc/cp-kafka:8.0.1
     container_name: kafka
     ports:
       - "9092:9092"
@@ -98,7 +98,7 @@ services:
       - shared-monitoring-net
 
   kafka-init:
-    image: confluentinc/cp-kafka:8.0.0
+    image: confluentinc/cp-kafka:8.0.1
     container_name: kafka-init
     depends_on:
       - kafka
