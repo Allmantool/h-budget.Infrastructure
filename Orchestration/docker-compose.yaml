@@ -44,7 +44,7 @@ services:
       - ${SQL_SERVER}
 
   redis_server:
-    image: redis:8.2.1
+    image: redis:8.2.2
     container_name: homebudget-cache
     ports:
       - "6379:6379"
