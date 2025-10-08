@@ -24,7 +24,7 @@ services:
       - kafka-net
 
   flyway:
-    image: flyway/flyway:11.13.2
+    image: flyway/flyway:11.13.3
     container_name: homebudget-flyway-migration
     command: >
       -mixed=true 
