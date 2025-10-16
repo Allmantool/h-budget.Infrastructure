@@ -135,7 +135,8 @@ services:
     ports:
       - "${SQL_SERVER_2025_PORT}:1433"
     volumes:
-      - ${SQL_WMS_VOLUME_PATH}:/var/opt/mssql/data
+      - ${SQL_WMS_VOLUME_2025_PATH}:/var/opt/mssql/data
+      - ${SQL_WMS_VOLUME_2025_PATH_BACKUPS}:/var/opt/mssql/data/backups
     networks:
       - mssql-network
       - shared-monitoring-net
