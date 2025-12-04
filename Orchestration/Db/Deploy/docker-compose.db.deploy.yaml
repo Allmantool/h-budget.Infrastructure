@@ -44,7 +44,7 @@ services:
           memory: "2g"
 
   kafka:
-    image: confluentinc/cp-kafka:8.1.0
+    image: confluentinc/cp-kafka:8.1.1
     container_name: kafka
     ports:
       - "9092:9092"
@@ -102,7 +102,7 @@ services:
         exec /etc/confluent/docker/run
 
   kafka-init:
-    image: confluentinc/cp-kafka:8.1.0
+    image: confluentinc/cp-kafka:8.1.1
     container_name: kafka-init
     depends_on:
       - kafka
