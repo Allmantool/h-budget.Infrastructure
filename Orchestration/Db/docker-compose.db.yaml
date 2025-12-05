@@ -102,15 +102,25 @@ services:
     container_name: kafka-init
     depends_on:
       - kafka
-    entrypoint: ["/bin/sh", "-c"]
+    entrypoint: [ "/bin/sh", "-c" ]
     command: >
-      echo 'Waiting for Kafka...';
-      cub kafka-ready -b kafka:29092 1 30 &&
-      kafka-topics --create --if-not-exists --bootstrap-server kafka:29092 --replication-factor 1 --partitions 1 --topic accounting.accounts &&
-      kafka-topics --create --if-not-exists --bootstrap-server kafka:29092 --replication-factor 1 --partitions 5 --topic accounting.payments
+      "
+        echo 'Waiting for Kafka...'
+
+        until kafka-topics --bootstrap-server kafka:29092 --list >/dev/null 2>&1; do
+          echo 'Kafka is not ready yet...'
+          sleep 5
+        done
+
+        echo 'Kafka is ready! Creating topics...'
+        kafka-topics --create --if-not-exists --bootstrap-server kafka:29092 --replication-factor 1 --partitions 1 --topic accounting.accounts
+        kafka-topics --create --if-not-exists --bootstrap-server kafka:29092 --replication-factor 1 --partitions 5 --topic accounting.payments
+        
+        echo 'Topics created successfully!'
+      "
+    restart: not
     networks:
       - kafka-net
-
   #
   #  homebudget-sql-server:
   #    image: "mcr.microsoft.com/mssql/server:2022-latest"
