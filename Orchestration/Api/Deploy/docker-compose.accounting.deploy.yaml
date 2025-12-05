@@ -1,12 +1,11 @@
 name: accounting-api
+
 services:
   homebudget-accounting-api:
     image: allmantool/homebudget-accounting-api:${ACCOUNTING_API_IMAGE_V}
     container_name: homebudget-accounting-api
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-      # - ASPNETCORE_HTTPS_PORT=5008
-      # - ASPNETCORE_URLS=https://+:443;http://+:80
       - ASPNETCORE_URLS=http://+:80
     ports:
       - "5307:80"
@@ -16,7 +15,6 @@ services:
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
       - ${ACCOUNTING_API_JSON_PATH}:/app/appsettings.json:ro
     networks:
-      # - elastic-network
       - seq-network
       - redis-network
       - mongo-network
@@ -25,6 +23,7 @@ services:
       - kafka-net
       - event-store-db-net
     deploy:
+      replicas: 1
       restart_policy:
         condition: on-failure
         max_attempts: 10
@@ -37,3 +36,36 @@ services:
     depends_on:
       - redis_server
       - kafka
+
+  homebudget-accounting-payments-consumer-worker:
+    image: allmantool/homebudget-accounting-payments-consumer-worker:${ACCOUNTING_API_IMAGE_V}
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+      - ${ACCOUNTING_API_JSON_PATH}:/app/appsettings.json:ro
+    networks:
+      - seq-network
+      - redis-network
+      - mongo-network
+      - accounting-api-network
+      - ui-network
+      - kafka-net
+      - event-store-db-net
+    deploy:
+      replicas: 5
+      restart_policy:
+        condition: on-failure
+        max_attempts: 10
+        delay: 5s
+        window: 180s
+      resources:
+        limits:
+          cpus: "1"
+          memory: "512m"
+    depends_on:
+      - redis_server
+      - kafka
+      - event-store-db
+      - shared-mongo-db
