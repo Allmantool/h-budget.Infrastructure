@@ -63,7 +63,7 @@ services:
       resources:
         limits:
           cpus: "1"
-          memory: "512m"
+          memory: "256m"
     depends_on:
       - redis_server
       - kafka
