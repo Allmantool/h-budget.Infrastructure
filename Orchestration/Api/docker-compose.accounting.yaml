@@ -39,3 +39,25 @@ services:
       - ${SQL_SERVER}
       - redis_server
       - kafka
+
+  homebudget-accounting-payments-consumer-worker:
+    image: allmantool/homebudget-accounting-payments-consumer-worker:${ACCOUNTING_API_IMAGE_V}
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+      - ${ACCOUNTING_API_JSON_PATH}:/app/appsettings.json:ro
+    networks:
+      - seq-network
+      - redis-network
+      - mongo-network
+      - accounting-api-network
+      - ui-network
+      - kafka-net
+      - event-store-db-net
+    depends_on:
+      - redis_server
+      - kafka
+      - event-store-db
+      - shared-mongo-db
