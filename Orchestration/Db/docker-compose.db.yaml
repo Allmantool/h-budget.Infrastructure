@@ -133,7 +133,7 @@ services:
         
         echo 'Topics created successfully!'
       "
-    restart: not
+    restart: no
     networks:
       - kafka-net
   #
