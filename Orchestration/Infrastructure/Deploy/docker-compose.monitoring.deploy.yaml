@@ -68,16 +68,40 @@ services:
           cpus: "1"
           memory: "1g"
 
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    pid: host
+    command:
+      - "--path.rootfs=/host"
+    volumes:
+      - "${DOCKER_NODE_PATHS_LOGS}:/host:ro,rslave"
+    ports:
+      - "9100:9100"
+    networks:
+      - shared-monitoring-net
+    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 10
+        delay: 5s
+        window: 180s
+      resources:
+        limits:
+          cpus: "1"
+          memory: "128m"
+
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
     container_name: cadvisor
-    privileged: true   # required for blkio metrics
+    privileged: true # required for blkio metrics
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:rw
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro   # ensure cgroups blkio metrics
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
     ports:
       - 8080:8080
     networks:
@@ -92,7 +116,7 @@ services:
       resources:
         limits:
           cpus: "1"
-          memory: "512m"
+          memory: "128m"
 
   mongo-db-exporter:
     image: percona/mongodb_exporter:2.37
@@ -102,7 +126,7 @@ services:
       - "--collector.diagnosticdata"
       - "--discovering-mode"
       - "--compatible-mode"
-      - "--mongodb.collstats-colls=admin.companies,admin.restaurnts"
+      - "--mongodb.collstats-colls=admin.companies,admin.restaurants"
       - "--collect-all"
     environment:
       - MONGODB_URI=mongodb://mongoadmin:${MONGO_DB_PASSWORD}@shared-mongo-db:27017/?maxPoolSize=1000&waitQueueTimeoutMS=5000

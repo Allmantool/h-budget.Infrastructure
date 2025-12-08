@@ -75,6 +75,8 @@ services:
       KAFKA_OFFSETS_TOPIC_NUM_PARTITIONS: 30
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_LOG_CLEANUP_POLICY: delete
+      KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
     user: "0" # Run as root temporarily to fix permissions
     networks:
       - kafka-net
