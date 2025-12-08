@@ -51,15 +51,17 @@ services:
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
     container_name: cadvisor
-    privileged: true   # required for blkio metrics
+    privileged: true
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:rw
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro   # ensure cgroups blkio metrics
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      # cgroupv2 (new Linux distros)
+      - /sys/fs/cgroup/unified:/sys/fs/cgroup/unified:ro
     ports:
-      - 8080:8080
+      - "8080:8080"
     networks:
       - shared-monitoring-net
 
