@@ -38,7 +38,7 @@ services:
       - kafka
 
   homebudget-accounting-payments-consumer-worker:
-    image: allmantool/homebudget-accounting-payments-consumer-worker:${ACCOUNTING_API_IMAGE_V}
+    image: allmantool/homebudget-accounting-payments-consumer-worker:${ACCOUNTING_PAYMENTS_CONSUMER_WORKER_IMAGE_V}
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
     volumes:
