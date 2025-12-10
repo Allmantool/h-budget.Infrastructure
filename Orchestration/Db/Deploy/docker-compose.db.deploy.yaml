@@ -144,7 +144,7 @@ services:
       - kafka-net
 
   shared-mongo-db:
-    image: mongo:7.0.26-rc0-jammy
+    image: mongo:7.0.27-rc0-jammy
     container_name: shared-mongo-db
     restart: always
     logging:
