@@ -38,21 +38,23 @@ services:
     image: flyway/flyway:11.19.0
     container_name: homebudget-flyway-migration
     command: >
-      -mixed=true 
       -baselineOnMigrate=true
-      -connectRetries=5 
+      -mixed=true
+      -connectRetries=30
+      -connectRetriesInterval=10
       migrate
     environment:
-      - FLYWAY_USER=sa
-      - FLYWAY_PASSWORD=${SQL_PASSWORD}
-      - FLYWAY_URL=jdbc:sqlserver://${SQL_SERVER}:${SQL_SERVER_2025_PORT};encrypt=true;trustServerCertificate=true;
+      FLYWAY_USER: sa
+      FLYWAY_PASSWORD: ${SQL_PASSWORD}
+      FLYWAY_URL: jdbc:sqlserver://homebudget-sql-server:${SQL_SERVER_2025_PORT};encrypt=false;trustServerCertificate=true;
     volumes:
       - ${FLYWAY_SCRIPTS_PATH}:/flyway/sql
       - ${FLYWAY_CONFIG_PATH}:/flyway/conf
     networks:
       - mssql-network
     depends_on:
-      - ${SQL_SERVER}
+      homebudget-sql-server:
+        condition: service_healthy
     deploy:
       restart_policy:
         condition: on-failure

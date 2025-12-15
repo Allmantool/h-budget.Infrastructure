@@ -94,7 +94,8 @@ services:
       - seq-network
       - shared-monitoring-net
     volumes:
-      - ${SEQ_VOLUME_PATH}:/data
+      # - ${SEQ_VOLUME_PATH}:/data
+      - seq-data:/data
     healthcheck:
       test: ["CMD", "wget", "-q", "--spider", "http://localhost:80/api/health"]
       interval: 10s
@@ -108,5 +109,8 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: "3"
-          memory: "1.5g"
+          cpus: "2"
+          memory: 6g
+        reservations:
+          cpus: "1"
+          memory: 2g

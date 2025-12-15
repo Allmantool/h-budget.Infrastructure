@@ -17,7 +17,8 @@ services:
       - 9090:9090
     volumes:
       - ${PROMETHEUS_CONFIG}:/etc/prometheus/prometheus.yml
-      - ${PROMETHEUS_DATA}:/prometheus
+      # - ${PROMETHEUS_DATA}:/prometheus
+      - prometheus-data:/prometheus
     depends_on:
       - homebudget-rates-api
       - homebudget-accounting-api
@@ -31,6 +32,67 @@ services:
         limits:
           cpus: "1"
           memory: "512m"
+
+  tempo:
+    image: grafana/tempo:latest # Use stable version instead of specific commit
+    container_name: tempo
+    ports:
+      - "3200:3200" # Query API (unique)
+      - "4319:4317" # OTLP gRPC - changed from 4317 to 4319 to avoid conflict
+      - "4320:4318" # OTLP HTTP - changed from 4318 to 4320 to avoid conflict
+      - "9411:9411" # Zipkin (optional)
+    volumes:
+      - ${GF_TEMPO_STORAGE}:/var/tempo
+      - ${GF_TEMPO_CONFIG}:/etc/tempo.yaml
+    command: ["--config.file=/etc/tempo.yaml"]
+    networks:
+      - rates-api-network
+      - accounting-api-network
+      - mongo-network
+      - kafka-net
+      - mssql-network
+      - redis-network
+      - ui-network
+      - shared-monitoring-net
+
+  otel-collector:
+    image: otel/opentelemetry-collector:latest
+    container_name: otel-collector
+    command: ["--config=/etc/otel-collector.yaml"]
+    volumes:
+      - ${GF_COLLECTOR_CONFIG}:/etc/otel-collector.yaml
+    ports:
+      - "4317:4317" # OTLP gRPC - .NET apps send here
+      - "4318:4318" # OTLP HTTP - .NET apps can also use this
+      - "8888:8888" # Metrics
+      - "8889:8889" # Health check
+    networks:
+      - rates-api-network
+      - accounting-api-network
+      - mongo-network
+      - kafka-net
+      - mssql-network
+      - redis-network
+      - ui-network
+      - shared-monitoring-net
+
+  grafana-tempo-query:
+    image: grafana/tempo-query:latest
+    container_name: tempo-query
+    ports:
+      - "16686:16686" # Jaeger UI
+    environment:
+      - TEMPO=http://tempo:3200
+      - QUERY_TIMEOUT=30s
+    networks:
+      - rates-api-network
+      - accounting-api-network
+      - mongo-network
+      - kafka-net
+      - mssql-network
+      - redis-network
+      - ui-network
+      - shared-monitoring-net
 
   grafana:
     container_name: grafana
@@ -52,9 +114,12 @@ services:
       - 3000:3000
     volumes:
       - ${GRAFANA_CONFIG}:/etc/grafana/provisioning.yml
-      - ${GF_PATHS_LOGS}:/var/log/grafana
-      - ${GF_STORAGE}:/var/lib/grafana
-      - ${GF_PATHS_PROVISIONING}:/etc/grafana/provisioning
+      - gf-logs:/var/log/grafana
+      - gf-data:/var/lib/grafana
+      - gf-provisioning:/etc/grafana/provisioning
+      # - ${GF_PATHS_LOGS}:/var/log/grafana
+      # - ${GF_STORAGE}:/var/lib/grafana
+      # - ${GF_PATHS_PROVISIONING}:/etc/grafana/provisioning
     depends_on:
       - prometheus
     deploy:
@@ -93,7 +158,7 @@ services:
           memory: "128m"
 
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:latest
+    image: ghcr.io/google/cadvisor:latest
     container_name: cadvisor
     privileged: true # required for blkio metrics
     volumes:
@@ -115,8 +180,8 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: "1"
-          memory: "128m"
+          cpus: "4"
+          memory: "512m"
 
   mongo-db-exporter:
     image: percona/mongodb_exporter:2.37
@@ -129,7 +194,7 @@ services:
       - "--mongodb.collstats-colls=admin.companies,admin.restaurants"
       - "--collect-all"
     environment:
-      - MONGODB_URI=mongodb://mongoadmin:${MONGO_DB_PASSWORD}@shared-mongo-db:27017/?maxPoolSize=1000&waitQueueTimeoutMS=5000
+      - MONGODB_URI=mongodb://mongoadmin:${MONGO_DB_PASSWORD}@shared-mongo-db:27017/?maxPoolSize=1000&waitQueueTimeoutMS=15000
     restart: unless-stopped
     ports:
       - "9216:9216"
@@ -167,9 +232,9 @@ services:
     deploy:
       restart_policy:
         condition: on-failure
-        max_attempts: 10
-        delay: 5s
-        window: 180s
+        max_attempts: 30
+        delay: 15s
+        window: 1080s
       resources:
         limits:
           cpus: "1"

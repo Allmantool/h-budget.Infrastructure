@@ -22,8 +22,10 @@ services:
       - "1113:1113" # Map gRPC port
       - "2113:2113" # Map HTTP admin UI port
     volumes:
-      - ${EVENT_DB_VOLUME_PATH}:/var/lib/eventstore
-      - ${EVENT_DB_LOG_PATH}:/var/log/eventstore
+      # - ${EVENT_DB_VOLUME_PATH}:/var/lib/eventstore
+      # - ${EVENT_DB_LOG_PATH}:/var/log/eventstore
+      - event-store-db-data:/var/lib/eventstore
+      - event-store-db-logs:/var/log/eventstore
     networks:
       - event-store-db-net
       - shared-monitoring-net
@@ -82,9 +84,16 @@ services:
       - kafka-net
       - shared-monitoring-net
     volumes:
-      - ${KAFKA_STORE}/data:/var/lib/kafka/data:Z
+      # - ${KAFKA_STORE}/data:/var/lib/kafka/data:Z
+      - kafka-data:/var/lib/kafka/data:Z
     healthcheck:
-      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9092"]
+      test:
+        [
+          "CMD",
+          "kafka-broker-api-versions",
+          "--bootstrap-server",
+          "localhost:9092",
+        ]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -109,7 +118,8 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - ${MONGO_DB_VOLUME_PATH}:/data/db
+      # - ${MONGO_DB_VOLUME_PATH}:/data/db
+      - mongo-db-data:/data/db
     networks:
       - mongo-network
       - shared-monitoring-net
@@ -119,51 +129,57 @@ services:
     container_name: kafka-init
     depends_on:
       - kafka
-    entrypoint: [ "/bin/sh", "-c" ]
-    command: >
-      "
-        echo 'Waiting for Kafka...'
-
-        until kafka-topics --bootstrap-server kafka:29092 --list >/dev/null 2>&1; do
-          echo 'Kafka is not ready yet...'
-          sleep 5
-        done
-
-        echo 'Kafka is ready! Creating topics...'
-        kafka-topics --create --if-not-exists --bootstrap-server kafka:29092 --replication-factor 1 --partitions 1 --topic accounting.accounts
-        kafka-topics --create --if-not-exists --bootstrap-server kafka:29092 --replication-factor 1 --partitions 5 --topic accounting.payments
-        
-        echo 'Topics created successfully!'
-      "
+    environment:
+      PAYMENT_CONSUMERS_AMOUNT: ${PAYMENT_CONSUMERS_AMOUNT:-1}
+    volumes:
+      - ${KAFKA_INIT_SCRIPT_PATH}:/tmp/kafka-init.sh
+    entrypoint: ["/bin/bash", "/tmp/kafka-init.sh"]
     restart: no
     networks:
       - kafka-net
-  #
-  #  homebudget-sql-server:
-  #    image: "mcr.microsoft.com/mssql/server:2022-latest"
-  #    container_name: homebudget-sql-server
-  #    environment:
-  #      ACCEPT_EULA: "Y"
-  #      SA_PASSWORD: ${SQL_PASSWORD}
-  #    ports:
-  #      - "1433:1433"
-  #    volumes:
-  #      - ${SQL_VOLUME_PATH}:/var/opt/mssql/data
-  #    networks:
-  #      - mssql-network
-  #
 
-  wms-sql-server:
-    image: "mcr.microsoft.com/mssql/server:2025-latest"
-    container_name: wms-sql-server
+  mssql-volume-init:
+    image: alpine:3.20
+    container_name: mssql-volume-init
+    user: root
+    restart: "no"
+    volumes:
+      - ms-sql-data:/var/opt/mssql/data
+      - ms-sql-tempdb:/var/opt/mssql/tempdb
+    command: >
+      sh -c "
+        echo 'Starting SQL volume init...' &&
+        chown -R 10001:0 /var/opt/mssql/data /var/opt/mssql/tempdb &&
+        chmod 770 /var/opt/mssql/data /var/opt/mssql/tempdb &&
+        echo 'SQL volumes initialized'
+      "
+    labels:
+      role: "volume-initializer"
+
+  homebudget-sql-server:
+    image: "mcr.microsoft.com/mssql/server:${SQL_WMS_2025_VERSION}"
+    container_name: homebudget-sql-server
     environment:
       ACCEPT_EULA: "Y"
-      SA_PASSWORD: ${WMS_SQL_PASSWORD}
+      MSSQL_SA_PASSWORD: ${SQL_PASSWORD}
+      # MSSQL_PID: "Developer"
+      MSSQL_AGENT_ENABLED: "false"
     ports:
       - "${SQL_SERVER_2025_PORT}:1433"
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
     volumes:
-      - ${SQL_WMS_VOLUME_2025_PATH}:/var/opt/mssql/data
       - ${SQL_WMS_VOLUME_2025_PATH_BACKUPS}:/var/opt/mssql/data/backups
+      - ms-sql-data:/var/opt/mssql/data
+      - ms-sql-tempdb:/var/opt/mssql/tempdb
+      # - ${SQL_WMS_VOLUME_2025_PATH}:/var/opt/mssql/data
+      # - ${SQL_WMS_VOLUME_2025_PATH_SYSTEM}:/var/opt/mssql/system
     networks:
       - mssql-network
+      - rates-api-network
       - shared-monitoring-net
+    depends_on:
+      mssql-volume-init:
+        condition: service_completed_successfully

@@ -1,5 +1,14 @@
 volumes:
+  ms-sql-data:
+  ms-sql-tempdb:
+  event-store-db-data:
+  event-store-db-logs:
+  kafka-data:
+  mongo-db-data:
+  seq-data:
+  prometheus-data:
+  gf-logs:
+  gf-data:
+  gf-provisioning:
   elasticsearch-data:
   registry:
-  eventstore-data:
-  eventstore-logs:
