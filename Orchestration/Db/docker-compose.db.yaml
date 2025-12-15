@@ -1,7 +1,7 @@
 name: db
 services:
   event-store-db:
-    image: eventstore/eventstore:24.10.8-jammy
+    image: eventstore/eventstore:24.10.9-jammy
     container_name: event-store-db
     environment:
       - EVENTSTORE_INSECURE=true
@@ -105,7 +105,7 @@ services:
         exec /etc/confluent/docker/run
 
   shared-mongo-db:
-    image: mongo:7.0.26-rc0-jammy
+    image: mongo:7.0.27-rc0-jammy
     container_name: shared-mongo-db
     restart: always
     logging:
