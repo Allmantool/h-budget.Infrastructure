@@ -250,7 +250,7 @@ services:
           memory: "128m"
 
   event-store-db-exporter:
-    image: marcinbudny/eventstore_exporter:0.16.0
+    image: marcinbudny/eventstore_exporter:0.17.0
     container_name: event-store-db-exporter
     environment:
       - EVENTSTORE_URL=http://event-store-db:2113
