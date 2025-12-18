@@ -87,14 +87,15 @@ services:
       - SEQ_DISABLE_MEMORY_CACHING=false
       - SEQ_CACHE_COMPACTION_INTERVAL=00:10:00
       - SEQ_STORAGE_BUFFER_SIZE=512
-      - SEQ_RETENTION_SPACE_QUOTA=30GB
+      - SEQ_RETENTION_SPACE_QUOTA=20GB
       - SEQ_RETENTION_EVENT_AGE=7.00:00:00
       - SEQ_STORAGE_COMPACT_INTERVAL=00:10:00
     networks:
       - seq-network
       - shared-monitoring-net
     volumes:
-      - ${SEQ_VOLUME_PATH}:/data
+      # - ${SEQ_VOLUME_PATH}:/data
+      - seq-data:/data
     healthcheck:
       test: ["CMD", "wget", "-q", "--spider", "http://localhost:80/api/health"]
       interval: 10s
@@ -108,5 +109,8 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: "3"
-          memory: "1.5g"
+          cpus: "2"
+          memory: 6g
+        reservations:
+          cpus: "1"
+          memory: 2g

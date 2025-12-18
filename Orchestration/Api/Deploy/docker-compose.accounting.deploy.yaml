@@ -54,7 +54,7 @@ services:
       - kafka-net
       - event-store-db-net
     deploy:
-      replicas: 5
+      replicas: ${PAYMENT_CONSUMERS_AMOUNT}
       restart_policy:
         condition: on-failure
         max_attempts: 10

@@ -1,58 +1,67 @@
 global:
-  scrape_timeout: 10s
-  scrape_interval: 15s
-  evaluation_interval: 15s
+  scrape_interval: 20s
+  scrape_timeout: 15s
+  evaluation_interval: 20s
 
 scrape_configs:
   - job_name: "apis"
     metrics_path: /metrics
+    scrape_interval: 20s
     static_configs:
-      - targets: ["homebudget-rates-api:80", "homebudget-accounting-api:80"]
+      - targets: ["gateway-api:80", "homebudget-rates-api:80", "homebudget-accounting-api:80"]
         labels:
           component: api
 
   - job_name: "mongodb"
+    scrape_interval: 30s
+    scrape_timeout: 20s
     static_configs:
       - targets: ["mongo-db-exporter:9216"]
         labels:
           component: mongodb
 
   - job_name: "mssql"
-    scrape_interval: 60s
-    scrape_timeout: 20s
+    scrape_interval: 90s
+    scrape_timeout: 30s
     static_configs:
       - targets: ["mssql-exporter:4000"]
         labels:
           component: mssql
 
   - job_name: "redis"
+    scrape_interval: 15s
     static_configs:
       - targets: ["redis-exporter:9121"]
         labels:
           component: redis
 
   - job_name: "nginx"
+    scrape_interval: 20s
     static_configs:
       - targets: ["nginx-exporter:9113"]
         labels:
           component: nginx
 
   - job_name: "kafka"
-    scrape_interval: 20s
+    scrape_interval: 30s
+    scrape_timeout: 20s
     static_configs:
       - targets: ["kafka-exporter:9308"]
         labels:
           component: kafka
+    params:
+      group: ['true']
 
   - job_name: "eventstoredb"
+    scrape_interval: 30s
     static_configs:
       - targets: ["event-store-db-exporter:9448"]
         labels:
           component: eventstoredb
 
   - job_name: "node-exporter"
+    scrape_interval: 30s
     static_configs:
       - targets: ["node-exporter:9100"]
         labels:
           component: node
-

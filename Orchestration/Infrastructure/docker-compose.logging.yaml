@@ -72,4 +72,5 @@ services:
       - seq-network
       - shared-monitoring-net
     volumes:
-      - ${SEQ_VOLUME_PATH}:/data
+      # - ${SEQ_VOLUME_PATH}:/data
+      - seq-data:/data

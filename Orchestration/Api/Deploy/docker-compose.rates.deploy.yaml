@@ -36,3 +36,5 @@ services:
       - homebudget-ui
       - ${SQL_SERVER}
       - redis_server
+  #     elasticsearch:
+  #       condition: service_healthy
