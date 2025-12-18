@@ -203,8 +203,9 @@ services:
     labels:
       role: "volume-initializer"
 
+# SQL 2025 is not stable with WSL Linux docker on Dec 2025 ---> reverted to use 2022
   homebudget-sql-server:
-    image: "mcr.microsoft.com/mssql/server:${SQL_WMS_2025_VERSION}"
+    image: "mcr.microsoft.com/mssql/server:${SQL_WMS_2022_VERSION}"
     container_name: homebudget-sql-server
     environment:
       ACCEPT_EULA: "Y"
@@ -212,17 +213,17 @@ services:
       # MSSQL_PID: "Developer"
       MSSQL_AGENT_ENABLED: "false"
     ports:
-      - "${SQL_SERVER_2025_PORT}:1433"
+      - "${SQL_SERVER_2022_PORT}:1433"
     ulimits:
       nofile:
         soft: 65536
         hard: 65536
     volumes:
-      - ${SQL_WMS_VOLUME_2025_PATH_BACKUPS}:/var/opt/mssql/data/backups
+      - ${SQL_WMS_VOLUME_2022_PATH_BACKUPS}:/var/opt/mssql/data/backups
       - ms-sql-data:/var/opt/mssql/data
-      - ms-sql-tempdb:/var/opt/mssql/tempdb
-      # - ${SQL_WMS_VOLUME_2025_PATH}:/var/opt/mssql/data
-      # - ${SQL_WMS_VOLUME_2025_PATH_SYSTEM}:/var/opt/mssql/system
+      # - ms-sql-tempdb:/var/opt/mssql/tempdb
+      # - ${SQL_WMS_VOLUME_2022_PATH}:/var/opt/mssql/data
+      # - ${SQL_WMS_VOLUME_2022_PATH_SYSTEM}:/var/opt/mssql/system
     networks:
       - mssql-network
       - rates-api-network
@@ -239,17 +240,17 @@ services:
       interval: 30s
       timeout: 30s
       retries: 100
-      start_period: 360s
+      start_period: 160s
     deploy:
       restart_policy:
         condition: on-failure
         max_attempts: 100
-        delay: 5s
-        window: 180s
+        delay: 15s
+        window: 360s
       resources:
         limits:
-          cpus: "3"
-          memory: "5g"
+          cpus: "4"
+          memory: "6g"
         reservations:
-          cpus: "1"
-          memory: "3g"
+          cpus: "2"
+          memory: "4g"

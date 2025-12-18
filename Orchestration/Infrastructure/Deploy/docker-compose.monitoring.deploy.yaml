@@ -22,6 +22,7 @@ services:
     depends_on:
       - homebudget-rates-api
       - homebudget-accounting-api
+      - gateway-api
     deploy:
       restart_policy:
         condition: on-failure
@@ -158,19 +159,25 @@ services:
           memory: "128m"
 
   cadvisor:
-    image: ghcr.io/google/cadvisor:latest
+    image: gcr.io/cadvisor/cadvisor:v0.52.0
     container_name: cadvisor
-    privileged: true # required for blkio metrics
+    privileged: true
+    environment:
+    - DOCKER_API_VERSION=1.52 
+    command:
+      - "--containerd=/run/containerd/containerd.sock"
+      - "--docker_only=false"
+      - "--housekeeping_interval=10s"
     volumes:
-      - /:/rootfs:ro
-      - /var/run:/var/run:rw
-      - /sys:/sys:ro
-      - /var/lib/docker/:/var/lib/docker:ro
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    - /:/rootfs:ro
+    - /var/run:/var/run:rw
+    - /sys:/sys:ro
+    - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    - /var/lib/docker:/var/lib/docker:ro
+    - /run/containerd/containerd.sock:/run/containerd/containerd.sock:ro
+    - /var/run/docker.sock:/var/run/docker.sock:ro  # Mount Docker socket to cAdvisor
     ports:
-      - 8080:8080
-    networks:
-      - shared-monitoring-net
+      - "8080:8080"
     restart: unless-stopped
     deploy:
       restart_policy:
