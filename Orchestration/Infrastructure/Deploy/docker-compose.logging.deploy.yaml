@@ -79,10 +79,13 @@ services:
     ports:
       - 5341:80
       - 5342:5341
+    expose:
+      - "80"
     init: true
     environment:
       - ACCEPT_EULA=${SEQ_DEFAULT_USER}
       - SEQ_FIRSTRUN_ADMINPASSWORD=${SEQ_DEFAULT_PASSWORD}
+      - SEQ_BASE_URI=https://${HOME_SERVER}:${HOME_SERVER_ENTRY_PORT}/seq
       - SEQ_API_TIMEOUT=00:05:00
       - SEQ_DISABLE_MEMORY_CACHING=false
       - SEQ_STORAGE_BUFFER_SIZE=512

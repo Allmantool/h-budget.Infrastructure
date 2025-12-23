@@ -30,3 +30,4 @@ services:
     depends_on:
       - ${SQL_SERVER}
       - redis_server
+      - seq

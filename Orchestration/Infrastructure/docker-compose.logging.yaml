@@ -57,6 +57,8 @@ services:
     ports:
       - 5341:80
       - 5342:5341
+    expose:
+      - "80"
     init: true
     environment:
       - ACCEPT_EULA=${SEQ_DEFAULT_USER}
