@@ -92,6 +92,7 @@ services:
       - SEQ_CACHE_COMPACTION_INTERVAL=01:00:00
       - SEQ_METRICS_INTERVAL=00:01:00
       - SEQ_METRICS_ENDPOINTS=http://prometheus:9090
+      - SEQ_BASE_URI=/seq-logs
     networks:
       - seq-network
       - shared-monitoring-net
