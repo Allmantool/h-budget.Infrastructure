@@ -6,8 +6,10 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
     ports:
-      - "5407:80"
-      - "5408:443"
+      # - "5407:80"
+      # - "5408:443"
+      - "80:80"
+      - "443:443"
     volumes:
       - ${UI_JSON_PATH}:/usr/share/nginx/html/assets/config.json:ro
       - ${NGINX_CONFIG}:/etc/nginx/nginx.conf:ro
@@ -21,6 +23,7 @@ services:
       - ui-network
       - kafka-net
       - event-store-db-net
+      - shared-monitoring-net
     deploy:
       resources:
         limits:
