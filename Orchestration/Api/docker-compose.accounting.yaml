@@ -52,6 +52,7 @@ services:
       - seq-network
       - redis-network
       - mongo-network
+      - mssql-network
       - accounting-api-network
       - ui-network
       - kafka-net

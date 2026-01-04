@@ -35,56 +35,14 @@ services:
           memory: "512m"
 
   tempo:
-    image: grafana/tempo:latest # Use stable version instead of specific commit
-    container_name: tempo
+    image: grafana/tempo:2.9.0
+    container_name: gf-tempo
     ports:
-      - "3200:3200" # Query API (unique)
-      - "4319:4317" # OTLP gRPC - changed from 4317 to 4319 to avoid conflict
-      - "4320:4318" # OTLP HTTP - changed from 4318 to 4320 to avoid conflict
-      - "9411:9411" # Zipkin (optional)
+      - "3200:3200"
     volumes:
-      - ${GF_TEMPO_STORAGE}:/var/tempo
+      - tempo-data:/var/tempo
       - ${GF_TEMPO_CONFIG}:/etc/tempo.yaml
     command: ["--config.file=/etc/tempo.yaml"]
-    networks:
-      - rates-api-network
-      - accounting-api-network
-      - mongo-network
-      - kafka-net
-      - mssql-network
-      - redis-network
-      - ui-network
-      - shared-monitoring-net
-
-  otel-collector:
-    image: otel/opentelemetry-collector:latest
-    container_name: otel-collector
-    command: ["--config=/etc/otel-collector.yaml"]
-    volumes:
-      - ${GF_COLLECTOR_CONFIG}:/etc/otel-collector.yaml
-    ports:
-      - "4317:4317" # OTLP gRPC - .NET apps send here
-      - "4318:4318" # OTLP HTTP - .NET apps can also use this
-      - "8888:8888" # Metrics
-      - "8889:8889" # Health check
-    networks:
-      - rates-api-network
-      - accounting-api-network
-      - mongo-network
-      - kafka-net
-      - mssql-network
-      - redis-network
-      - ui-network
-      - shared-monitoring-net
-
-  grafana-tempo-query:
-    image: grafana/tempo-query:latest
-    container_name: tempo-query
-    ports:
-      - "16686:16686" # Jaeger UI
-    environment:
-      - TEMPO=http://tempo:3200
-      - QUERY_TIMEOUT=30s
     networks:
       - rates-api-network
       - accounting-api-network
@@ -127,6 +85,8 @@ services:
       # - ${GF_PATHS_PROVISIONING}:/etc/grafana/provisioning
     depends_on:
       - prometheus
+      - loki
+      - tempo
     deploy:
       restart_policy:
         condition: on-failure
@@ -137,6 +97,53 @@ services:
         limits:
           cpus: "1"
           memory: "1g"
+
+  loki:
+    image: grafana/loki:3.6.3
+    container_name: gf-loki
+    user: "10001:10001"
+    networks:
+      - rates-api-network
+      - accounting-api-network
+      - mongo-network
+      - kafka-net
+      - mssql-network
+      - redis-network
+      - ui-network
+      - shared-monitoring-net
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/config/loki.yaml
+    volumes:
+      - ${GF_LOKI_CONFIG}:/etc/loki/config/loki.yaml
+      # - loki-data:/tmp/
+
+  alloy:
+    image: grafana/alloy:v1.12.1
+    container_name: gf-alloy
+    command: ["--config.file=/etc/alloy/config.alloy"]
+    ports:
+      - "12345:12345" # Alloy metrics
+      - "4317:4317" # OTLP gRPC (can be used as alternative to Tempo's port)
+      - "4318:4318" # OTLP HTTP (can be used as alternative to Tempo's port)
+    volumes:
+      - ${GF_ALLOY_CONFIG}:/etc/alloy/config.alloy
+      - /var/run/docker.sock:/var/run/docker.sock:ro # For Docker discovery
+      # - ./logs:/var/log/alloy  # Optional: For Alloy logs
+    networks:
+      - rates-api-network
+      - accounting-api-network
+      - mongo-network
+      - kafka-net
+      - mssql-network
+      - redis-network
+      - ui-network
+      - shared-monitoring-net
+    depends_on:
+      - tempo
+      - loki
+      - prometheus
+    restart: unless-stopped
 
   node-exporter:
     image: prom/node-exporter:latest
@@ -167,7 +174,7 @@ services:
     container_name: cadvisor
     privileged: true
     environment:
-      - DOCKER_API_VERSION=1.52 
+      - DOCKER_API_VERSION=1.52
     command:
       - "--containerd=/run/containerd/containerd.sock"
       - "--docker_only=false"
@@ -179,7 +186,7 @@ services:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
       - /var/lib/docker:/var/lib/docker:ro
       - /run/containerd/containerd.sock:/run/containerd/containerd.sock:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro  # Mount Docker socket to cAdvisor
+      - /var/run/docker.sock:/var/run/docker.sock:ro # Mount Docker socket to cAdvisor
     ports:
       - "8080:8080"
     networks:

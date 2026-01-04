@@ -7,6 +7,8 @@ volumes:
   mongo-db-data:
   seq-data:
   prometheus-data:
+  loki-data:
+  tempo-data:
   gf-logs:
   gf-data:
   gf-provisioning:

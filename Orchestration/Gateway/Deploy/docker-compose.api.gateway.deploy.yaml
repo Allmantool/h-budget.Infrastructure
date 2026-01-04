@@ -5,7 +5,9 @@ services:
     container_name: gateway-api
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-      - ASPNETCORE_URLS=https://+:7398
+      # - ASPNETCORE_URLS=https://+:7398
+      # - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/${GATEWAY_API_CERTIFICATE_NAME}
+      # - ASPNETCORE_Kestrel__Certificates__Default__Password=${GATEWAY_API_CERTIFICATE_PASSWORD}
     ports:
       - "7398:7398"
     expose:
@@ -15,7 +17,7 @@ services:
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
       - ${GATEWAY_API_JSON_PATH}:/app/appsettings.json:ro
       - ${GATEWAY_API_OCELOT_PATH}:/app/ocelot.json:ro
-      - ${GATEWAY_API_CERTIFICATE_PATH}:/app/hbudgetcert.pfx:ro
+      - ${GATEWAY_API_CERTIFICATE_PATH}:/app/${GATEWAY_API_CERTIFICATE_NAME}:ro
     networks:
       - rates-api-network
       - accounting-api-network
