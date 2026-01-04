@@ -22,6 +22,7 @@ services:
       - ui-network
       - kafka-net
       - event-store-db-net
+      - mssql-network
     deploy:
       replicas: 1
       restart_policy:
@@ -49,6 +50,7 @@ services:
       - seq-network
       - redis-network
       - mongo-network
+      - mssql-network
       - accounting-api-network
       - ui-network
       - kafka-net

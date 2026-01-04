@@ -1,0 +1,73 @@
+logging {
+  level  = "info"
+  format = "logfmt"
+}
+
+// Receive OTLP traces from applications
+otelcol.receiver.otlp "default" {
+  grpc {
+    endpoint = "0.0.0.0:4317"
+  }
+  
+  http {
+    endpoint = "0.0.0.0:4318"
+  }
+  
+  output {
+    traces = [otelcol.processor.batch.default.input]
+  }
+}
+
+// Batch traces before sending
+otelcol.processor.batch "default" {
+  timeout = "5s"
+  
+  output {
+    traces = [otelcol.exporter.otlp.tempo.input]
+  }
+}
+
+// Export traces to Tempo (internal Docker network)
+otelcol.exporter.otlp "tempo" {
+  client {
+    endpoint = "http://tempo:4318"
+  }
+}
+
+// Docker logs collection
+loki.source.docker "default" {
+  host = "unix:///var/run/docker.sock"
+  forward_to = [loki.write.default.receiver]
+}
+
+// Send logs to Loki
+loki.write "default" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+}
+
+// Prometheus metrics scraping
+prometheus.scrape "default" {
+  targets = [
+    {"__address__" = "tempo:3200", "job" = "tempo"},
+    {"__address__" = "loki:3100", "job" = "loki"},
+    {"__address__" = "prometheus:9090", "job" = "prometheus"},
+    {"__address__" = "grafana:3000", "job" = "grafana"},
+  ]
+  
+  forward_to = [prometheus.remote_write.default.receiver]
+}
+
+// Send metrics to Prometheus
+prometheus.remote_write "default" {
+  endpoint {
+    url = "http://prometheus:9090/api/v1/write"
+  }
+}
+
+// Alloy's own metrics
+prometheus.scrape.agent "default" {
+  forward_to = [prometheus.remote_write.default.receiver]
+  targets = [{"__address__" = "127.0.0.1:12345"}]
+}

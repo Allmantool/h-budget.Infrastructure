@@ -13,8 +13,8 @@ scrape_configs:
           component: api
 
   - job_name: "mongodb"
-    scrape_interval: 30s
-    scrape_timeout: 20s
+    scrape_interval: 60s
+    scrape_timeout: 30s
     static_configs:
       - targets: ["mongo-db-exporter:9216"]
         labels:
@@ -65,3 +65,15 @@ scrape_configs:
       - targets: ["node-exporter:9100"]
         labels:
           component: node
+
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'loki'
+    static_configs:
+      - targets: ['loki:3100']
+
+  - job_name: 'tempo'
+    static_configs:
+      - targets: ['tempo:3200']

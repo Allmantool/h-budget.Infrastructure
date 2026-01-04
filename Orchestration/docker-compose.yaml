@@ -34,7 +34,7 @@ services:
     environment:
       - FLYWAY_USER=sa
       - FLYWAY_PASSWORD=${SQL_PASSWORD}
-      - FLYWAY_URL=jdbc:sqlserver://${SQL_SERVER}:${SQL_SERVER_2025_PORT};encrypt=true;trustServerCertificate=true;
+      - FLYWAY_URL=jdbc:sqlserver://${SQL_SERVER}:${SQL_SERVER_2022_PORT};encrypt=true;trustServerCertificate=true;
     volumes:
       - ${FLYWAY_SCRIPTS_PATH}:/flyway/sql
       - ${FLYWAY_CONFIG_PATH}:/flyway/conf

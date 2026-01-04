@@ -149,17 +149,15 @@ services:
     image: mongo:7.0.27-rc0-jammy
     container_name: shared-mongo-db
     restart: always
-    logging:
-      driver: json-file
-      options:
-        max-size: 1g
-        max-file: "30"
     environment:
       - MONGO_INITDB_ROOT_USERNAME=mongoadmin
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_DB_PASSWORD}
       - MONGO_INITDB_DATABASE=admin
     ports:
       - "27017:27017"
+    command:
+      - "--wiredTigerCacheSizeGB=2"
+      - "--journalCommitInterval=100"
     volumes:
       # - ${MONGO_DB_VOLUME_PATH}:/data/db
       - mongo-db-data:/data/db
@@ -167,10 +165,9 @@ services:
       - mongo-network
       - shared-monitoring-net
     healthcheck:
-      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 60s
+      timeout: 5s
     deploy:
       restart_policy:
         condition: on-failure
@@ -179,11 +176,11 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: "2"
-          memory: "1g"
+          cpus: "4"
+          memory: "4g"
         reservations:
-          cpus: "1"
-          memory: "512mb"
+          cpus: "2"
+          memory: "2g"
 
   mssql-volume-init:
     image: alpine:3.23

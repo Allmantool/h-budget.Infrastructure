@@ -9,6 +9,8 @@ volumes:
   prometheus-data:
   gf-logs:
   gf-data:
+  loki-data:
+  tempo-data:
   gf-provisioning:
   elasticsearch-data:
   registry:
