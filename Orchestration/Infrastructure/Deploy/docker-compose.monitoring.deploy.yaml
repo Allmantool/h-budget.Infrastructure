@@ -119,7 +119,7 @@ services:
       # - loki-data:/tmp/
 
   alloy:
-    image: grafana/alloy:v1.12.1
+    image: grafana/alloy:v1.12.2
     container_name: gf-alloy
     command: ["--config.file=/etc/alloy/config.alloy"]
     ports:
