@@ -12,5 +12,6 @@ volumes:
   gf-logs:
   gf-data:
   gf-provisioning:
+  alloy-data:
   elasticsearch-data:
   registry:

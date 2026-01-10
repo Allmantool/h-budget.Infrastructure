@@ -64,7 +64,7 @@ services:
       KAFKA_HEAP_OPTS: "-Xmx1G -Xms1G"
       KAFKA_JVM_PERFORMANCE_OPTS: "-XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35"
       KAFKA_JMX_PORT: 9997
-      KAFKA_JMX_HOSTNAME: kafka
+      KAFKA_JMX_HOSTNAME: 0.0.0.0
 
       KAFKA_LOG_RETENTION_BYTES: 1073741824
       KAFKA_LOG_SEGMENT_BYTES: 1073741824
@@ -78,7 +78,7 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_LOG_CLEANUP_POLICY: delete
-      KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
     user: "0" # Run as root temporarily to fix permissions
     networks:
       - kafka-net
@@ -87,16 +87,11 @@ services:
       # - ${KAFKA_STORE}/data:/var/lib/kafka/data:Z
       - kafka-data:/var/lib/kafka/data:Z
     healthcheck:
-      test:
-        [
-          "CMD",
-          "kafka-broker-api-versions",
-          "--bootstrap-server",
-          "localhost:9092",
-        ]
-      interval: 10s
-      timeout: 5s
-      retries: 3
+      test: ["CMD", "bash", "-c", "kafka-broker-api-versions --bootstrap-server localhost:29092 --timeout 5000"]
+      interval: 15s
+      timeout: 10s
+      retries: 15
+      start_period: 45s
     command:
       - bash
       - -c

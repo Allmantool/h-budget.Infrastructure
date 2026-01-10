@@ -3,44 +3,91 @@ global:
   scrape_timeout: 15s
   evaluation_interval: 20s
 
+  external_labels:
+    cluster: "home-budget"
+    environment: "local"
+    monitoring: "prometheus"
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: []
+
 scrape_configs:
+  # API Services
   - job_name: "apis"
     metrics_path: /metrics
     scrape_interval: 20s
     static_configs:
-      - targets: ["gateway-api:80", "homebudget-rates-api:80", "homebudget-accounting-api:80"]
+      - targets:
+          - "gateway-api:80"
+          - "homebudget-rates-api:80"
+          - "homebudget-accounting-api:80"
         labels:
-          component: api
+          component: "api"
+          stack: "home-budget"
 
+  - job_name: "accounting-workers"
+    metrics_path: /metrics
+    scrape_interval: 30s
+
+    docker_sd_configs:
+      - host: unix:///var/run/docker.sock
+        refresh_interval: 15s
+
+    relabel_configs:
+      - source_labels: [__meta_docker_container_name]
+        regex: .*/homebudget-accounting-payments-consumer-worker.*
+        action: keep
+
+      - source_labels: [__meta_docker_container_ip]
+        target_label: __address__
+        replacement: "$1:80"
+
+      - source_labels: [__meta_docker_container_name]
+        target_label: instance
+
+      - target_label: component
+        replacement: accounting-worker
+
+      - target_label: stack
+        replacement: home-budget
+
+  # Database Exporters
   - job_name: "mongodb"
     scrape_interval: 60s
     scrape_timeout: 30s
     static_configs:
       - targets: ["mongo-db-exporter:9216"]
         labels:
-          component: mongodb
+          component: "mongodb"
+          stack: "home-budget"
 
   - job_name: "mssql"
     scrape_interval: 90s
-    scrape_timeout: 30s
+    scrape_timeout: 45s
     static_configs:
       - targets: ["mssql-exporter:4000"]
         labels:
-          component: mssql
+          component: "mssql"
+          stack: "home-budget"
 
   - job_name: "redis"
     scrape_interval: 15s
     static_configs:
       - targets: ["redis-exporter:9121"]
         labels:
-          component: redis
+          component: "redis"
+          stack: "home-budget"
 
+  # Infrastructure
   - job_name: "nginx"
     scrape_interval: 20s
     static_configs:
       - targets: ["nginx-exporter:9113"]
         labels:
-          component: nginx
+          component: "nginx"
+          stack: "home-budget"
 
   - job_name: "kafka"
     scrape_interval: 30s
@@ -48,32 +95,65 @@ scrape_configs:
     static_configs:
       - targets: ["kafka-exporter:9308"]
         labels:
-          component: kafka
-    params:
-      group: ['true']
+          component: "kafka"
+          stack: "home-budget"
 
   - job_name: "eventstoredb"
     scrape_interval: 30s
     static_configs:
       - targets: ["event-store-db-exporter:9448"]
         labels:
-          component: eventstoredb
+          component: "eventstoredb"
+          stack: "home-budget"
 
+  # Node and Observability
   - job_name: "node-exporter"
     scrape_interval: 30s
     static_configs:
       - targets: ["node-exporter:9100"]
         labels:
-          component: node
+          component: "node"
+          stack: "home-budget"
 
-  - job_name: 'prometheus'
+  - job_name: "prometheus"
     static_configs:
-      - targets: ['localhost:9090']
+      - targets: ["localhost:9090"]
+        labels:
+          component: "monitoring"
+          stack: "home-budget"
 
-  - job_name: 'loki'
+  - job_name: "loki"
+    metrics_path: /metrics
+    scrape_interval: 30s
     static_configs:
-      - targets: ['loki:3100']
+      - targets: ["loki:3100"]
+        labels:
+          component: "logging"
+          stack: "home-budget"
 
-  - job_name: 'tempo'
+  - job_name: "tempo"
+    metrics_path: /metrics
+    scrape_interval: 30s
     static_configs:
-      - targets: ['tempo:3200']
+      - targets: ["tempo:3200"]
+        labels:
+          component: "tracing"
+          stack: "home-budget"
+
+  - job_name: "alloy"
+    metrics_path: /metrics
+    scrape_interval: 30s
+    static_configs:
+      - targets: ["gf-alloy:12345"]
+        labels:
+          component: "alloy"
+          stack: "home-budget"
+
+  - job_name: "grafana"
+    metrics_path: /metrics
+    scrape_interval: 30s
+    static_configs:
+      - targets: ["grafana:3000"]
+        labels:
+          component: "grafana"
+          stack: "home-budget"

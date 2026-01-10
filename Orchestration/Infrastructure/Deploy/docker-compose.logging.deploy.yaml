@@ -101,9 +101,9 @@ services:
       - seq-data:/data
     healthcheck:
       test: ["CMD", "wget", "-q", "--spider", "http://localhost:80/api/health"]
-      interval: 10s
-      timeout: 10s
-      retries: 30
+      interval: 30s
+      timeout: 20s
+      retries: 15
     deploy:
       restart_policy:
         condition: on-failure

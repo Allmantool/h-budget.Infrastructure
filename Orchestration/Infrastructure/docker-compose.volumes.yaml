@@ -9,6 +9,7 @@ volumes:
   prometheus-data:
   gf-logs:
   gf-data:
+  alloy-data:
   loki-data:
   tempo-data:
   gf-provisioning:
