@@ -2,16 +2,7 @@ auth_enabled: false
 
 server:
   http_listen_port: 3200
-  log_level: info
-
-distributor:
-  receivers:
-    otlp:
-      protocols:
-        grpc:
-          endpoint: 0.0.0.0:4317
-        http:
-          endpoint: 0.0.0.0:4318
+  grpc_listen_port: 9095
 
 ingester:
   lifecycler:
@@ -19,24 +10,6 @@ ingester:
       kvstore:
         store: inmemory
       replication_factor: 1
-    heartbeat_timeout: 1m
-
-  trace_idle_period: 10s
-  max_block_duration: 5m
-
-compactor:
-  compaction:
-    block_retention: 24h
-
-querier:
-  frontend_worker:
-    frontend_address: 127.0.0.1:9095
-
-query_frontend:
-  search:
-    duration_slo: 5s
-  trace_by_id:
-    duration_slo: 5s
 
 storage:
   trace:
@@ -55,3 +28,8 @@ metrics_generator:
     span_metrics: {}
   storage:
     path: /var/tempo/metrics
+
+overrides:
+  defaults:
+    metrics_generator:
+      processors: [service-graphs, span-metrics]

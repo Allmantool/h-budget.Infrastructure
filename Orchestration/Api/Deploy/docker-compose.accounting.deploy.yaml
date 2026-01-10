@@ -35,20 +35,30 @@ services:
           cpus: "3"
           memory: "1g"
     depends_on:
-      - redis_server
-      - kafka
+      kafka:
+        condition: service_healthy
+      event-store-db:
+        condition: service_healthy
+      shared-mongo-db:
+        condition: service_healthy
+      homebudget-sql-server:
+        condition: service_healthy
 
   homebudget-accounting-payments-consumer-worker:
     image: allmantool/homebudget-accounting-payments-consumer-worker:${ACCOUNTING_PAYMENTS_CONSUMER_WORKER_IMAGE_V}
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_URLS=http://+:80
+      - PROMETHEUS__ENABLED=true
+      - PROMETHEUS__SCRAPE_ENDPOINT=/metrics
+    expose:
+      - "80"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
       - ${ACCOUNTING_PAYMENTS_CONSUMER_WORKER_JSON_PATH}:/app/appsettings.json:ro
     networks:
       - seq-network
-      - redis-network
       - mongo-network
       - mssql-network
       - accounting-api-network
@@ -59,15 +69,19 @@ services:
       replicas: ${PAYMENT_CONSUMERS_AMOUNT}
       restart_policy:
         condition: on-failure
-        max_attempts: 10
-        delay: 5s
-        window: 180s
+        max_attempts: 100
+        delay: 15s
+        window: 1800s
       resources:
         limits:
           cpus: "2"
           memory: "512m"
     depends_on:
-      - redis_server
-      - kafka
-      - event-store-db
-      - shared-mongo-db
+      kafka:
+        condition: service_healthy
+      event-store-db:
+        condition: service_healthy
+      shared-mongo-db:
+        condition: service_healthy
+      homebudget-sql-server:
+        condition: service_healthy

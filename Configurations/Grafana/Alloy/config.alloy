@@ -3,71 +3,178 @@ logging {
   format = "logfmt"
 }
 
-// Receive OTLP traces from applications
+/////////////////////////////
+// OTLP RECEIVER (Logs + Traces)
+/////////////////////////////
 otelcol.receiver.otlp "default" {
   grpc {
     endpoint = "0.0.0.0:4317"
   }
-  
+
   http {
     endpoint = "0.0.0.0:4318"
   }
-  
+
   output {
-    traces = [otelcol.processor.batch.default.input]
+    traces = [otelcol.processor.batch.traces.input]
+    logs   = [otelcol.processor.batch.logs.input]
   }
 }
 
-// Batch traces before sending
-otelcol.processor.batch "default" {
+/////////////////////////////
+// TRACE PIPELINE → TEMPO
+/////////////////////////////
+otelcol.processor.batch "traces" {
   timeout = "5s"
-  
+
   output {
     traces = [otelcol.exporter.otlp.tempo.input]
   }
 }
 
-// Export traces to Tempo (internal Docker network)
 otelcol.exporter.otlp "tempo" {
   client {
-    endpoint = "http://tempo:4318"
+    endpoint = "gf-tempo:9095"
+    tls {
+      insecure = true
+    }
   }
 }
 
-// Docker logs collection
-loki.source.docker "default" {
-  host = "unix:///var/run/docker.sock"
+/////////////////////////////
+// LOG PIPELINE (OTLP LOGS) → LOKI
+/////////////////////////////
+otelcol.processor.batch "logs" {
+  timeout = "5s"
+
+  output {
+    logs = [otelcol.exporter.loki.otlp.input]
+  }
+}
+
+otelcol.exporter.loki "otlp" {
+  forward_to = [loki.process.otlp.receiver]
+}
+
+loki.process "otlp" {
+  stage.labels {
+    values = {
+      service_name      = "attributes.service.name",
+      service_namespace = "attributes.service.namespace",
+      deployment_env    = "attributes.deployment.environment",
+      severity          = "severity_text",
+    }
+  }
+
+  stage.static_labels {
+    values = {
+      job = "otlp-logs",
+    }
+  }
+
   forward_to = [loki.write.default.receiver]
 }
 
-// Send logs to Loki
+/////////////////////////////
+// DOCKER LOGS → LOKI
+/////////////////////////////
+discovery.docker "linux" {
+  host = "unix:///var/run/docker.sock"
+}
+
+loki.source.docker "containers" {
+  host    = "unix:///var/run/docker.sock"
+  targets = discovery.docker.linux.targets
+
+  labels = {
+    job            = "docker",
+  }
+
+  forward_to = [loki.process.docker.receiver]
+}
+
+loki.process "docker" {
+  stage.drop {
+    older_than = "24h"
+  }
+
+  stage.labels {
+    values = {
+      container_name = "container.name",
+      container_id   = "container.id",
+      image          = "container.image.name",
+    }
+  }
+
+  stage.static_labels {
+    values = {
+      source = "docker",
+    }
+  }
+
+  forward_to = [loki.write.default.receiver]
+}
+
+/////////////////////////////
+// LOKI WRITER (single writer)
+/////////////////////////////
 loki.write "default" {
   endpoint {
     url = "http://loki:3100/loki/api/v1/push"
   }
 }
 
-// Prometheus metrics scraping
-prometheus.scrape "default" {
+/////////////////////////////
+// CONTAINER METRICS USING CADVISOR
+/////////////////////////////
+prometheus.exporter.cadvisor "docker" {
+  docker_only = true
+  storage_duration = "2m"
+}
+
+prometheus.scrape "cadvisor" {
+  targets = prometheus.exporter.cadvisor.docker.targets
+  forward_to = [prometheus.remote_write.default.receiver]
+  scrape_interval = "15s"
+  scrape_timeout = "10s"
+}
+
+/////////////////////////////
+// HOST METRICS
+/////////////////////////////
+prometheus.exporter.unix "node" {
+  // Collect system metrics - use default collectors
+}
+
+prometheus.scrape "node" {
+  targets = prometheus.exporter.unix.node.targets
+  forward_to = [prometheus.remote_write.default.receiver]
+  scrape_interval = "30s"
+  scrape_timeout = "10s"
+}
+
+/////////////////////////////
+// INFRASTRUCTURE METRICS
+/////////////////////////////
+prometheus.scrape "infra" {
   targets = [
-    {"__address__" = "tempo:3200", "job" = "tempo"},
-    {"__address__" = "loki:3100", "job" = "loki"},
-    {"__address__" = "prometheus:9090", "job" = "prometheus"},
-    {"__address__" = "grafana:3000", "job" = "grafana"},
+    { "__address__" = "tempo:3200",       "job" = "tempo" },
+    { "__address__" = "loki:3100",        "job" = "loki" },
+    { "__address__" = "prometheus:9090",  "job" = "prometheus" },
+    { "__address__" = "grafana:3000",     "job" = "grafana" },
   ]
-  
   forward_to = [prometheus.remote_write.default.receiver]
 }
 
-// Send metrics to Prometheus
+prometheus.scrape "alloy" {
+  targets = [
+    { "__address__" = "127.0.0.1:12345", "job" = "alloy" },
+  ]
+  forward_to = [prometheus.remote_write.default.receiver]
+}
+
 prometheus.remote_write "default" {
   endpoint {
     url = "http://prometheus:9090/api/v1/write"
   }
-}
-
-// Alloy's own metrics
-prometheus.scrape.agent "default" {
-  forward_to = [prometheus.remote_write.default.receiver]
-  targets = [{"__address__" = "127.0.0.1:12345"}]
 }

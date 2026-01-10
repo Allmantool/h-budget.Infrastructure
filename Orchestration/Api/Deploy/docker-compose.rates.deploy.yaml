@@ -8,6 +8,9 @@ services:
       # - ASPNETCORE_HTTPS_PORT=5008
       # - ASPNETCORE_URLS=https://+:443;http://+:80
       - ASPNETCORE_URLS=http://+:80
+      - OTEL_SERVICE_NAME=homebudget-rates-api
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://gf-alloy:4317
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
     ports:
       - "5207:80"
       - "5208:443"
@@ -22,6 +25,7 @@ services:
       - mssql-network
       - rates-api-network
       - ui-network
+      - shared-monitoring-net
     deploy:
       restart_policy:
         condition: on-failure
