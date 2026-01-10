@@ -41,7 +41,8 @@ services:
     image: grafana/tempo:2.9.0
     container_name: gf-tempo
     ports:
-      - "3200:3200"
+      - 3200:3200
+      - 9095:9095
     volumes:
       - tempo-data:/var/tempo
       - ${GF_TEMPO_CONFIG}:/etc/tempo.yaml
