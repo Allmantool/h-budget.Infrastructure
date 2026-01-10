@@ -1,9 +1,35 @@
+stream_over_http_enabled: true
 auth_enabled: false
 
 server:
   http_listen_port: 3200
-  grpc_listen_port: 9095
+  log_level: info
 
+query_frontend:
+  search:
+    duration_slo: 5s
+    throughput_bytes_slo: 1.073741824e+09
+    metadata_slo:
+        duration_slo: 5s
+        throughput_bytes_slo: 1.073741824e+09
+  trace_by_id:
+    duration_slo: 5s
+
+# -------------------------
+# Distributor (receives OTLP)
+# -------------------------
+distributor:
+  receivers:
+    otlp:
+      protocols:
+        # http:
+        #   endpoint: 0.0.0.0:4318
+        grpc:
+          endpoint: tempo:4317
+
+# -------------------------
+# Ingester (stores traces)
+# -------------------------
 ingester:
   lifecycler:
     ring:
@@ -11,25 +37,35 @@ ingester:
         store: inmemory
       replication_factor: 1
 
+# -------------------------
+# Storage backend
+# -------------------------
 storage:
   trace:
     backend: local
     local:
-      path: /var/tempo/traces
+      path: /var/tempo/blocks
     wal:
       path: /var/tempo/wal
 
 metrics_generator:
-  ring:
-    kvstore:
-      store: inmemory
-  processor:
-    service_graphs: {}
-    span_metrics: {}
+  registry:
+    external_labels:
+      source: tempo
+      cluster: docker-compose
   storage:
-    path: /var/tempo/metrics
+    path: /var/tempo/generator/wal
+    remote_write:
+      - url: http://prometheus:9090/api/v1/write
+        send_exemplars: true
+  traces_storage:
+    path: /var/tempo/generator/traces
 
+# -------------------------
+# Overrides (optional, defaults)
+# -------------------------
 overrides:
   defaults:
     metrics_generator:
-      processors: [service-graphs, span-metrics]
+      processors: [service-graphs, span-metrics, local-blocks] # enables metrics generator
+      generate_native_histograms: both

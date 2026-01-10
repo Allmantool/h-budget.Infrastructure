@@ -27,6 +27,9 @@ otelcol.receiver.otlp "default" {
 otelcol.processor.batch "traces" {
   timeout = "5s"
 
+  send_batch_size = 100      // Reduced from default 8192
+  send_batch_max_size = 100  // Maximum batch size
+
   output {
     traces = [otelcol.exporter.otlp.tempo.input]
   }
@@ -34,7 +37,8 @@ otelcol.processor.batch "traces" {
 
 otelcol.exporter.otlp "tempo" {
   client {
-    endpoint = "gf-tempo:9095"
+    endpoint = "gf-tempo:4317"
+
     tls {
       insecure = true
     }
@@ -46,6 +50,9 @@ otelcol.exporter.otlp "tempo" {
 /////////////////////////////
 otelcol.processor.batch "logs" {
   timeout = "5s"
+
+  send_batch_size = 100      // Reduced from default 8192
+  send_batch_max_size = 100  // Maximum batch size
 
   output {
     logs = [otelcol.exporter.loki.otlp.input]
