@@ -36,7 +36,7 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: "0.5"
+          cpus: "0.2"
           memory: "726m"
 
   tempo:
@@ -65,8 +65,8 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: "0.5"
-          memory: "1g"
+          cpus: "0.3"
+          memory: "512mb"
 
   grafana:
     container_name: grafana
@@ -115,7 +115,7 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: "1"
+          cpus: "0.5"
           memory: "1.5g"
 
   loki:
@@ -188,8 +188,8 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: "0.5"
-          memory: "1g"
+          cpus: "0.2"
+          memory: "512mb"
     restart: unless-stopped
 
   cadvisor:
@@ -231,8 +231,8 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: '0.50'
-          memory: 512M
+          cpus: '0.2'
+          memory: 725M
         reservations:
           cpus: '0.10'
           memory: 128M
@@ -265,7 +265,7 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: "1"
+          cpus: "0.2"
           memory: "128m"
 
   mongo-db-exporter:
