@@ -86,7 +86,7 @@ scrape_configs:
   # CONTAINER & HOST METRICS
   # =========================
   - job_name: "cadvisor"
-    scrape_interval: 20s
+    scrape_interval: 250s
     scrape_timeout: 180s
     static_configs:
       - targets: ["cadvisor:8080"]
