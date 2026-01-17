@@ -65,8 +65,8 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: "1"
-          memory: "512m"
+          cpus: "0.5"
+          memory: "1g"
 
   grafana:
     container_name: grafana
@@ -88,7 +88,7 @@ services:
       GF_SERVER_ROOT_URL: https://${HOME_SERVER}/
       GF_SERVER_SERVE_FROM_SUB_PATH: "false"
       GF_SERVER_PROTOCOL: http
-      GF_INSTALL_PLUGINS: "https://github.com/raintank/crate-datasource/archive/master.zip;crate-datasource,grafana-clock-panel,grafana-worldmap-panel,natel-plotly-panel,grafana-exploretraces-app"
+      GF_PLUGINS_PREINSTALL: "https://github.com/raintank/crate-datasource/archive/master.zip;crate-datasource,grafana-clock-panel,natel-plotly-panel,grafana-exploretraces-app"
     ports:
       - 3000:3000
     volumes:
@@ -116,7 +116,7 @@ services:
       resources:
         limits:
           cpus: "1"
-          memory: "1g"
+          memory: "1.5g"
 
   loki:
     image: grafana/loki:3.6.3
@@ -145,12 +145,14 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: "1"
-          memory: "1024m"
+          cpus: "0.5"
+          memory: "1g"
 
   alloy:
     image: grafana/alloy:v1.12.2
     container_name: gf-alloy
+    environment:
+      - HOSTNAME=${HOSTNAME}
     command:
       - run
       - --server.http.listen-addr=0.0.0.0:12345
@@ -186,29 +188,36 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: "1"
-          memory: "726m"
+          cpus: "0.5"
+          memory: "1g"
     restart: unless-stopped
 
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:v0.55.1
+    image: ghcr.io/google/cadvisor:latest #v0.56.2
     container_name: cadvisor
     privileged: true
+    devices:
+      - /dev/kmsg:/dev/kms
     environment:
       - DOCKER_API_VERSION=1.52
-    command:
-      - "--containerd=/run/containerd/containerd.sock"
-      - "--docker_only=false"
-      - "--housekeeping_interval=10s"
+    command: >
+      - '--docker_only=true'
+      - '--housekeeping_interval=1m'
+      - '--max_housekeeping_interval=1m'
+      - '--disable_metrics=hugetlb,sched,perf_event,diskIO'
+      - '--event_storage_event_limit=5000'
+      - '--event_storage_age_limit=3h'
+      - '--containerd=/run/containerd/containerd.sock'
     volumes:
-      - /dev/disk/:/dev/disk:ro
       - /:/rootfs:ro
-      - /var/run:/var/run:rw
+      - /var/run:/var/run:ro
       - /sys:/sys:ro
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-      - /var/lib/docker:/var/lib/docker:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
       - /run/containerd/containerd.sock:/run/containerd/containerd.sock:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro # Mount Docker socket to cAdvisor
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /proc:/host/proc:ro
     ports:
       - "8080:8080"
     networks:
@@ -222,17 +231,27 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: "2"
-          memory: "726m"
+          cpus: '0.50'
+          memory: 512M
+        reservations:
+          cpus: '0.10'
+          memory: 128M
 
   node-exporter:
-    image: prom/node-exporter:latest
+    image: prom/node-exporter:v1.10.2
     container_name: node-exporter
     pid: host
     command:
       - "--path.rootfs=/host"
+      - "--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($|/)"
+      - "--collector.filesystem.fs-types-exclude=^(sysfs|procfs|autofs|cgroup|overlay|nsfs|tmpfs|devtmpfs)$"
+      - "--collector.netclass"
+      - "--collector.netdev"
+      - "--collector.processes"
+      # - "--collector.systemd"
     volumes:
-      - "${DOCKER_NODE_PATHS_LOGS}:/host:ro,rslave"
+      # - "${DOCKER_NODE_PATHS_LOGS}:/host:ro,rslave"
+      - /:/host:ro
     ports:
       - "9100:9100"
     networks:
