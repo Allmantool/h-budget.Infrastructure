@@ -1,6 +1,7 @@
 volumes:
   ms-sql-data:
   ms-sql-tempdb:
+  ms-sql-logs:
   event-store-db-data:
   event-store-db-logs:
   kafka-data:

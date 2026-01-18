@@ -1,11 +1,14 @@
+////////////////////////////////////////////////////////////
+// GLOBAL LOGGING
+////////////////////////////////////////////////////////////
 logging {
   level  = "info"
   format = "logfmt"
 }
 
-/////////////////////////////
-// OTLP RECEIVER (Logs + Traces)
-/////////////////////////////
+////////////////////////////////////////////////////////////
+// OTLP RECEIVER
+////////////////////////////////////////////////////////////
 otelcol.receiver.otlp "default" {
   grpc {
     endpoint = "0.0.0.0:4317"
@@ -16,19 +19,90 @@ otelcol.receiver.otlp "default" {
   }
 
   output {
-    traces = [otelcol.processor.batch.traces.input]
+    traces = [otelcol.processor.attributes.traces.input]
     logs   = [otelcol.processor.batch.logs.input]
   }
 }
 
-/////////////////////////////
-// TRACE PIPELINE → TEMPO
-/////////////////////////////
-otelcol.processor.batch "traces" {
-  timeout = "5s"
+////////////////////////////////////////////////////////////
+// TRACE ATTRIBUTE PROCESSING
+////////////////////////////////////////////////////////////
+otelcol.processor.attributes "traces" {
+  // Add deployment environment
+  action {
+    key    = "deployment.environment"
+    value  = "prod"
+    action = "upsert"
+  }
 
-  send_batch_size = 100      // Reduced from default 8192
-  send_batch_max_size = 100  // Maximum batch size
+  // Add deployment platform
+  action {
+    key    = "deployment.platform"
+    value  = "docker"
+    action = "upsert"
+  }
+
+  // Remove sensitive headers
+  action {
+    key    = "http.request.header.authorization"
+    action = "delete"
+  }
+
+  action {
+    key    = "http.request.header.cookie"
+    action = "delete"
+  }
+
+  output {
+    traces = [otelcol.processor.tail_sampling.traces.input]
+  }
+}
+
+////////////////////////////////////////////////////////////
+// TRACE TAIL SAMPLING
+////////////////////////////////////////////////////////////
+otelcol.processor.tail_sampling "traces" {
+  decision_wait = "10s"
+
+  policy {
+    name = "errors"
+    type = "status_code"
+
+    status_code {
+      status_codes = ["ERROR"]
+    }
+  }
+
+  policy {
+    name = "slow"
+    type = "latency"
+
+    latency {
+      threshold_ms = 1500
+    }
+  }
+
+  policy {
+    name = "baseline"
+    type = "probabilistic"
+
+    probabilistic {
+      sampling_percentage = 5
+    }
+  }
+
+  output {
+    traces = [otelcol.processor.batch.traces.input]
+  }
+}
+
+////////////////////////////////////////////////////////////
+// TRACE BATCH → TEMPO
+////////////////////////////////////////////////////////////
+otelcol.processor.batch "traces" {
+  timeout              = "5s"
+  send_batch_size      = 100
+  send_batch_max_size  = 100
 
   output {
     traces = [otelcol.exporter.otlp.tempo.input]
@@ -45,14 +119,13 @@ otelcol.exporter.otlp "tempo" {
   }
 }
 
-/////////////////////////////
-// LOG PIPELINE (OTLP LOGS) → LOKI
-/////////////////////////////
+////////////////////////////////////////////////////////////
+// LOG BATCH → LOKI
+////////////////////////////////////////////////////////////
 otelcol.processor.batch "logs" {
-  timeout = "5s"
-
-  send_batch_size = 100      // Reduced from default 8192
-  send_batch_max_size = 100  // Maximum batch size
+  timeout              = "5s"
+  send_batch_size      = 100
+  send_batch_max_size  = 100
 
   output {
     logs = [otelcol.exporter.loki.otlp.input]
@@ -63,39 +136,52 @@ otelcol.exporter.loki "otlp" {
   forward_to = [loki.process.otlp.receiver]
 }
 
+////////////////////////////////////////////////////////////
+// OTLP LOG PROCESSING
+////////////////////////////////////////////////////////////
 loki.process "otlp" {
+  stage.json {
+    expressions = {
+      level   = "severity_text",
+      traceId = "trace_id",
+      spanId  = "span_id",
+    }
+  }
+
   stage.labels {
     values = {
       service_name      = "attributes.service.name",
       service_namespace = "attributes.service.namespace",
       deployment_env    = "attributes.deployment.environment",
       severity          = "severity_text",
+      trace_id          = "traceId",
     }
   }
 
   stage.static_labels {
     values = {
-      job = "otlp-logs",
+      job        = "otlp",
+      source     = "application",
+      env        = "prod",
     }
   }
 
   forward_to = [loki.write.default.receiver]
 }
 
-/////////////////////////////
-// DOCKER LOGS → LOKI
-/////////////////////////////
+////////////////////////////////////////////////////////////
+// DOCKER DISCOVERY
+////////////////////////////////////////////////////////////
 discovery.docker "linux" {
   host = "unix:///var/run/docker.sock"
 }
 
+////////////////////////////////////////////////////////////
+// DOCKER LOGS - SIMPLIFIED WORKING VERSION
+////////////////////////////////////////////////////////////
 loki.source.docker "containers" {
   host    = "unix:///var/run/docker.sock"
   targets = discovery.docker.linux.targets
-
-  labels = {
-    job            = "docker",
-  }
 
   forward_to = [loki.process.docker.receiver]
 }
@@ -105,81 +191,185 @@ loki.process "docker" {
     older_than = "24h"
   }
 
+  // Extract Docker metadata - this automatically handles labels
+  stage.docker {}
+
+  // Clean container name
+  stage.replace {
+    expression = "^/"
+    replace    = ""
+    source     = "container_name"
+  }
+
+  // Set labels from Docker metadata
   stage.labels {
     values = {
-      container_name = "container.name",
-      container_id   = "container.id",
-      image          = "container.image.name",
+      container_name = "container_name",
+      container_id   = "container_id",
+      image          = "image",
+      project        = "docker_label_project",
+      service_name   = "docker_label_service_name",
     }
   }
 
+  // Add static labels
   stage.static_labels {
     values = {
-      source = "docker",
+      env          = "prod",
+      job          = "docker-logs",
+      orchestrator = "docker",
+      source       = "container",
     }
   }
 
   forward_to = [loki.write.default.receiver]
 }
 
-/////////////////////////////
-// LOKI WRITER (single writer)
-/////////////////////////////
+////////////////////////////////////////////////////////////
+// LOKI WRITE
+////////////////////////////////////////////////////////////
 loki.write "default" {
   endpoint {
     url = "http://loki:3100/loki/api/v1/push"
   }
 }
 
-/////////////////////////////
-// CONTAINER METRICS USING CADVISOR
-/////////////////////////////
+////////////////////////////////////////////////////////////
+// CONTAINER METRICS (CADVISOR)
+////////////////////////////////////////////////////////////
 prometheus.exporter.cadvisor "docker" {
-  docker_only = true
+  docker_only      = true
   storage_duration = "2m"
 }
 
-prometheus.scrape "cadvisor" {
-  targets = prometheus.exporter.cadvisor.docker.targets
+prometheus.relabel "cadvisor_relabel" {
+  rule {
+    source_labels = ["__meta_docker_container_name"]
+    regex         = "^/(.+?)(?:_\\d+)?$"
+    target_label  = "container_name"
+    replacement   = "$1"
+  }
+
+  rule {
+    source_labels = ["__meta_docker_container_label_project"]
+    target_label  = "project"
+    replacement   = "$1"
+  }
+
+  rule {
+    source_labels = ["__meta_docker_container_label_service_name"]
+    target_label  = "service_name"
+    replacement   = "$1"
+  }
+
+  rule {
+    source_labels = ["__meta_docker_container_image"]
+    regex         = "docker.io/(.*):.*|(.*)"
+    target_label  = "image"
+    replacement   = "$1$2"
+  }
+
+  rule {
+    target_label = "env"
+    replacement  = "prod"
+  }
+
+  rule {
+    target_label = "orchestrator"
+    replacement  = "docker"
+  }
+
+  rule {
+    source_labels = ["__name__"]
+    regex         = "container_fs_.*"
+    action        = "drop"
+  }
+
+  rule {
+    source_labels = ["__name__"]
+    regex         = "container_cpu_usage_seconds_total|container_memory_usage_bytes|container_memory_working_set_bytes|container_network_.*|container_spec_.*"
+    action        = "keep"
+  }
+
   forward_to = [prometheus.remote_write.default.receiver]
-  scrape_interval = "15s"
-  scrape_timeout = "10s"
 }
 
-/////////////////////////////
+prometheus.scrape "cadvisor" {
+  targets         = prometheus.exporter.cadvisor.docker.targets
+  scrape_interval = "15s"
+  scrape_timeout  = "10s"
+
+  forward_to = [prometheus.relabel.cadvisor_relabel.receiver]
+}
+
+////////////////////////////////////////////////////////////
 // HOST METRICS
-/////////////////////////////
+////////////////////////////////////////////////////////////
 prometheus.exporter.unix "node" {
-  // Collect system metrics - use default collectors
+  // Optional: Enable specific collectors to reduce load
+  // enabled_collectors = ["cpu", "filesystem", "memory", "diskstats", "loadavg"]
+}
+
+prometheus.relabel "node_relabel" {
+  rule {
+    target_label = "env"
+    replacement  = "prod"
+  }
+
+  rule {
+    source_labels = ["__name__"]
+    regex         = "node_time_.*"
+    action        = "drop"
+  }
+
+  forward_to = [prometheus.remote_write.default.receiver]
 }
 
 prometheus.scrape "node" {
-  targets = prometheus.exporter.unix.node.targets
-  forward_to = [prometheus.remote_write.default.receiver]
+  targets         = prometheus.exporter.unix.node.targets
   scrape_interval = "30s"
-  scrape_timeout = "10s"
+  scrape_timeout  = "10s"
+
+  forward_to = [prometheus.relabel.node_relabel.receiver]
 }
 
-/////////////////////////////
-// INFRASTRUCTURE METRICS
-/////////////////////////////
+////////////////////////////////////////////////////////////
+// INFRA METRICS
+////////////////////////////////////////////////////////////
+prometheus.relabel "infra_relabel" {
+  rule {
+    target_label = "env"
+    replacement  = "prod"
+  }
+
+  forward_to = [prometheus.remote_write.default.receiver]
+}
+
 prometheus.scrape "infra" {
   targets = [
-    { "__address__" = "tempo:3200",       "job" = "tempo" },
-    { "__address__" = "loki:3100",        "job" = "loki" },
-    { "__address__" = "prometheus:9090",  "job" = "prometheus" },
-    { "__address__" = "grafana:3000",     "job" = "grafana" },
+    { "__address__" = "tempo:3200",      "job" = "tempo" },
+    { "__address__" = "loki:3100",       "job" = "loki" },
+    { "__address__" = "prometheus:9090", "job" = "prometheus" },
+    { "__address__" = "grafana:3000",    "job" = "grafana" },
   ]
-  forward_to = [prometheus.remote_write.default.receiver]
+
+  forward_to = [prometheus.relabel.infra_relabel.receiver]
 }
 
+////////////////////////////////////////////////////////////
+// ALLOY METRICS
+////////////////////////////////////////////////////////////
 prometheus.scrape "alloy" {
   targets = [
     { "__address__" = "127.0.0.1:12345", "job" = "alloy" },
   ]
+
   forward_to = [prometheus.remote_write.default.receiver]
 }
 
+////////////////////////////////////////////////////////////
+// REMOTE WRITE
+////////////////////////////////////////////////////////////
 prometheus.remote_write "default" {
   endpoint {
     url = "http://prometheus:9090/api/v1/write"

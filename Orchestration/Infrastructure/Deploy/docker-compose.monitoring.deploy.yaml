@@ -3,6 +3,11 @@ services:
   prometheus:
     container_name: prometheus
     image: prom/prometheus:v3.9.1
+    labels:
+      project: monitoring
+      service.name: prometheus
+      com.docker.compose.project: monitoring
+      com.docker.compose.service: prometheus
     command:
       - --config.file=/etc/prometheus/prometheus.yml
       - --web.enable-remote-write-receiver
@@ -36,12 +41,17 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: "0.5"
+          cpus: "0.2"
           memory: "726m"
 
   tempo:
     image: grafana/tempo:2.9.0
     container_name: gf-tempo
+    labels:
+      project: monitoring
+      service.name: gf-tempo
+      com.docker.compose.project: monitoring
+      com.docker.compose.service: gf-tempo
     ports:
       - 3200:3200
     volumes:
@@ -65,12 +75,17 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: "1"
-          memory: "512m"
+          cpus: "0.3"
+          memory: "512mb"
 
   grafana:
     container_name: grafana
     image: grafana/grafana:12.3.1-ubuntu
+    labels:
+      project: monitoring
+      service.name: grafana
+      com.docker.compose.project: monitoring
+      com.docker.compose.service: grafana
     networks:
       - rates-api-network
       - accounting-api-network
@@ -88,7 +103,7 @@ services:
       GF_SERVER_ROOT_URL: https://${HOME_SERVER}/
       GF_SERVER_SERVE_FROM_SUB_PATH: "false"
       GF_SERVER_PROTOCOL: http
-      GF_INSTALL_PLUGINS: "https://github.com/raintank/crate-datasource/archive/master.zip;crate-datasource,grafana-clock-panel,grafana-worldmap-panel,natel-plotly-panel,grafana-exploretraces-app"
+      GF_PLUGINS_PREINSTALL: "https://github.com/raintank/crate-datasource/archive/master.zip;crate-datasource,grafana-clock-panel,natel-plotly-panel,grafana-exploretraces-app"
     ports:
       - 3000:3000
     volumes:
@@ -115,12 +130,17 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: "1"
-          memory: "1g"
+          cpus: "0.5"
+          memory: "1.5g"
 
   loki:
     image: grafana/loki:3.6.3
     container_name: gf-loki
+    labels:
+      project: monitoring
+      service.name: gf-loki
+      com.docker.compose.project: monitoring
+      com.docker.compose.service: gf-loki
     user: "10001:10001"
     networks:
       - rates-api-network
@@ -145,12 +165,19 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: "1"
-          memory: "1024m"
+          cpus: "0.5"
+          memory: "1g"
 
   alloy:
     image: grafana/alloy:v1.12.2
     container_name: gf-alloy
+    labels:
+      project: monitoring
+      service.name: gf-alloy
+      com.docker.compose.project: monitoring
+      com.docker.compose.service: gf-alloy
+    environment:
+      - HOSTNAME=${HOSTNAME}
     command:
       - run
       - --server.http.listen-addr=0.0.0.0:12345
@@ -186,29 +213,41 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: "1"
-          memory: "726m"
+          cpus: "0.2"
+          memory: "512mb"
     restart: unless-stopped
 
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:v0.55.1
+    image: ghcr.io/google/cadvisor:latest #v0.56.2
     container_name: cadvisor
+    labels:
+      project: monitoring
+      service.name: cadvisor
+      com.docker.compose.project: monitoring
+      com.docker.compose.service: cadvisor
     privileged: true
+    devices:
+      - /dev/kmsg:/dev/kmsg
     environment:
       - DOCKER_API_VERSION=1.52
-    command:
-      - "--containerd=/run/containerd/containerd.sock"
-      - "--docker_only=false"
-      - "--housekeeping_interval=10s"
+    command: >
+      - '--docker_only=true'
+      - '--housekeeping_interval=2m'
+      - '--max_housekeeping_interval=2m'
+      - '--disable_metrics=hugetlb,sched,perf_event,disk,diskIO,filesystem,percpu'
+      - '--event_storage_event_limit=500'
+      - '--event_storage_age_limit=30m'
+      - '--containerd=/run/containerd/containerd.sock'
     volumes:
-      - /dev/disk/:/dev/disk:ro
-      - /:/rootfs:ro
-      - /var/run:/var/run:rw
-      - /sys:/sys:ro
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-      - /var/lib/docker:/var/lib/docker:ro
+      # - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      # - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      # - /dev/disk/:/dev/disk:ro
       - /run/containerd/containerd.sock:/run/containerd/containerd.sock:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro # Mount Docker socket to cAdvisor
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      # - /proc:/host/proc:ro
     ports:
       - "8080:8080"
     networks:
@@ -222,17 +261,35 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: "2"
-          memory: "726m"
+          cpus: "0.2"
+          memory: 725M
+        reservations:
+          cpus: "0.10"
+          memory: 128M
 
   node-exporter:
-    image: prom/node-exporter:latest
+    image: prom/node-exporter:v1.10.2
     container_name: node-exporter
+    labels:
+      project: monitoring
+      service.name: node-exporter
+      com.docker.compose.project: monitoring
+      com.docker.compose.service: node-exporter
     pid: host
     command:
       - "--path.rootfs=/host"
+      - "--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($|/)"
+      - "--collector.filesystem.fs-types-exclude=^(sysfs|procfs|autofs|cgroup|overlay|nsfs|tmpfs|devtmpfs)$"
+      - "--collector.netclass"
+      - "--collector.netdev"
+      - "--collector.processes"
+      # - "--collector.systemd"
     volumes:
-      - "${DOCKER_NODE_PATHS_LOGS}:/host:ro,rslave"
+      # - "${DOCKER_NODE_PATHS_LOGS}:/host:ro,rslave"
+      - /:/host:ro,rslave
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
     ports:
       - "9100:9100"
     networks:
@@ -246,12 +303,17 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: "1"
+          cpus: "0.2"
           memory: "128m"
 
   mongo-db-exporter:
     image: percona/mongodb_exporter:2.37
     container_name: prometheus-mongo-db-exporter
+    labels:
+      project: monitoring
+      service.name: prometheus-mongo-db-exporter
+      com.docker.compose.project: monitoring
+      com.docker.compose.service: prometheus-mongo-db-exporter
     command:
       - "--mongodb.global-conn-pool"
       - "--collector.diagnosticdata"
@@ -285,6 +347,11 @@ services:
   kafka-exporter:
     image: danielqsj/kafka-exporter:v1.9.0
     container_name: prometheus-kafka-exporter
+    labels:
+      project: monitoring
+      service.name: prometheus-kafka-exporter
+      com.docker.compose.project: monitoring
+      com.docker.compose.service: prometheus-kafka-exporter
     command:
       - "--kafka.server=kafka:29092"
     ports:
@@ -309,6 +376,11 @@ services:
   mssql-exporter:
     image: allmantool/sql-monitoring-exporter:0.0.8
     container_name: prometheus-mssql-exporter
+    labels:
+      project: monitoring
+      service.name: prometheus-mssql-exporter
+      com.docker.compose.project: monitoring
+      com.docker.compose.service: prometheus-mssql-exporter
     environment:
       SERVER: ${SQL_SERVER}
       PORT: ${SQL_SERVER_2025_PORT}
@@ -336,6 +408,11 @@ services:
   redis-exporter:
     image: oliver006/redis_exporter:v1.80.1
     container_name: prometheus-redis-exporter
+    labels:
+      project: monitoring
+      service.name: prometheus-redis-exporter
+      com.docker.compose.project: monitoring
+      com.docker.compose.service: prometheus-redis-exporter
     environment:
       REDIS_ADDR: redis_server:6379
     ports:
@@ -360,6 +437,11 @@ services:
   nginx-exporter:
     image: nginx/nginx-prometheus-exporter:1.5.1
     container_name: nginx-exporter
+    labels:
+      project: monitoring
+      service.name: nginx-exporter
+      com.docker.compose.project: monitoring
+      com.docker.compose.service: nginx-exporter
     command:
       - "--nginx.scrape-uri=http://localhost:5407/stub_status"
     ports:
@@ -383,6 +465,11 @@ services:
   event-store-db-exporter:
     image: marcinbudny/eventstore_exporter:0.17.0
     container_name: event-store-db-exporter
+    labels:
+      project: monitoring
+      service.name: event-store-db-exporter
+      com.docker.compose.project: monitoring
+      com.docker.compose.service: event-store-db-exporter
     environment:
       - EVENTSTORE_URL=http://event-store-db:2113
       - EVENTSTORE_USER=admin

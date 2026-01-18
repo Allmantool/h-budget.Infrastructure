@@ -87,8 +87,12 @@ services:
       KAFKA_NUM_IO_THREADS: 8
       KAFKA_DEFAULT_REPLICATION_FACTOR: 1
 
-      KAFKA_HEAP_OPTS: "-Xmx2G -Xms2G"
-      KAFKA_JVM_PERFORMANCE_OPTS: "-XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35"
+      KAFKA_HEAP_OPTS: "-Xms1.5G -Xmx1.5G"
+      KAFKA_JVM_PERFORMANCE_OPTS: >
+        -XX:+UseG1GC
+        -XX:MaxGCPauseMillis=50
+        -XX:InitiatingHeapOccupancyPercent=30
+        -XX:+DisableExplicitGC
       KAFKA_JMX_PORT: 9997
       KAFKA_JMX_HOSTNAME: kafka
 
@@ -118,7 +122,7 @@ services:
           "CMD",
           "kafka-broker-api-versions",
           "--bootstrap-server",
-          "localhost:9092",
+          "127.0.0.1:9092",
         ]
       interval: 60s
       timeout: 30s
@@ -133,10 +137,10 @@ services:
       resources:
         limits:
           cpus: "3"
-          memory: "4g"
+          memory: "5g"
         reservations:
           cpus: "2"
-          memory: "1024mb"
+          memory: "3g"
     command:
       - bash
       - -c
@@ -160,7 +164,7 @@ services:
       - kafka-net
 
   shared-mongo-db:
-    image: mongo:7.0.27-rc0-jammy
+    image: mongo:7.0.28-jammy
     container_name: shared-mongo-db
     restart: always
     environment:
@@ -198,10 +202,10 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: "4"
+          cpus: "2"
           memory: "4g"
         reservations:
-          cpus: "2"
+          cpus: "1"
           memory: "2g"
 
   mssql-volume-init:
@@ -211,14 +215,15 @@ services:
     restart: "no"
     volumes:
       - ms-sql-data:/var/opt/mssql/data
+      - ms-sql-logs:/var/opt/mssql/log
       - ms-sql-tempdb:/var/opt/mssql/tempdb
-    command: >
-      sh -c "
-        echo 'Starting SQL volume init...' &&
-        chown -R 10001:0 /var/opt/mssql/data /var/opt/mssql/tempdb &&
-        chmod 770 /var/opt/mssql/data /var/opt/mssql/tempdb &&
-        echo 'SQL volumes initialized'
-      "
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        echo "Starting SQL volume init..."
+        chown -R 10001:0 /var/opt/mssql/data /var/opt/mssql/log /var/opt/mssql/tempdb
+        chmod -R 770 /var/opt/mssql/data /var/opt/mssql/log /var/opt/mssql/tempdb
+        echo "SQL volumes initialized"
     labels:
       role: "volume-initializer"
 
@@ -231,6 +236,7 @@ services:
       MSSQL_SA_PASSWORD: ${SQL_PASSWORD}
       # MSSQL_PID: "Developer"
       MSSQL_AGENT_ENABLED: "false"
+      MSSQL_MEMORY_LIMIT_MB: 12288
     ports:
       - "${SQL_SERVER_2022_PORT}:1433"
     ulimits:
@@ -240,7 +246,8 @@ services:
     volumes:
       - ${SQL_WMS_VOLUME_2022_PATH_BACKUPS}:/var/opt/mssql/data/backups
       - ms-sql-data:/var/opt/mssql/data
-      # - ms-sql-tempdb:/var/opt/mssql/tempdb
+      - ms-sql-logs:/var/opt/mssql/log
+      - ms-sql-tempdb:/var/opt/mssql/tempdb
       # - ${SQL_WMS_VOLUME_2022_PATH}:/var/opt/mssql/data
       # - ${SQL_WMS_VOLUME_2022_PATH_SYSTEM}:/var/opt/mssql/system
     networks:
@@ -269,7 +276,7 @@ services:
       resources:
         limits:
           cpus: "4"
-          memory: "6g"
+          memory: "13g"
         reservations:
           cpus: "2"
-          memory: "4g"
+          memory: "8g"
