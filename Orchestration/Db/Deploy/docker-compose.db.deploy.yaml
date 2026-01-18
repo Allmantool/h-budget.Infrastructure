@@ -164,7 +164,7 @@ services:
       - kafka-net
 
   shared-mongo-db:
-    image: mongo:7.0.27-rc0-jammy
+    image: mongo:7.0.28-jammy
     container_name: shared-mongo-db
     restart: always
     environment:
@@ -202,10 +202,10 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: "4"
+          cpus: "2"
           memory: "4g"
         reservations:
-          cpus: "2"
+          cpus: "1"
           memory: "2g"
 
   mssql-volume-init:
@@ -236,7 +236,7 @@ services:
       MSSQL_SA_PASSWORD: ${SQL_PASSWORD}
       # MSSQL_PID: "Developer"
       MSSQL_AGENT_ENABLED: "false"
-      MSSQL_MEMORY_LIMIT_MB: 5120
+      MSSQL_MEMORY_LIMIT_MB: 12288
     ports:
       - "${SQL_SERVER_2022_PORT}:1433"
     ulimits:
@@ -276,7 +276,7 @@ services:
       resources:
         limits:
           cpus: "4"
-          memory: "6g"
+          memory: "13g"
         reservations:
           cpus: "2"
-          memory: "4g"
+          memory: "8g"

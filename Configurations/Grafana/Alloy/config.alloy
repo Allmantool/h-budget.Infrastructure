@@ -177,15 +177,11 @@ discovery.docker "linux" {
 }
 
 ////////////////////////////////////////////////////////////
-// DOCKER LOGS
+// DOCKER LOGS - SIMPLIFIED WORKING VERSION
 ////////////////////////////////////////////////////////////
 loki.source.docker "containers" {
   host    = "unix:///var/run/docker.sock"
   targets = discovery.docker.linux.targets
-
-  labels = {
-    job = "docker",
-  }
 
   forward_to = [loki.process.docker.receiver]
 }
@@ -195,18 +191,34 @@ loki.process "docker" {
     older_than = "24h"
   }
 
+  // Extract Docker metadata - this automatically handles labels
+  stage.docker {}
+
+  // Clean container name
+  stage.replace {
+    expression = "^/"
+    replace    = ""
+    source     = "container_name"
+  }
+
+  // Set labels from Docker metadata
   stage.labels {
     values = {
-      service_name = "container.name",
-      container_id = "container.id",
-      image        = "container.image.name",
+      container_name = "container_name",
+      container_id   = "container_id",
+      image          = "image",
+      project        = "docker_label_project",
+      service_name   = "docker_label_service_name",
     }
   }
 
+  // Add static labels
   stage.static_labels {
     values = {
-      env    = "prod",
-      source = "docker",
+      env          = "prod",
+      job          = "docker-logs",
+      orchestrator = "docker",
+      source       = "container",
     }
   }
 
@@ -233,8 +245,20 @@ prometheus.exporter.cadvisor "docker" {
 prometheus.relabel "cadvisor_relabel" {
   rule {
     source_labels = ["__meta_docker_container_name"]
-    regex         = "/(.*)"
-    target_label  = "container"
+    regex         = "^/(.+?)(?:_\\d+)?$"
+    target_label  = "container_name"
+    replacement   = "$1"
+  }
+
+  rule {
+    source_labels = ["__meta_docker_container_label_project"]
+    target_label  = "project"
+    replacement   = "$1"
+  }
+
+  rule {
+    source_labels = ["__meta_docker_container_label_service_name"]
+    target_label  = "service_name"
     replacement   = "$1"
   }
 
@@ -250,14 +274,17 @@ prometheus.relabel "cadvisor_relabel" {
     replacement  = "prod"
   }
 
-  // Remove high-cardinality filesystem metrics
+  rule {
+    target_label = "orchestrator"
+    replacement  = "docker"
+  }
+
   rule {
     source_labels = ["__name__"]
     regex         = "container_fs_.*"
     action        = "drop"
   }
 
-  // Keep only useful container metrics
   rule {
     source_labels = ["__name__"]
     regex         = "container_cpu_usage_seconds_total|container_memory_usage_bytes|container_memory_working_set_bytes|container_network_.*|container_spec_.*"
@@ -289,7 +316,6 @@ prometheus.relabel "node_relabel" {
     replacement  = "prod"
   }
 
-  // Remove high-frequency time metrics
   rule {
     source_labels = ["__name__"]
     regex         = "node_time_.*"
