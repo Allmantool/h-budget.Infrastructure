@@ -1,3 +1,7 @@
+include:
+  - Infrastructure/Deploy/docker-compose.networks.deploy.yaml
+  - Infrastructure/Deploy/docker-compose.volumes.deploy.yaml
+
 name: monitoring
 services:
   prometheus:
@@ -25,6 +29,8 @@ services:
       - shared-monitoring-net
     ports:
       - 9090:9090
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - ${PROMETHEUS_CONFIG}:/etc/prometheus/prometheus.yml
       # - ${PROMETHEUS_DATA}:/prometheus
@@ -267,6 +273,23 @@ services:
           cpus: "0.10"
           memory: 128M
 
+  node-exporter-mount-init:
+    image: alpine:3.23
+    container_name: node-exporter-mount-init
+    user: root
+    restart: "no"
+    privileged: true
+    volumes:
+      - /:/host:rw
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        echo "Attempting to make / rshared for Node Exporter..."
+        mount --make-rshared /host && echo "/ is now rshared"
+        echo "Init complete"
+    labels:
+      role: "node-exporter-mount-init"
+
   node-exporter:
     image: prom/node-exporter:v1.10.2
     container_name: node-exporter
@@ -276,6 +299,8 @@ services:
       com.docker.compose.project: monitoring
       com.docker.compose.service: node-exporter
     pid: host
+    depends_on:
+      - node-exporter-mount-init # <-- dependency added
     command:
       - "--path.rootfs=/host"
       - "--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($|/)"
