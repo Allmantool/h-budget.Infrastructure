@@ -169,7 +169,7 @@ services:
           memory: "1g"
 
   alloy:
-    image: grafana/alloy:v1.12.2
+    image: grafana/alloy:v1.13.0
     container_name: gf-alloy
     labels:
       project: monitoring
