@@ -18,6 +18,16 @@ global:
 scrape_configs:
 
   # =========================
+  # CAMUNDA SERVICES
+  # =========================
+  - job_name: "camunda-actuator"
+    metrics_path: /actuator/prometheus
+    scheme: http
+    static_configs:
+      - targets:
+          - host.docker.internal:9600
+
+  # =========================
   # API SERVICES
   # =========================
   - job_name: "apis"
@@ -86,8 +96,8 @@ scrape_configs:
   # CONTAINER & HOST METRICS
   # =========================
   - job_name: "cadvisor"
-    scrape_interval: 15m
-    scrape_timeout: 10m
+    scrape_interval: 5m
+    scrape_timeout: 3m
     static_configs:
       - targets: ["cadvisor:8080"]
         labels:
