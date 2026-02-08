@@ -1,7 +1,3 @@
-include:
-  - Infrastructure/Deploy/docker-compose.networks.deploy.yaml
-  - Infrastructure/Deploy/docker-compose.volumes.deploy.yaml
-
 name: monitoring
 services:
   prometheus:
@@ -28,7 +24,7 @@ services:
       - event-store-db-net
       - shared-monitoring-net
     ports:
-      - 9090:9090
+      - 9190:9090
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
@@ -111,7 +107,7 @@ services:
       GF_SERVER_PROTOCOL: http
       GF_PLUGINS_PREINSTALL: "https://github.com/raintank/crate-datasource/archive/master.zip;crate-datasource,grafana-clock-panel,natel-plotly-panel,grafana-exploretraces-app"
     ports:
-      - 3000:3000
+      - 3500:3000
     volumes:
       - ${GRAFANA_CONFIG_FOLDER}:/etc/grafana/provisioning
       - gf-logs:/var/log/grafana
@@ -232,30 +228,30 @@ services:
       com.docker.compose.project: monitoring
       com.docker.compose.service: cadvisor
     privileged: true
-    devices:
-      - /dev/kmsg:/dev/kmsg
+    # devices:
+    #   - /dev/kmsg:/dev/kmsg
     environment:
       - DOCKER_API_VERSION=1.52
     command: >
-      - '--docker_only=true'
+      - '--docker_only=false'
       - '--housekeeping_interval=2m'
       - '--max_housekeeping_interval=2m'
-      - '--disable_metrics=hugetlb,sched,perf_event,disk,diskIO,filesystem,percpu'
+      - '--disable_metrics=hugetlb,sched,perf_event,percpu,tcp,udp,process,oom,referenced_memory,cpu_topology,cpuset,resctrl,memory_numa,cpu_load,irq,accelerators'
       - '--event_storage_event_limit=500'
       - '--event_storage_age_limit=30m'
       - '--containerd=/run/containerd/containerd.sock'
     volumes:
       # - /:/rootfs:ro
-      - /var/run:/var/run:ro
+      # - /var/run:/var/run:ro
       # - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
       # - /dev/disk/:/dev/disk:ro
       - /run/containerd/containerd.sock:/run/containerd/containerd.sock:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
-      # - /proc:/host/proc:ro
+      - /proc:/host/proc:ro
     ports:
-      - "8080:8080"
+      - "8195:8080"
     networks:
       - shared-monitoring-net
     restart: unless-stopped
@@ -267,10 +263,10 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: "0.2"
+          cpus: "0.75"
           memory: 725M
         reservations:
-          cpus: "0.10"
+          cpus: "0.25"
           memory: 128M
 
   node-exporter-mount-init:
@@ -293,6 +289,7 @@ services:
   node-exporter:
     image: prom/node-exporter:v1.10.2
     container_name: node-exporter
+    user: root
     labels:
       project: monitoring
       service.name: node-exporter
@@ -300,21 +297,27 @@ services:
       com.docker.compose.service: node-exporter
     pid: host
     depends_on:
-      - node-exporter-mount-init # <-- dependency added
+      - node-exporter-mount-init
     command:
       - "--path.rootfs=/host"
       - "--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($|/)"
       - "--collector.filesystem.fs-types-exclude=^(sysfs|procfs|autofs|cgroup|overlay|nsfs|tmpfs|devtmpfs)$"
-      - "--collector.netclass"
+      - "--collector.cpu"
+      - "--collector.loadavg"
+      - "--collector.meminfo"
+      - "--collector.diskstats"
+      # - "--collector.netclass"
       - "--collector.netdev"
-      - "--collector.processes"
+      # - "--collector.processes"
       # - "--collector.systemd"
+      - "--no-collector.hwmon"
+      - "--collector.disable-defaults"
     volumes:
       # - "${DOCKER_NODE_PATHS_LOGS}:/host:ro,rslave"
       - /:/host:ro,rslave
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
-      - /:/rootfs:ro
+      # - /:/rootfs:ro
     ports:
       - "9100:9100"
     networks:
@@ -408,9 +411,9 @@ services:
       com.docker.compose.service: prometheus-mssql-exporter
     environment:
       SERVER: ${SQL_SERVER}
-      PORT: ${SQL_SERVER_2025_PORT}
+      PORT: 1433
       USERNAME: SA
-      PASSWORD: ${WMS_SQL_PASSWORD}
+      PASSWORD: ${SQL_PASSWORD}
     ports:
       - 4000:4000
     networks:

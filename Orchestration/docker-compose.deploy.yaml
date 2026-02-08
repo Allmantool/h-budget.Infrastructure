@@ -49,7 +49,7 @@ services:
     environment:
       FLYWAY_USER: sa
       FLYWAY_PASSWORD: ${SQL_PASSWORD}
-      FLYWAY_URL: jdbc:sqlserver://homebudget-sql-server:${SQL_SERVER_2022_PORT};encrypt=false;trustServerCertificate=true;
+      FLYWAY_URL: jdbc:sqlserver://homebudget-sql-server:1433;encrypt=false;trustServerCertificate=true;
     volumes:
       - ${FLYWAY_SCRIPTS_PATH}:/flyway/sql
       - ${FLYWAY_CONFIG_PATH}:/flyway/conf
@@ -73,7 +73,7 @@ services:
     image: redis:8.4.0
     container_name: homebudget-cache
     ports:
-      - "6379:6379"
+      - "6579:6379"
     networks:
       - redis-network
     depends_on:

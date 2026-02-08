@@ -15,8 +15,8 @@ services:
       - "5207:80"
       - "5208:443"
     volumes:
-      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
-      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+      # - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      # - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
       - ${RATES_API_JSON_PATH}:/app/appsettings.json:ro
     networks:
       # - elastic-network

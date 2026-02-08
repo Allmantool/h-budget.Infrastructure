@@ -16,7 +16,6 @@ global:
 #             - "alertmanager:9093"
 
 scrape_configs:
-
   # =========================
   # CAMUNDA SERVICES
   # =========================
@@ -96,8 +95,8 @@ scrape_configs:
   # CONTAINER & HOST METRICS
   # =========================
   - job_name: "cadvisor"
-    scrape_interval: 5m
-    scrape_timeout: 3m
+    scrape_interval: 1m
+    scrape_timeout: 30s
     static_configs:
       - targets: ["cadvisor:8080"]
         labels:
@@ -133,8 +132,8 @@ scrape_configs:
           stack: "home-budget"
 
   - job_name: "mssql"
-    scrape_interval: 300s
-    scrape_timeout: 180s
+    scrape_interval: 30s
+    scrape_timeout: 15s
     static_configs:
       - targets: ["mssql-exporter:4000"]
         labels:
@@ -187,7 +186,7 @@ scrape_configs:
   # =========================
   - job_name: "prometheus"
     static_configs:
-      - targets: ["localhost:9090"]
+      - targets: ["prometheus:9090"] # Have to use inner port for himself
         labels:
           component: "monitoring"
           service: "prometheus"

@@ -1,4 +1,4 @@
-////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 // GLOBAL LOGGING
 ////////////////////////////////////////////////////////////
 logging {
@@ -100,9 +100,9 @@ otelcol.processor.tail_sampling "traces" {
 // TRACE BATCH → TEMPO
 ////////////////////////////////////////////////////////////
 otelcol.processor.batch "traces" {
-  timeout              = "5s"
-  send_batch_size      = 100
-  send_batch_max_size  = 100
+  timeout             = "5s"
+  send_batch_size     = 100
+  send_batch_max_size = 100
 
   output {
     traces = [otelcol.exporter.otlp.tempo.input]
@@ -123,9 +123,9 @@ otelcol.exporter.otlp "tempo" {
 // LOG BATCH → LOKI
 ////////////////////////////////////////////////////////////
 otelcol.processor.batch "logs" {
-  timeout              = "5s"
-  send_batch_size      = 100
-  send_batch_max_size  = 100
+  timeout             = "5s"
+  send_batch_size     = 100
+  send_batch_max_size = 100
 
   output {
     logs = [otelcol.exporter.loki.otlp.input]
@@ -148,6 +148,7 @@ loki.process "otlp" {
     }
   }
 
+  // Turn extracted values into labels
   stage.labels {
     values = {
       service_name      = "attributes.service.name",
@@ -160,9 +161,9 @@ loki.process "otlp" {
 
   stage.static_labels {
     values = {
-      job        = "otlp",
-      source     = "application",
-      env        = "prod",
+      job    = "otlp",
+      source = "application",
+      env    = "prod",
     }
   }
 
@@ -182,6 +183,8 @@ discovery.docker "linux" {
 loki.source.docker "containers" {
   host    = "unix:///var/run/docker.sock"
   targets = discovery.docker.linux.targets
+
+  // exclude = ["container_name=prometheus-mssql-exporter"]
 
   forward_to = [loki.process.docker.receiver]
 }
@@ -306,8 +309,48 @@ prometheus.scrape "cadvisor" {
 // HOST METRICS
 ////////////////////////////////////////////////////////////
 prometheus.exporter.unix "node" {
-  // Optional: Enable specific collectors to reduce load
-  // enabled_collectors = ["cpu", "filesystem", "memory", "diskstats", "loadavg"]
+  set_collectors = [
+    "cpu",
+    "filesystem",
+    "meminfo",
+    "diskstats",
+    "loadavg",
+    "netdev",
+    "stat",
+    "time",
+  ]
+
+  disable_collectors = [
+    "arp",
+    "bcache",
+    "bonding",
+    "conntrack", 
+    "edac",
+    "entropy",
+    "fibrechannel",
+    "hwmon",
+    "infiniband",
+    "ipvs",
+    "mdadm",
+    "nfs",
+    "nfsd",
+    "perf",
+    "powersupplyclass",
+    "pressure",
+    "rapl", 
+    "schedstat",
+    "sockstat",
+    "softnet",
+    "thermal_zone",
+    "udp_queues",
+    "vmstat",
+    "xfs",
+    "zfs",
+  ]
+
+  filesystem {
+    mount_points_exclude = "^/(dev|proc|sys|run|var/lib/docker/.+)($|/)"
+  }
 }
 
 prometheus.relabel "node_relabel" {

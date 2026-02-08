@@ -87,7 +87,13 @@ services:
       # - ${KAFKA_STORE}/data:/var/lib/kafka/data:Z
       - kafka-data:/var/lib/kafka/data:Z
     healthcheck:
-      test: ["CMD", "bash", "-c", "kafka-broker-api-versions --bootstrap-server localhost:29092 --timeout 5000"]
+      test:
+        [
+          "CMD",
+          "bash",
+          "-c",
+          "kafka-broker-api-versions --bootstrap-server localhost:29092 --timeout 5000",
+        ]
       interval: 15s
       timeout: 10s
       retries: 15
@@ -111,7 +117,7 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_DB_PASSWORD}
       - MONGO_INITDB_DATABASE=admin
     ports:
-      - "27017:27017"
+      - "27027:27017"
     volumes:
       # - ${MONGO_DB_VOLUME_PATH}:/data/db
       - mongo-db-data:/data/db

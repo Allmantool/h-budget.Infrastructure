@@ -14,7 +14,7 @@ services:
       - event-store-db-net
       - shared-monitoring-net
     ports:
-      - 9090:9090
+      - 9190:9090
     volumes:
       - ${PROMETHEUS_CONFIG}:/etc/prometheus/prometheus.yml
       # - ${PROMETHEUS_DATA}:/prometheus
@@ -41,7 +41,7 @@ services:
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
       GF_PLUGINS_PREINSTALL: "https://github.com/raintank/crate-datasource/archive/master.zip;crate-datasource,grafana-clock-panel,natel-plotly-panel"
     ports:
-      - 3000:3000
+      - 3500:3000
     volumes:
       - ${GRAFANA_CONFIG}:/etc/grafana/provisioning.yml
       - gf-logs:/var/log/grafana
@@ -79,7 +79,7 @@ services:
       # cgroupv2 (new Linux distros)
       - /sys/fs/cgroup/unified:/sys/fs/cgroup/unified:ro
     ports:
-      - "8080:8080"
+      - "8195:8080"
     networks:
       - shared-monitoring-net
 
@@ -125,7 +125,7 @@ services:
     container_name: prometheus-mssql-exporter
     environment:
       SERVER: homebudget-sql-server
-      PORT: 1433
+      PORT: ${SQL_SERVER_2022_PORT}
       USERNAME: SA
       PASSWORD: ${SQL_PASSWORD}
     ports:
