@@ -5,7 +5,7 @@ services:
     container_name: gateway-api
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-      # - ASPNETCORE_URLS=https://+:7398
+      - ASPNETCORE_URLS=http://+:80;https://+:7398
       # - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/${GATEWAY_API_CERTIFICATE_NAME}
       # - ASPNETCORE_Kestrel__Certificates__Default__Password=${GATEWAY_API_CERTIFICATE_PASSWORD}
     ports:
@@ -13,8 +13,8 @@ services:
     expose:
       - "80"
     volumes:
-      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
-      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+      # - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      # - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
       - ${GATEWAY_API_JSON_PATH}:/app/appsettings.json:ro
       - ${GATEWAY_API_OCELOT_PATH}:/app/ocelot.json:ro
       - ${GATEWAY_API_CERTIFICATE_PATH}:/app/${GATEWAY_API_CERTIFICATE_NAME}:ro
@@ -29,6 +29,11 @@ services:
       - homebudget-ui
       - homebudget-accounting-api
       - homebudget-rates-api
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "3"
     deploy:
       restart_policy:
         condition: on-failure

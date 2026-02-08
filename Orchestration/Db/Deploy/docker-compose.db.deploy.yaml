@@ -87,7 +87,7 @@ services:
       KAFKA_NUM_IO_THREADS: 8
       KAFKA_DEFAULT_REPLICATION_FACTOR: 1
 
-      KAFKA_HEAP_OPTS: "-Xms1.5G -Xmx1.5G"
+      KAFKA_HEAP_OPTS: "-Xms512M -Xmx1G"
       KAFKA_JVM_PERFORMANCE_OPTS: >
         -XX:+UseG1GC
         -XX:MaxGCPauseMillis=50
@@ -172,7 +172,7 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_DB_PASSWORD}
       - MONGO_INITDB_DATABASE=admin
     ports:
-      - "27017:27017"
+      - "27027:27017"
     command:
       - "--wiredTigerCacheSizeGB=2"
       - "--journalCommitInterval=100"

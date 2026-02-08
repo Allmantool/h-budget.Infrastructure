@@ -19,8 +19,8 @@ services:
     ports:
       - "7398:7398"
     volumes:
-      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
-      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+      # - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      # - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
       - ${GATEWAY_API_JSON_PATH}:/app/appsettings.json:ro
       - ${GATEWAY_API_OCELOT_PATH}:/app/ocelot.json:ro
       - ${GATEWAY_API_CERTIFICATE_PATH}:/app/hbudgetcert.pfx:ro
