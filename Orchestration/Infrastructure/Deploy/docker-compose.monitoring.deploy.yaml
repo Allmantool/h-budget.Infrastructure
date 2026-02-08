@@ -350,7 +350,7 @@ services:
       - "--mongodb.collstats-colls=admin.companies,admin.restaurants"
       - "--collect-all"
     environment:
-      - MONGODB_URI=mongodb://mongoadmin:${MONGO_DB_PASSWORD}@shared-mongo-db:27027/?maxPoolSize=1000&waitQueueTimeoutMS=15000
+      - MONGODB_URI=mongodb://mongoadmin:${MONGO_DB_PASSWORD}@shared-mongo-db:27017/?maxPoolSize=1000&waitQueueTimeoutMS=15000
     restart: unless-stopped
     ports:
       - "9216:9216"
@@ -442,7 +442,7 @@ services:
       com.docker.compose.project: monitoring
       com.docker.compose.service: prometheus-redis-exporter
     environment:
-      REDIS_ADDR: redis_server:6579
+      REDIS_ADDR: redis_server:6379
     ports:
       - 9121:9121
     networks:

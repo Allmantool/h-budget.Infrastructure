@@ -94,7 +94,7 @@ services:
       - "--mongodb.collstats-colls=admin.companies,admin.restaurnts"
       - "--collect-all"
     environment:
-      - MONGODB_URI=mongodb://mongoadmin:${MONGO_DB_PASSWORD}@shared-mongo-db:27027/?maxPoolSize=1000&waitQueueTimeoutMS=5000
+      - MONGODB_URI=mongodb://mongoadmin:${MONGO_DB_PASSWORD}@shared-mongo-db:27017/?maxPoolSize=1000&waitQueueTimeoutMS=5000
     restart: unless-stopped
     ports:
       - "9216:9216"
@@ -141,7 +141,7 @@ services:
     image: oliver006/redis_exporter:v1.80.2
     container_name: prometheus-redis-exporter
     environment:
-      REDIS_ADDR: redis_server:6579
+      REDIS_ADDR: redis_server:6379
     ports:
       - 9121:9121
     networks:
