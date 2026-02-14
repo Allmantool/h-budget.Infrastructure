@@ -38,7 +38,7 @@ services:
           memory: "512m"
 
   flyway:
-    image: flyway/flyway:12.0.0
+    image: flyway/flyway:12.0.1
     container_name: homebudget-flyway-migration
     command: >
       -baselineOnMigrate=true
