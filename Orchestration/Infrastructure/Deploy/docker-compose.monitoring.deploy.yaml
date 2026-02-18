@@ -47,7 +47,7 @@ services:
           memory: "726m"
 
   tempo:
-    image: grafana/tempo:2.10.0
+    image: grafana/tempo:2.10.1
     container_name: gf-tempo
     labels:
       project: monitoring
