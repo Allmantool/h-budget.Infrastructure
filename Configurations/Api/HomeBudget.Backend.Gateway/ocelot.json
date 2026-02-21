@@ -1,81 +1,81 @@
 {
-    "Routes": [
-      {
-        "UpstreamPathTemplate": "/gateway/accounting/{entity}/{paymentAccountId}/byId/{operationId}",
-        "UpstreamHttpMethod": [
-          "GET"
-        ],
-        "DownstreamPathTemplate": "/{entity}/{paymentAccountId}/byId/{operationId}",
-        "DownstreamScheme": "http",
-        "DownstreamHostAndPorts": [
-          {
-            "Host": "homebudget-accounting-api",
-            "Port": 80
-          }
-        ]
-      },
-      {
-        "UpstreamPathTemplate": "/gateway/accounting/{service}",
-        "UpstreamHttpMethod": [
-          "GET"
-        ],
-        "DownstreamPathTemplate": "/{service}",
-        "DownstreamScheme": "http",
-        "DownstreamHostAndPorts": [
-          {
-            "Host": "homebudget-accounting-api",
-            "Port": 80
-          }
-        ]
-      },
-      {
-        "UpstreamPathTemplate": "/gateway/accounting/{entity}/{paymentAccountId}",
-        "UpstreamHttpMethod": [
-          "GET",
-          "POST",
-          "DELETE",
-          "PATCH"
-        ],
-        "DownstreamPathTemplate": "/{entity}/{paymentAccountId}",
-        "DownstreamScheme": "http",
-        "DownstreamHostAndPorts": [
-          {
-            "Host": "homebudget-accounting-api",
-            "Port": 80
-          }
-        ]
-      },
-      {
-        "UpstreamPathTemplate": "/gateway/{service}/byId/{id}",
-        "UpstreamHttpMethod": [
-          "GET"
-        ],
-        "DownstreamPathTemplate": "/{service}/byId/{id}",
-        "DownstreamScheme": "http",
-        "DownstreamHostAndPorts": [
-          {
-            "Host": "homebudget-accounting-api",
-            "Port": 80
-          }
-        ]
-      },
-      {
-        "UpstreamPathTemplate": "/gateway/{service}",
-        "UpstreamHttpMethod": [
-          "GET",
-          "POST"
-        ],
-        "DownstreamPathTemplate": "/{service}",
-        "DownstreamScheme": "http",
-        "DownstreamHostAndPorts": [
-          {
-            "Host": "homebudget-rates-api",
-            "Port": 80
-          }
-        ]
-      }
-    ],
-    "GlobalConfiguration": {
-      "BaseUrl": "https://localhost:7398"
+  "Routes": [
+    {
+      "UpstreamPathTemplate": "/gateway/accounting/{entity}/{paymentAccountId}/byId/{operationId}",
+      "UpstreamHttpMethod": [
+        "GET"
+      ],
+      "DownstreamPathTemplate": "/{entity}/{paymentAccountId}/byId/{operationId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "homebudget-accounting-api",
+          "Port": 80
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/accounting/{service}",
+      "UpstreamHttpMethod": [
+        "GET"
+      ],
+      "DownstreamPathTemplate": "/{service}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "homebudget-accounting-api",
+          "Port": 80
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/accounting/{entity}/{paymentAccountId}",
+      "UpstreamHttpMethod": [
+        "GET",
+        "POST",
+        "DELETE",
+        "PATCH"
+      ],
+      "DownstreamPathTemplate": "/{entity}/{paymentAccountId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "homebudget-accounting-api",
+          "Port": 80
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/{service}/byId/{id}",
+      "UpstreamHttpMethod": [
+        "GET"
+      ],
+      "DownstreamPathTemplate": "/{service}/byId/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "homebudget-accounting-api",
+          "Port": 80
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/{service}",
+      "UpstreamHttpMethod": [
+        "GET",
+        "POST"
+      ],
+      "DownstreamPathTemplate": "/{service}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "homebudget-rates-api",
+          "Port": 80
+        }
+      ]
     }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:7398"
   }
+}
