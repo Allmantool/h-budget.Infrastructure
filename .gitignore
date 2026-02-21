@@ -15,3 +15,5 @@ node_modules/
 Configurations/prometheus-data/
 Configurations/Grafana/Log/grafana.log
 ubuntu-base.tar
+protonvpn-stable-release_1.0.8_all.deb
+Configurations/*
