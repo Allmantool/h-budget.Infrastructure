@@ -1,37 +1,39 @@
 name: logging
 services:
-  # kibana:
-  #   image: kibana:8.17.4
-  #   container_name: homebudget-kibana
-  #   ports:
-  #     - 5601:5601
-  #   environment:
-  #     - ELASTICSEARCH_HOSTS=http://elasticsearch:9200  # Use internal port 9200
-  #     - XPACK_MONITORING_ENABLED=false
-  #     - XPACK_SECURITY_ENABLED=false
-  #     # Increase migration timeouts
-  #     - ELASTICSEARCH_REQUEST_TIMEOUT=120000
-  #     - ELASTICSEARCH_PING_TIMEOUT=120000
-  #   networks:
-  #   - elastic-network
-  #   depends_on:
-  #     elasticsearch:
-  #       condition: service_healthy
-  #   healthcheck:
-  #     test: ["CMD", "wget", "-q", "--spider", "http://localhost:5601/api/status"]
-  #     interval: 10s
-  #     timeout: 10s
-  #     retries: 30
-  #   deploy:
-  #     restart_policy:
-  #       condition: on-failure
-  #       max_attempts: 10
-  #       delay: 25s
-  #       window: 180s
-  #     resources:
-  #       limits:
-  #         cpus: "1"
-  #         memory: "1g"
+  kibana:
+    image: kibana:8.17.4
+    container_name: homebudget-kibana
+    ports:
+      - 5601:5601
+    environment:
+      - ELASTICSEARCH_HOSTS=http://host.docker.internal:9200
+      - XPACK_MONITORING_ENABLED=false
+      - XPACK_SECURITY_ENABLED=false
+      # Increase migration timeouts
+      - ELASTICSEARCH_REQUEST_TIMEOUT=120000
+      - ELASTICSEARCH_PING_TIMEOUT=120000
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    # networks:
+    # - elastic-network
+    # depends_on:
+    #   elasticsearch:
+    #     condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:5601/api/status"]
+      interval: 10s
+      timeout: 10s
+      retries: 30
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 10
+        delay: 25s
+        window: 180s
+      resources:
+        limits:
+          cpus: "4"
+          memory: "3g"
 
   # elasticsearch:
   #   image: elasticsearch:8.17.4
@@ -100,7 +102,7 @@ services:
       # - ${SEQ_VOLUME_PATH}:/data
       - seq-data:/data
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:80/api/health"]
+      test: ["CMD-SHELL", "curl -f http://localhost/api || exit 1"]
       interval: 30s
       timeout: 20s
       retries: 15
@@ -112,8 +114,58 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: "2"
+          cpus: "6"
           memory: 6g
         reservations:
-          cpus: "1"
+          cpus: "2"
           memory: 2g
+
+  seq-bootstrap:
+    image: curlimages/curl:8.5.0
+    container_name: seq-bootstrap
+    depends_on:
+      seq:
+        condition: service_healthy
+    networks:
+      - seq-network
+    environment:
+      - seq_admin_password=${SEQ_DEFAULT_PASSWORD}
+    entrypoint: ["/bin/sh", "-c"]
+    command: >
+      echo "Waiting for Seq API..."
+      until curl -s -f http://seq:80/health > /dev/null; do
+        sleep 2
+      done
+
+      echo "Seq bootstrap starting..."
+      if [ -z "${seq_admin_password:-}" ]; then
+        echo "Error: seq_admin_password is not set" >&2
+        exit 1
+      fi
+
+      # Wait for Seq to be ready
+      echo "Waiting for Seq API..."
+      for i in $(seq 1 15); do
+        if curl -s -f --max-time 5 http://seq:80/health > /dev/null; then
+          break
+        fi
+        echo "Retry $i..."
+        sleep 3
+      done
+
+      # Set retention (Note: Verify if your version supports direct settings PUT)
+      echo "Setting retentiontime..."
+      curl -s -f -X PUT "http://seq:80/api/settings/setting-retentiontime" \
+        -H "Content-Type: application/json" \
+        -u "admin:${seq_admin_password}" \
+        -d '"86400"'
+
+      echo "Setting retentionspacequota..."
+      curl -s -f -X PUT "http://seq:80/api/settings/setting-retentionspacequota" \
+        -H "Content-Type: application/json" \
+        -u "admin:${seq_admin_password}" \
+        -d '"16106127360"'
+
+      echo "Triggering manual compaction..."
+      curl -s -f -X POST "http://seq:80/api/storage/compact" \
+        -u "admin:${seq_admin_password}"

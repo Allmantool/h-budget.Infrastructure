@@ -15,7 +15,7 @@ services:
       - ${NGINX_CONFIG}:/etc/nginx/nginx.conf:ro
       - ${UI_CERTIFICATE_PATH}:/etc/ssl/certs/${UI_CERTIFICATE_NAME}
       - ${UI_CERTIFICATE_KEY_PATH}:/etc/ssl/private/${UI_CERTIFICATE_KEY_NAME}
-      - ~/certs:/etc/nginx/certs:ro
+      # - ~/certs:/etc/nginx/certs:ro
     networks:
       # - elastic-network
       - seq-network

@@ -26,6 +26,8 @@ services:
       - rates-api-network
       - ui-network
       - shared-monitoring-net
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     deploy:
       restart_policy:
         condition: on-failure
