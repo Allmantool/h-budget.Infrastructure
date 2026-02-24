@@ -7,6 +7,9 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - ASPNETCORE_URLS=http://+:80
+      - OTEL_SERVICE_NAME=homebudget-accounting-api
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://gf-alloy:4317
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
     ports:
       - "5307:80"
       - "5308:443"

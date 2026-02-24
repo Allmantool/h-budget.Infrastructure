@@ -43,8 +43,8 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: "0.2"
-          memory: "726m"
+          cpus: "2"
+          memory: "1.5g"
 
   tempo:
     image: grafana/tempo:2.10.1
@@ -77,8 +77,8 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: "0.3"
-          memory: "512mb"
+          cpus: "1"
+          memory: "1.5g"
 
   grafana:
     container_name: grafana
@@ -167,8 +167,8 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: "0.5"
-          memory: "1g"
+          cpus: "6"
+          memory: "6g"
 
   alloy:
     image: grafana/alloy:v1.13.1
@@ -215,8 +215,8 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: "0.2"
-          memory: "512mb"
+          cpus: "1"
+          memory: "725mb"
     restart: unless-stopped
 
   cadvisor:
@@ -233,19 +233,19 @@ services:
     environment:
       - DOCKER_API_VERSION=1.52
     command: >
-      - '--docker_only=false'
-      - '--housekeeping_interval=2m'
-      - '--max_housekeeping_interval=2m'
+      - '--docker_only=true'
+      - '--housekeeping_interval=1m'
+      - '--max_housekeeping_interval=1m'
       - '--disable_metrics=hugetlb,sched,perf_event,percpu,tcp,udp,process,oom,referenced_memory,cpu_topology,cpuset,resctrl,memory_numa,cpu_load,irq,accelerators'
       - '--event_storage_event_limit=500'
       - '--event_storage_age_limit=30m'
       - '--containerd=/run/containerd/containerd.sock'
     volumes:
-      # - /:/rootfs:ro
-      # - /var/run:/var/run:ro
-      # - /sys:/sys:ro
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /dev/disk/:/dev/disk:ro
       - /var/lib/docker/:/var/lib/docker:ro
-      # - /dev/disk/:/dev/disk:ro
       - /run/containerd/containerd.sock:/run/containerd/containerd.sock:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
@@ -263,11 +263,11 @@ services:
         window: 180s
       resources:
         limits:
-          cpus: "0.75"
-          memory: 725M
+          cpus: "2"
+          memory: 2g
         reservations:
-          cpus: "0.25"
-          memory: 128M
+          cpus: "1"
+          memory: 512M
 
   node-exporter-mount-init:
     image: alpine:3.23
@@ -300,18 +300,20 @@ services:
       - node-exporter-mount-init
     command:
       - "--path.rootfs=/host"
-      - "--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($|/)"
-      - "--collector.filesystem.fs-types-exclude=^(sysfs|procfs|autofs|cgroup|overlay|nsfs|tmpfs|devtmpfs)$"
+      # - "--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($|/)"
+      # - "--collector.filesystem.fs-types-exclude=^(sysfs|procfs|autofs|cgroup|overlay|nsfs|tmpfs|devtmpfs)$"
       - "--collector.cpu"
       - "--collector.loadavg"
       - "--collector.meminfo"
       - "--collector.diskstats"
-      # - "--collector.netclass"
       - "--collector.netdev"
-      # - "--collector.processes"
-      # - "--collector.systemd"
+      - "--collector.stat"
       - "--no-collector.hwmon"
       - "--collector.disable-defaults"
+      - "--collector.processes"
+      - "--collector.systemd"
+      - "--collector.netclass"
+      - "--collector.filesystem"
     volumes:
       # - "${DOCKER_NODE_PATHS_LOGS}:/host:ro,rslave"
       - /:/host:ro,rslave
