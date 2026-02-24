@@ -121,7 +121,7 @@ services:
           memory: 2g
 
   seq-bootstrap:
-    image: curlimages/curl:8.5.0
+    image: curlimages/curl:8.18.0
     container_name: seq-bootstrap
     depends_on:
       seq:
