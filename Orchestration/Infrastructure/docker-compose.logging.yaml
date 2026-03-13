@@ -28,7 +28,7 @@ services:
   #     - elastic-network
 
   seq-input-gelf:
-    image: datalust/seq-input-gelf:3
+    image: datalust/seq-input-gelf:4
     container_name: seq-input-gelf
     restart: always
     networks:
