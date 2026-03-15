@@ -8,6 +8,7 @@ services:
       # - ASPNETCORE_HTTPS_PORT=5008
       # - ASPNETCORE_URLS=https://+:443;http://+:80
       - ASPNETCORE_URLS=http://+:80
+      - ObservabilityOptions__TelemetryEndpoint=http://gf-alloy:4317
       - OTEL_SERVICE_NAME=homebudget-rates-api
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://gf-alloy:4317
       - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
