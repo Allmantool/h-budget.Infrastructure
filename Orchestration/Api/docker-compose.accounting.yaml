@@ -18,6 +18,7 @@ services:
       # - ASPNETCORE_HTTPS_PORT=5008
       # - ASPNETCORE_URLS=https://+:443;http://+:80
       - ASPNETCORE_URLS=http://+:80
+      - ObservabilityOptions__TelemetryEndpoint=http://jaeger:4317
     ports:
       - "5307:80"
       - "5308:443"
@@ -44,6 +45,7 @@ services:
     image: allmantool/homebudget-accounting-payments-consumer-worker:${ACCOUNTING_PAYMENTS_CONSUMER_WORKER_IMAGE_V}
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ObservabilityOptions__TelemetryEndpoint=http://jaeger:4317
     volumes:
       # - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       # - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
