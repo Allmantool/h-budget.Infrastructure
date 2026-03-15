@@ -6,6 +6,9 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - ASPNETCORE_URLS=http://+:80;https://+:7398
+      - OTEL_SERVICE_NAME=homebudget-gateway-api
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://gf-alloy:4317
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
       - ObservabilityOptions__TelemetryEndpoint=http://gf-alloy:4317
       # - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/${GATEWAY_API_CERTIFICATE_NAME}
       # - ASPNETCORE_Kestrel__Certificates__Default__Password=${GATEWAY_API_CERTIFICATE_PASSWORD}
@@ -26,6 +29,8 @@ services:
       # - elastic-network
       - seq-network
       - redis-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       - homebudget-ui
       - homebudget-accounting-api

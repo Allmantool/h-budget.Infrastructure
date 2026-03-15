@@ -27,6 +27,8 @@ services:
       - kafka-net
       - event-store-db-net
       - mssql-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     deploy:
       replicas: 1
       restart_policy:
@@ -52,6 +54,9 @@ services:
     image: allmantool/homebudget-accounting-payments-consumer-worker:${ACCOUNTING_PAYMENTS_CONSUMER_WORKER_IMAGE_V}
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - OTEL_SERVICE_NAME=homebudget-accounting-payments-consumer-worker
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://gf-alloy:4317
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
       - ASPNETCORE_URLS=http://+:80
       - ObservabilityOptions__TelemetryEndpoint=http://gf-alloy:4317
       - PROMETHEUS__ENABLED=true
@@ -70,6 +75,8 @@ services:
       - ui-network
       - kafka-net
       - event-store-db-net
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     deploy:
       replicas: ${PAYMENT_CONSUMERS_AMOUNT}
       restart_policy:
