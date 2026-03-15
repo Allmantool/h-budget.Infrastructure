@@ -1,25 +1,47 @@
 {
   "Routes": [
     {
-      "UpstreamPathTemplate": "/gateway/accounting/{entity}/{paymentAccountId}/byId/{operationId}",
+      "UpstreamPathTemplate": "/gateway/accounting/notifications/account",
       "UpstreamHttpMethod": [
         "GET"
       ],
-      "DownstreamPathTemplate": "/{entity}/{paymentAccountId}/byId/{operationId}",
+      "DownstreamPathTemplate": "/notifications/account",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "homebudget-accounting-api",
           "Port": 80
         }
-      ]
+      ],
+      "RequestIdKey": "OcRequestId",
+      "UpstreamHttpVersion": "1.1",
+      "DownstreamHttpVersion": "1.1",
+      "HttpHandlerOptions": {
+        "AllowAutoRedirect": false,
+        "UseCookieContainer": false,
+        "UseTracing": true,
+        "MaxConnectionsPerServer": 1000
+      },
+      "UpstreamHeaderTransform": {
+        "Last-Event-ID": "{Last-Event-ID}"
+      },
+      "DownstreamHeaderTransform": {
+        "Cache-Control": "no-store",
+        "Connection": "keep-alive",
+        "Transfer-Encoding": "chunked"
+      },
+      "QoSOptions": {
+        "TimeoutValue": 0,
+        "ExceptionsAllowedBeforeBreaking": 1000
+      },
+      "Timeout": 0
     },
     {
-      "UpstreamPathTemplate": "/gateway/accounting/{service}",
+      "UpstreamPathTemplate": "/gateway/accounting/{entity}/{paymentAccountId}/byId/{operationId}",
       "UpstreamHttpMethod": [
         "GET"
       ],
-      "DownstreamPathTemplate": "/{service}",
+      "DownstreamPathTemplate": "/{entity}/{paymentAccountId}/byId/{operationId}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -37,6 +59,20 @@
         "PATCH"
       ],
       "DownstreamPathTemplate": "/{entity}/{paymentAccountId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "homebudget-accounting-api",
+          "Port": 80
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/accounting/{service}",
+      "UpstreamHttpMethod": [
+        "GET"
+      ],
+      "DownstreamPathTemplate": "/{service}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
