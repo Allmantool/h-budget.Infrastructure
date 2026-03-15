@@ -18,6 +18,7 @@ services:
       # - ASPNETCORE_HTTPS_PORT=5008
       # - ASPNETCORE_URLS=https://+:443;http://+:80
       - ASPNETCORE_URLS=http://+:80
+      - ObservabilityOptions__TelemetryEndpoint=http://jaeger:4317
     ports:
       - "5207:80"
       - "5208:443"

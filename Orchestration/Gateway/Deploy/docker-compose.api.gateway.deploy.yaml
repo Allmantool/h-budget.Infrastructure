@@ -6,6 +6,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - ASPNETCORE_URLS=http://+:80;https://+:7398
+      - ObservabilityOptions__TelemetryEndpoint=http://gf-alloy:4317
       # - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/${GATEWAY_API_CERTIFICATE_NAME}
       # - ASPNETCORE_Kestrel__Certificates__Default__Password=${GATEWAY_API_CERTIFICATE_PASSWORD}
     ports:

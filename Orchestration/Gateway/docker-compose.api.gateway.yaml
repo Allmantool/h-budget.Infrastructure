@@ -16,6 +16,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - ASPNETCORE_URLS=https://+:7398
+      - ObservabilityOptions__TelemetryEndpoint=http://jaeger:4317
     ports:
       - "7398:7398"
     volumes:
