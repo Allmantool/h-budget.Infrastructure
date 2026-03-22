@@ -493,7 +493,7 @@ services:
           memory: "128m"
 
   event-store-db-exporter:
-    image: marcinbudny/eventstore_exporter:0.17.0
+    image: marcinbudny/eventstore_exporter:0.17.1
     container_name: event-store-db-exporter
     labels:
       project: monitoring
