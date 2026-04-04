@@ -102,7 +102,7 @@ services:
       GF_FEATURE_TOGGLES_ENABLE: traceqlEditor
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
       GF_SERVER_DOMAIN: grafana.${HOME_SERVER}
-      GF_SERVER_ROOT_URL: https://${HOME_SERVER}/
+      GF_SERVER_ROOT_URL: https://grafana.${HOME_SERVER}/
       GF_SERVER_SERVE_FROM_SUB_PATH: "false"
       GF_SERVER_PROTOCOL: http
       GF_PLUGINS_PREINSTALL: "https://github.com/raintank/crate-datasource/archive/master.zip;crate-datasource,grafana-clock-panel,natel-plotly-panel,grafana-exploretraces-app"
