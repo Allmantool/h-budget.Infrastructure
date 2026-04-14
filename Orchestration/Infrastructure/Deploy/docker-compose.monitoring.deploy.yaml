@@ -2,7 +2,7 @@ name: monitoring
 services:
   prometheus:
     container_name: prometheus
-    image: prom/prometheus:v3.11.1
+    image: prom/prometheus:v3.11.2
     labels:
       project: monitoring
       service.name: prometheus
