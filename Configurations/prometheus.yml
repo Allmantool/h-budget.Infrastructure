@@ -8,6 +8,9 @@ global:
     environment: "local"
     monitoring: "prometheus"
 
+rule_files:
+  - /etc/prometheus/alerts.yml
+
 # Alertmanager wiring (ready, but safe if not running yet)
 # alerting:
 #   alertmanagers:
