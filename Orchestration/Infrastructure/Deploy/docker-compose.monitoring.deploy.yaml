@@ -138,7 +138,7 @@ services:
           memory: "1.5g"
 
   loki:
-    image: grafana/loki:3.7.1
+    image: grafana/loki:3.7.2
     container_name: gf-loki
     labels:
       project: monitoring
