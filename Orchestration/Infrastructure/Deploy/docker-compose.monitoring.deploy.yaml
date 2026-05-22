@@ -29,7 +29,7 @@ services:
       - "host.docker.internal:host-gateway"
     volumes:
       - ${PROMETHEUS_CONFIG}:/etc/prometheus/prometheus.yml
-      - ${PROMETHEUS_ALERT_RULES}:/etc/prometheus/alerts.yml:ro
+      # - ${PROMETHEUS_ALERT_RULES}:/etc/prometheus/alerts.yml:ro
       # - ${PROMETHEUS_DATA}:/prometheus
       - prometheus-data:/prometheus
     depends_on:
@@ -111,7 +111,7 @@ services:
       - 3500:3000
     volumes:
       - ${GRAFANA_CONFIG_FOLDER}:/etc/grafana/provisioning
-      - ${GRAFANA_DASHBOARDS_PATH}:/var/lib/grafana/dashboards:ro
+      # - ${GRAFANA_DASHBOARDS_PATH}:/var/lib/grafana/dashboards:ro
       - gf-logs:/var/log/grafana
       - gf-data:/var/lib/grafana
       # - gf-provisioning:/etc/grafana/provisioning

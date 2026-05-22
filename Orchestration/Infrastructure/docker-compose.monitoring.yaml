@@ -16,8 +16,8 @@ services:
     ports:
       - 9190:9090
     volumes:
-      - ${PROMETHEUS_CONFIG:-../../Configurations/prometheus.yml}:/etc/prometheus/prometheus.yml:ro
-      - ${PROMETHEUS_ALERT_RULES:-../../Configurations/Prometheus/alerts.yml}:/etc/prometheus/alerts.yml:ro
+      - ${PROMETHEUS_CONFIG:-../../Configurations/Prometheus/prometheus.yml}:/etc/prometheus/prometheus.yml:ro
+      # - ${PROMETHEUS_ALERT_RULES:-../../Configurations/Prometheus/alerts.yml}:/etc/prometheus/alerts.yml:ro
       # - ${PROMETHEUS_DATA}:/prometheus
       - prometheus-data:/prometheus
     depends_on:
@@ -46,7 +46,7 @@ services:
     volumes:
       - ${GRAFANA_DATASOURCES_CONFIG:-../../Configurations/Grafana/datasources/datasources.yaml}:/etc/grafana/provisioning/datasources/datasources.yaml:ro
       - ${GRAFANA_DASHBOARDS_PROVISIONING:-../../Configurations/Grafana/Provisioning/dashboards.yaml}:/etc/grafana/provisioning/dashboards/dashboards.yaml:ro
-      - ${GRAFANA_DASHBOARDS_PATH:-../../Configurations/Grafana/dashboards}:/var/lib/grafana/dashboards:ro
+      # - ${GRAFANA_DASHBOARDS_PATH:-../../Configurations/Grafana/dashboards}:/var/lib/grafana/dashboards:ro
       - gf-logs:/var/log/grafana
       - gf-data:/var/lib/grafana
       # - ${GF_PATHS_LOGS}:/var/log/grafana
