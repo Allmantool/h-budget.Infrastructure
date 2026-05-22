@@ -406,7 +406,7 @@ services:
           memory: "128m"
 
   mssql-exporter:
-    image: allmantool/sql-monitoring-exporter:0.0.8
+    image: allmantool/sql-monitoring-exporter:0.1.2
     container_name: prometheus-mssql-exporter
     labels:
       project: monitoring
@@ -414,24 +414,25 @@ services:
       com.docker.compose.project: monitoring
       com.docker.compose.service: prometheus-mssql-exporter
     environment:
-      SERVER: ${SQL_SERVER}
+      SERVER: homebudget-sql-server
       PORT: 1433
       USERNAME: SA
       PASSWORD: ${SQL_PASSWORD}
+      DATABASE: master
+      ENCRYPT: "true"
+      TRUST_SERVER_CERTIFICATE: "true"
+      MSSQL_ENCRYPT: "true"
+      MSSQL_TRUST_SERVER_CERTIFICATE: "true"
     ports:
-      - 4000:4000
+      - "4000:4000"
     networks:
       - mssql-network
       - shared-monitoring-net
     depends_on:
-      - prometheus
-      - ${SQL_SERVER}
+      homebudget-sql-server:
+        condition: service_healthy
+    restart: unless-stopped
     deploy:
-      restart_policy:
-        condition: on-failure
-        max_attempts: 10
-        delay: 5s
-        window: 180s
       resources:
         limits:
           cpus: "0.5"
@@ -525,3 +526,45 @@ services:
         limits:
           cpus: "1"
           memory: "128m"
+
+  elasticsearch-exporter:
+    profiles: ["observability"]
+    image: quay.io/prometheuscommunity/elasticsearch-exporter:latest
+    container_name: elasticsearch-exporter
+    command:
+      - "--es.uri=http://host.docker.internal:9200"
+      - "--es.all"
+      - "--es.indices"
+      - "--es.indices_settings"
+      - "--es.shards"
+      - "--web.listen-address=:9114"
+      - "--web.telemetry-path=/metrics"
+    ports:
+      # Expose to Docker host so Prometheus from another network can scrape it
+      - "9114:9114"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - camunda
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -qO- http://localhost:9114/metrics >/dev/null 2>&1 || exit 1",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: "256m"
+        reservations:
+          cpus: "0.05"
+          memory: "64m"

@@ -16,5 +16,11 @@ Configurations/prometheus-data/
 Configurations/Grafana/Log/grafana.log
 ubuntu-base.tar
 protonvpn-stable-release_1.0.8_all.deb
-Configurations/*
 rustdesk.deb
+
+Configurations/*
+!Configurations/Flyway/*
+!Configurations/Kafka/*
+!Configurations/Prometheus/*
+!Configurations/filebeat.docker.yml
+!Configurations/grafana-provisioning.yml
