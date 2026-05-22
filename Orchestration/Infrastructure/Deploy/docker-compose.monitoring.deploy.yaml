@@ -406,7 +406,7 @@ services:
           memory: "128m"
 
   mssql-exporter:
-    image: allmantool/sql-monitoring-exporter:0.0.8
+    image: allmantool/sql-monitoring-exporter:0.1.0
     container_name: prometheus-mssql-exporter
     labels:
       project: monitoring
