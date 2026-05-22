@@ -542,9 +542,9 @@ services:
     ports:
       # Expose to Docker host so Prometheus from another network can scrape it
       - "9114:9114"
-    depends_on:
-      elasticsearch:
-        condition: service_healthy
+    # depends_on:
+    #   elasticsearch:
+    #     condition: service_healthy
     networks:
       - camunda
     extra_hosts:
