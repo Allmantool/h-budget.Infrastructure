@@ -124,7 +124,7 @@ services:
       - kafka
 
   mssql-exporter:
-    image: allmantool/sql-monitoring-exporter:0.0.8
+    image: allmantool/sql-monitoring-exporter:0.1.2
     container_name: prometheus-mssql-exporter
     environment:
       SERVER: homebudget-sql-server
