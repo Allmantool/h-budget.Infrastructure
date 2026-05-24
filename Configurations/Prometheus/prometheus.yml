@@ -20,14 +20,47 @@ rule_files:
 
 scrape_configs:
   # =========================
-  # CAMUNDA SERVICES
+  # TITAN SERVICES
   # =========================
   - job_name: "camunda-actuator"
     metrics_path: /actuator/prometheus
     scheme: http
     static_configs:
       - targets:
-          - host.docker.internal:9600
+          - "host.docker.internal:9600"
+        labels:
+          component: "workflow"
+          service: "camunda-actuator"
+          stack: "titan"
+          environment: "local"
+
+  - job_name: "elasticsearch"
+    scrape_interval: 15s
+    scrape_timeout: 10s
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - "host.docker.internal:9114"
+        labels:
+          component: "search"
+          service: "elasticsearch"
+          cluster: "docker-cluster"
+          environment: "local"
+          stack: "titan"
+
+  - job_name: "service-bus-emulator"
+    scrape_interval: 15s
+    scrape_timeout: 10s
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - "host.docker.internal:8220"
+        labels:
+          component: "sb"
+          service: "service-bus-emulator"
+          cluster: "docker-cluster"
+          environment: "local"
+          stack: "titan"
 
   # =========================
   # API SERVICES
@@ -131,8 +164,13 @@ scrape_configs:
       - targets: ["mongo-db-exporter:9216"]
         labels:
           component: "database"
-          service: "mongodb"
-          stack: "home-budget"
+          service: "hb-mongodb"
+          stack: "hb"
+      - targets: ["host.docker.internal:9316"]
+        labels:
+          component: "database"
+          service: "t1d-mongodb"
+          stack: "t1d"
 
   - job_name: "mssql"
     scrape_interval: 30s
@@ -141,8 +179,14 @@ scrape_configs:
       - targets: ["mssql-exporter:4000"]
         labels:
           component: "database"
-          service: "mssql"
+          service: "hb-mssql"
           stack: "home-budget"
+      - targets: ["host.docker.internal:4100"]
+        labels:
+          component: "database"
+          service: "titan-mssql"
+          stack: "titan"
+          environment: "local"
 
   - job_name: "redis"
     scrape_interval: 15s
@@ -165,18 +209,6 @@ scrape_configs:
           service: "nginx"
           stack: "home-budget"
 
-  - job_name: "elasticsearch"
-    scrape_interval: 15s
-    scrape_timeout: 10s
-    metrics_path: /metrics
-    static_configs:
-      - targets:
-          - "host.docker.internal:9114"
-        labels:
-          service: "elasticsearch"
-          cluster: "docker-cluster"
-          environment: "local"
-
   - job_name: "kafka"
     scrape_interval: 30s
     scrape_timeout: 20s
@@ -195,6 +227,35 @@ scrape_configs:
           component: "eventstore"
           service: "eventstoredb"
           stack: "home-budget"
+
+  - job_name: "cloudflared-tunnels"
+    scrape_interval: 30s
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - host.docker.internal:2000
+        labels:
+          project: t1d-server
+          service: t1d-cloudflared-tunnel
+          component: tunnel
+      - targets:
+          - host.docker.internal:2100
+        labels:
+          project: cloudflare-ops-access
+          service: cloudflared
+          component: tunnel
+      - targets:
+          - host.docker.internal:2200
+        labels:
+          project: cloudflare-ops-internal
+          service: cloudflared
+          component: tunnel
+      - targets:
+          - host.docker.internal:2300
+        labels:
+          project: cloudflare-ops-public
+          service: cloudflared
+          component: tunnel
 
   # =========================
   # OBSERVABILITY STACK
