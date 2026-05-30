@@ -63,3 +63,9 @@ services:
     volumes:
       # - ${SEQ_VOLUME_PATH}:/data
       - seq-data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost/api || exit 1"]
+      interval: 30s
+      timeout: 20s
+      retries: 15
+      start_period: 30s

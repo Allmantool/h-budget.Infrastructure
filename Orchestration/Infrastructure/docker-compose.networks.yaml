@@ -5,6 +5,8 @@ networks:
     driver: bridge
   elastic-network:
     driver: bridge
+  seq-network:
+    driver: bridge
   redis-network:
     driver: bridge
   mssql-network:

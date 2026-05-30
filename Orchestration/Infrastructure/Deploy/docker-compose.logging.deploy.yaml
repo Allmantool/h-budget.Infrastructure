@@ -138,7 +138,7 @@ services:
       done
 
       echo "Seq bootstrap starting..."
-      if [ -z "${seq_admin_password:-}" ]; then
+      if [ -z "$${seq_admin_password:-}" ]; then
         echo "Error: seq_admin_password is not set" >&2
         exit 1
       fi
@@ -149,7 +149,7 @@ services:
         if curl -s -f --max-time 5 http://seq:80/health > /dev/null; then
           break
         fi
-        echo "Retry $i..."
+        echo "Retry $$i..."
         sleep 3
       done
 
@@ -157,15 +157,15 @@ services:
       echo "Setting retentiontime..."
       curl -s -f -X PUT "http://seq:80/api/settings/setting-retentiontime" \
         -H "Content-Type: application/json" \
-        -u "admin:${seq_admin_password}" \
+        -u "admin:$${seq_admin_password}" \
         -d '"86400"'
 
       echo "Setting retentionspacequota..."
       curl -s -f -X PUT "http://seq:80/api/settings/setting-retentionspacequota" \
         -H "Content-Type: application/json" \
-        -u "admin:${seq_admin_password}" \
+        -u "admin:$${seq_admin_password}" \
         -d '"16106127360"'
 
       echo "Triggering manual compaction..."
       curl -s -f -X POST "http://seq:80/api/storage/compact" \
-        -u "admin:${seq_admin_password}"
+        -u "admin:$${seq_admin_password}"
