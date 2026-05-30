@@ -28,16 +28,6 @@ distributor:
           endpoint: tempo:4317
 
 # -------------------------
-# Ingester (stores traces)
-# -------------------------
-ingester:
-  lifecycler:
-    ring:
-      kvstore:
-        store: inmemory
-      replication_factor: 1
-
-# -------------------------
 # Storage backend
 # -------------------------
 storage:
@@ -58,8 +48,6 @@ metrics_generator:
     remote_write:
       - url: http://prometheus:9090/api/v1/write
         send_exemplars: true
-  traces_storage:
-    path: /var/tempo/generator/traces
 
 # -------------------------
 # Overrides (optional, defaults)
@@ -67,5 +55,5 @@ metrics_generator:
 overrides:
   defaults:
     metrics_generator:
-      processors: [service-graphs, span-metrics, local-blocks] # enables metrics generator
+      processors: [service-graphs, span-metrics] # enables metrics generator
       generate_native_histograms: both
