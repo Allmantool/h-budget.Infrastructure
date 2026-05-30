@@ -22,6 +22,9 @@ services:
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
     networks:
       - kafka-net
+    depends_on:
+      kafka:
+        condition: service_healthy
 
   flyway:
     image: flyway/flyway:12.7.0
@@ -41,7 +44,8 @@ services:
     networks:
       - mssql-network
     depends_on:
-      - ${SQL_SERVER}
+      homebudget-sql-server:
+        condition: service_healthy
 
   redis_server:
     image: redis:8.8.0
@@ -51,4 +55,11 @@ services:
     networks:
       - redis-network
     depends_on:
-      - ${SQL_SERVER}
+      homebudget-sql-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s

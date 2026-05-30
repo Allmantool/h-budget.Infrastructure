@@ -195,7 +195,12 @@ scrape_configs:
         labels:
           component: "database"
           service: "redis"
-          stack: "home-budget"
+          stack: "hb"
+      - targets: ["host.docker.internal:9221"]
+        labels:
+          component: "database"
+          service: "redis"
+          stack: "titan-budget"
 
   # =========================
   # INFRASTRUCTURE

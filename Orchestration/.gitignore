@@ -1,0 +1,16 @@
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+!.env.template
+
+# Local certificates and private keys
+*.pfx
+*.p12
+*.pem
+*.key
+*.crt
+
+# Local runtime output
+*.log
+docker-compose.override.yml
