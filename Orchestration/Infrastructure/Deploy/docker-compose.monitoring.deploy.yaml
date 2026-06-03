@@ -83,7 +83,7 @@ services:
 
   grafana:
     container_name: grafana
-    image: grafana/grafana:13.0.1-ubuntu
+    image: grafana/grafana:13.0.2-ubuntu
     labels:
       project: monitoring
       service.name: grafana
