@@ -439,7 +439,7 @@ services:
           memory: "256m"
 
   redis-exporter:
-    image: oliver006/redis_exporter:v1.84.0
+    image: oliver006/redis_exporter:v1.85.0
     container_name: prometheus-redis-exporter
     labels:
       project: monitoring
