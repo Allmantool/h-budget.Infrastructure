@@ -27,7 +27,7 @@ services:
         condition: service_healthy
 
   flyway:
-    image: flyway/flyway:12.8.0
+    image: flyway/flyway:12.8.1
     container_name: homebudget-flyway-migration
     command: >
       -mixed=true 
