@@ -272,7 +272,7 @@ services:
           memory: 512M
 
   node-exporter-mount-init:
-    image: alpine:3.23
+    image: alpine:3.24
     container_name: node-exporter-mount-init
     user: root
     restart: "no"
