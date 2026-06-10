@@ -159,7 +159,7 @@ services:
       - kafka-net
 
   mssql-volume-init:
-    image: alpine:3.23
+    image: alpine:3.24
     container_name: mssql-volume-init
     user: root
     restart: "no"
