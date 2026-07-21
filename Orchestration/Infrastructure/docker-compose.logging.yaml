@@ -39,7 +39,7 @@ services:
       - "12201:12201/udp"
 
   seq:
-    image: datalust/seq:2025.2
+    image: datalust/seq:2026.1
     container_name: logging-seq
     ports:
       - 5341:80
