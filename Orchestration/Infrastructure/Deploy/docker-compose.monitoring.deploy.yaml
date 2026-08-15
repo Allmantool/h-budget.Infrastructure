@@ -468,7 +468,7 @@ services:
           memory: "128m"
 
   nginx-exporter:
-    image: nginx/nginx-prometheus-exporter:1.5.1
+    image: nginx/nginx-prometheus-exporter:1.5.3
     container_name: nginx-exporter
     labels:
       project: monitoring
