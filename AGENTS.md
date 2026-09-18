@@ -1,8 +1,10 @@
 # Home Ledger Repository Guide
 
-## Repository root
+## Workspace root
 
-`C:/Dev/h-budget` is one Git repository containing the SPA, backend services, gateway, and runtime configuration. Run Git commands from this root; do not treat `UI/` as an independent repository.
+`C:/Dev/h-budget` is a multi-repository workspace. The root repository owns orchestration, runtime configuration, shared migration scripts, and workspace-level Codex harness files. `UI/`, each API under `Api/`, and the gateway under `Gateways/` are independent Git repositories with their own histories and working trees.
+
+Run Git commands from the repository that owns the file. For workspace-wide discovery, inspect every applicable repository and preserve dirty work in each one.
 
 ## Main projects
 
@@ -28,8 +30,18 @@ Browser telemetry is separate from realtime. Requests named `traces` are usually
 ## Scope and verification
 
 - Frontend work primarily modifies `UI/**`; inspect other projects for contracts and root causes, but change them only when the SPA cannot correctly solve the proven issue.
-- Start PR audits with `git diff --stat origin/master...HEAD` and `git diff origin/master...HEAD`, then narrow by project.
+- Start PR audits in each affected repository with `git diff --stat origin/master...HEAD` and `git diff origin/master...HEAD`, then narrow by project.
 - Preserve unrelated working-tree changes. Report the exact validation commands run and their results; do not claim unexecuted checks passed.
+
+## Workspace Codex harness
+
+For non-trivial work, follow [the workspace task lifecycle](.codex/workflows/task-lifecycle.md). It defines the proportional scope contract, risk classification, scope-growth rule, verification evidence contract, and handoff expectations. Repository-specific `AGENTS.md` files and skills remain authoritative for implementation details.
+
+- Use `eng/verify-fast.ps1 -Area <area>` for the canonical inexpensive workspace check.
+- Use `eng/verify-full.ps1 -Area <area>` for the strongest locally executable area gate.
+- Use `-Area All` only for workspace-wide or cross-repository changes.
+- High and critical changes require the independent review workflow in [.codex/review/independent-review.md](.codex/review/independent-review.md).
+- Harness changes must pass `eng/verify-full.ps1 -Area Harness` and should add or update a case under `evals/` when they address a repeatable agent failure.
 
 ## Mandatory final SPA quality gates
 
