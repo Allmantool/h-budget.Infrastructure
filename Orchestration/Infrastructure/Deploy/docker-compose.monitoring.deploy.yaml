@@ -106,7 +106,7 @@ services:
       GF_SERVER_ROOT_URL: https://grafana.${HOME_SERVER}/
       GF_SERVER_SERVE_FROM_SUB_PATH: "false"
       GF_SERVER_PROTOCOL: http
-      GF_PLUGINS_PREINSTALL: "https://github.com/raintank/crate-datasource/archive/master.zip;crate-datasource,grafana-clock-panel,natel-plotly-panel,grafana-exploretraces-app"
+      GF_PLUGINS_PREINSTALL: "grafana-clock-panel"
     ports:
       - 3500:3000
     volumes:
