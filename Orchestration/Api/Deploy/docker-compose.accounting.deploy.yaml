@@ -8,7 +8,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - ASPNETCORE_URLS=http://+:80
       - ObservabilityOptions__TelemetryEndpoint=http://gf-alloy:4317
-      - OTEL_SERVICE_NAME=homebudget-accounting-api
+      - OTEL_SERVICE_NAME=HomeBudget-Accounting-Api
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://gf-alloy:4317
       - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
     ports:
@@ -52,6 +52,11 @@ services:
 
   homebudget-accounting-payments-consumer-worker:
     image: allmantool/homebudget-accounting-payments-consumer-worker:${ACCOUNTING_PAYMENTS_CONSUMER_WORKER_IMAGE_V}
+    labels:
+      project: accounting
+      service.name: homebudget-accounting-payments-consumer-worker
+      com.docker.compose.project: accounting-api
+      com.docker.compose.service: homebudget-accounting-payments-consumer-worker
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - OTEL_SERVICE_NAME=homebudget-accounting-payments-consumer-worker
@@ -59,8 +64,8 @@ services:
       - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
       - ASPNETCORE_URLS=http://+:80
       - ObservabilityOptions__TelemetryEndpoint=http://gf-alloy:4317
-      - PROMETHEUS__ENABLED=true
-      - PROMETHEUS__SCRAPE_ENDPOINT=/metrics
+      - SeqOptions__IsEnabled=true
+      - SeqOptions__Uri=http://logging-seq:5341
     expose:
       - "80"
     volumes:
@@ -68,13 +73,15 @@ services:
       # - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
       - ${ACCOUNTING_PAYMENTS_CONSUMER_WORKER_JSON_PATH}:/app/appsettings.json:ro
     networks:
-      - seq-network
-      - mongo-network
-      - mssql-network
-      - accounting-api-network
-      - ui-network
-      - kafka-net
-      - event-store-db-net
+      seq-network: null
+      mongo-network: null
+      mssql-network: null
+      accounting-api-network:
+        aliases:
+          - accounting-payments-worker-metrics
+      ui-network: null
+      kafka-net: null
+      event-store-db-net: null
     extra_hosts:
       - "host.docker.internal:host-gateway"
     deploy:

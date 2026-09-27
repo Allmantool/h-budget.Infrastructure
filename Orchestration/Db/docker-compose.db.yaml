@@ -98,7 +98,7 @@ services:
           "CMD",
           "bash",
           "-c",
-          "kafka-broker-api-versions --bootstrap-server localhost:29092 --timeout 5000",
+          "kafka-broker-api-versions --bootstrap-server localhost:29092",
         ]
       interval: 15s
       timeout: 10s
@@ -153,7 +153,10 @@ services:
       PAYMENT_CONSUMERS_AMOUNT: ${PAYMENT_CONSUMERS_AMOUNT:-1}
     volumes:
       - ${KAFKA_INIT_SCRIPT_PATH}:/tmp/kafka-init.sh
-    entrypoint: ["/bin/bash", "/tmp/kafka-init.sh"]
+    entrypoint:
+      - /bin/bash
+      - -c
+      - tr -d '\r' < /tmp/kafka-init.sh | /bin/bash
     restart: no
     networks:
       - kafka-net

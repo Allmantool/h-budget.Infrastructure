@@ -4,7 +4,7 @@ services:
     image: allmantool/homebudget-accounting-api:${ACCOUNTING_API_IMAGE_V}
     container_name: homebudget-accounting-api
     build:
-      context: .\..\..\Api\HomeBudget-Accounting-Api\
+      context: ../Api/HomeBudget-Accounting-Api
       dockerfile: dockerfile
       args:
         - SONAR_TOKEN=${SONAR_TOKEN}
@@ -43,22 +43,34 @@ services:
 
   homebudget-accounting-payments-consumer-worker:
     image: allmantool/homebudget-accounting-payments-consumer-worker:${ACCOUNTING_PAYMENTS_CONSUMER_WORKER_IMAGE_V}
+    build:
+      context: ../Api/HomeBudget-Accounting-Api
+      dockerfile: worker.dockerfile
+    labels:
+      service.name: homebudget-accounting-payments-consumer-worker
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_URLS=http://+:80
       - ObservabilityOptions__TelemetryEndpoint=http://jaeger:4317
+      - SeqOptions__IsEnabled=true
+      - SeqOptions__Uri=http://logging-seq:5341
+    expose:
+      - "80"
     volumes:
       # - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       # - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
-      - ${ACCOUNTING_API_JSON_PATH}:/app/appsettings.json:ro
+      - ${ACCOUNTING_PAYMENTS_CONSUMER_WORKER_JSON_PATH}:/app/appsettings.json:ro
     networks:
-      - seq-network
-      - redis-network
-      - mongo-network
-      - mssql-network
-      - accounting-api-network
-      - ui-network
-      - kafka-net
-      - event-store-db-net
+      seq-network: null
+      redis-network: null
+      mongo-network: null
+      mssql-network: null
+      accounting-api-network:
+        aliases:
+          - accounting-payments-worker-metrics
+      ui-network: null
+      kafka-net: null
+      event-store-db-net: null
     depends_on:
       - redis_server
       - kafka

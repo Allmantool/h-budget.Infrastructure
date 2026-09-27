@@ -1,13 +1,22 @@
 include:
-  - Infrastructure/docker-compose.networks.yaml
-  - Infrastructure/docker-compose.volumes.yaml
-  - Infrastructure/docker-compose.monitoring.yaml
-  - Infrastructure/docker-compose.logging.yaml
-  - Db/docker-compose.db.yaml
-  - Api/docker-compose.rates.yaml
-  - Api/docker-compose.accounting.yaml
-  - UI/docker-compose.ui.yaml
-  - Gateway/docker-compose.api.gateway.yaml
+  - path: Infrastructure/docker-compose.networks.yaml
+    project_directory: .
+  - path: Infrastructure/docker-compose.volumes.yaml
+    project_directory: .
+  - path: Infrastructure/docker-compose.monitoring.yaml
+    project_directory: .
+  - path: Infrastructure/docker-compose.logging.yaml
+    project_directory: .
+  - path: Db/docker-compose.db.yaml
+    project_directory: .
+  - path: Api/docker-compose.rates.yaml
+    project_directory: .
+  - path: Api/docker-compose.accounting.yaml
+    project_directory: .
+  - path: UI/docker-compose.ui.yaml
+    project_directory: .
+  - path: Gateway/docker-compose.api.gateway.yaml
+    project_directory: .
 
 name: home-budget
 services:
