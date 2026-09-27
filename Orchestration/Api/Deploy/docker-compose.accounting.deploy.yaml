@@ -39,7 +39,7 @@ services:
       resources:
         limits:
           cpus: "3"
-          memory: "1g"
+          memory: "1.5g"
     depends_on:
       kafka:
         condition: service_healthy
