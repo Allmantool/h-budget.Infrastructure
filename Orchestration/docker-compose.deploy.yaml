@@ -1,13 +1,22 @@
 include:
-  - Infrastructure/Deploy/docker-compose.networks.deploy.yaml
-  - Infrastructure/Deploy/docker-compose.volumes.deploy.yaml
-  - Infrastructure/Deploy/docker-compose.monitoring.deploy.yaml
-  - Infrastructure/Deploy/docker-compose.logging.deploy.yaml
-  - Db/Deploy/docker-compose.db.deploy.yaml
-  - Api/Deploy/docker-compose.rates.deploy.yaml
-  - Api/Deploy/docker-compose.accounting.deploy.yaml
-  - UI/Deploy/docker-compose.ui.deploy.yaml
-  - Gateway/Deploy/docker-compose.api.gateway.deploy.yaml
+  - path: Infrastructure/Deploy/docker-compose.networks.deploy.yaml
+    project_directory: .
+  - path: Infrastructure/Deploy/docker-compose.volumes.deploy.yaml
+    project_directory: .
+  - path: Infrastructure/Deploy/docker-compose.monitoring.deploy.yaml
+    project_directory: .
+  - path: Infrastructure/Deploy/docker-compose.logging.deploy.yaml
+    project_directory: .
+  - path: Db/Deploy/docker-compose.db.deploy.yaml
+    project_directory: .
+  - path: Api/Deploy/docker-compose.rates.deploy.yaml
+    project_directory: .
+  - path: Api/Deploy/docker-compose.accounting.deploy.yaml
+    project_directory: .
+  - path: UI/Deploy/docker-compose.ui.deploy.yaml
+    project_directory: .
+  - path: Gateway/Deploy/docker-compose.api.gateway.deploy.yaml
+    project_directory: .
 
 name: home-budget
 services:

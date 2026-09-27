@@ -24,8 +24,10 @@ datasources:
         datasourceUid: loki
         spanStartTimeShift: "-5m"
         spanEndTimeShift: "5m"
+        filterByTraceID: true
+        filterBySpanID: false
         tags:
-          - service.name
-          - container
+          - key: service.name
+            value: service_name
       serviceMap:
         datasourceUid: prometheus

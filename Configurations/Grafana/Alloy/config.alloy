@@ -62,7 +62,30 @@ otelcol.processor.attributes "traces" {
 // TRACE TAIL SAMPLING
 ////////////////////////////////////////////////////////////
 otelcol.processor.tail_sampling "traces" {
-  decision_wait = "10s"
+  // Hold the API segment long enough for the normal Kafka/EventStore/projection path.
+  // Durable redelivery can exceed this window, so downstream spans also have their
+  // own service policy instead of relying only on the original API segment.
+  decision_wait = "60s"
+
+  policy {
+    name = "accounting-payment-api"
+    type = "string_attribute"
+
+    string_attribute {
+      key    = "http.route"
+      values = ["payment-operations/{paymentAccountId}", "/payment-operations/{paymentAccountId}"]
+    }
+  }
+
+  policy {
+    name = "accounting-payments-worker"
+    type = "string_attribute"
+
+    string_attribute {
+      key    = "service.name"
+      values = ["homebudget-accounting-payments-consumer-worker"]
+    }
+  }
 
   policy {
     name = "errors"
@@ -177,12 +200,38 @@ discovery.docker "linux" {
   host = "unix:///var/run/docker.sock"
 }
 
+discovery.relabel "docker_logs" {
+  targets = discovery.docker.linux.targets
+
+  rule {
+    source_labels = ["__meta_docker_container_name"]
+    regex         = "/(.*)"
+    target_label  = "container_name"
+    replacement   = "$1"
+  }
+
+  rule {
+    source_labels = ["__meta_docker_container_id"]
+    target_label  = "container_id"
+  }
+
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_project"]
+    target_label  = "project"
+  }
+
+  rule {
+    source_labels = ["__meta_docker_container_label_service_name"]
+    target_label  = "service_name"
+  }
+}
+
 ////////////////////////////////////////////////////////////
 // DOCKER LOGS - SIMPLIFIED WORKING VERSION
 ////////////////////////////////////////////////////////////
 loki.source.docker "containers" {
   host    = "unix:///var/run/docker.sock"
-  targets = discovery.docker.linux.targets
+  targets = discovery.relabel.docker_logs.output
 
   // exclude = ["container_name=prometheus-mssql-exporter"]
 
@@ -196,24 +245,6 @@ loki.process "docker" {
 
   // Extract Docker metadata - this automatically handles labels
   stage.docker {}
-
-  // Clean container name
-  stage.replace {
-    expression = "^/"
-    replace    = ""
-    source     = "container_name"
-  }
-
-  // Set labels from Docker metadata
-  stage.labels {
-    values = {
-      container_name = "container_name",
-      container_id   = "container_id",
-      image          = "image",
-      project        = "docker_label_project",
-      service_name   = "docker_label_service_name",
-    }
-  }
 
   // Add static labels
   stage.static_labels {

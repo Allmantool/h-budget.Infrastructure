@@ -4,7 +4,7 @@ services:
     image: allmantool/homebudget-backend-gateway:${GATEWAY_API_IMAGE_V}
     container_name: gateway-api
     build:
-      context: .\..\..\Gateways\HomeBudget-Backend-Gateway\
+      context: ../Gateways/HomeBudget-Backend-Gateway
       dockerfile: dockerfile
       args:
         - SONAR_TOKEN=${SONAR_TOKEN}

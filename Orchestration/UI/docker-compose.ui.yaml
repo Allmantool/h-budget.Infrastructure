@@ -4,7 +4,7 @@ services:
     image: allmantool/homebudget-ui:${UI_IMAGE_V}
     container_name: homebudget-ui
     build:
-      context: .\..\..\UI
+      context: ../UI
       dockerfile: dockerfile
       args:
         - SONAR_TOKEN=${SONAR_TOKEN}
@@ -16,7 +16,7 @@ services:
       - "5408:443"
     volumes:
       - ${UI_JSON_PATH}:/usr/share/nginx/html/assets/config.json:ro
-      - ${NGINX_CONFIG}:/etc/nginx/nginx.conf:ro
+      - ${NGINX_LOCAL_CONFIG}:/etc/nginx/nginx.conf:ro
       - ${UI_CERTIFICATE_PATH}:/etc/ssl/certs/${UI_CERTIFICATE_NAME}
       - ${UI_CERTIFICATE_KEY_PATH}:/etc/ssl/certs/${UI_CERTIFICATE_KEY_NAME}
     networks:

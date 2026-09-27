@@ -95,34 +95,21 @@ scrape_configs:
           stack: "home-budget"
 
   # =========================
-  # ACCOUNTING WORKERS (Docker SD)
+  # ACCOUNTING WORKERS (Compose DNS)
   # =========================
   - job_name: "accounting-workers"
     metrics_path: /metrics
     scrape_interval: 30s
     honor_labels: true
 
-    docker_sd_configs:
-      - host: unix:///var/run/docker.sock
+    dns_sd_configs:
+      - names:
+          - "accounting-payments-worker-metrics"
+        type: A
+        port: 80
         refresh_interval: 15s
 
     relabel_configs:
-      # Keep only accounting worker containers
-      - source_labels: [__meta_docker_container_name]
-        regex: .*/homebudget-accounting-payments-consumer-worker.*
-        action: keep
-
-      # Build target address correctly
-      - source_labels: [__meta_docker_container_ip]
-        regex: (.+)
-        target_label: __address__
-        replacement: "$1:80"
-
-      # Clean instance label
-      - source_labels: [__meta_docker_container_name]
-        target_label: instance
-
-      # Static labels
       - target_label: component
         replacement: "worker"
 
