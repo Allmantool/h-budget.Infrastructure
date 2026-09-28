@@ -12,6 +12,13 @@ Configurations/Grafana/Lib/
 
 .fake
 node_modules/
+
+# Host-specific deployment environments and secrets
+Environments/.env
+Environments/.env.*
+!Environments/.env.example
+!Environments/.env.template
+
 Configurations/prometheus-data/
 Configurations/Grafana/Log/grafana.log
 ubuntu-base.tar
