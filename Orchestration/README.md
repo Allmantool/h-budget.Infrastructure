@@ -26,6 +26,12 @@ Docker Compose orchestration for the Home Budget local and deploy infrastructure
    .\scripts\validate-compose.ps1
    ```
 
+   For a host deployment, also verify every environment-derived bind source before starting containers:
+
+   ```powershell
+   .\scripts\validate-compose.ps1 -EnvFile ..\Environments\.env.vm2 -CheckBindSources
+   ```
+
    To validate the committed example contract without using local secrets:
 
    ```powershell
@@ -62,8 +68,12 @@ docker compose -f docker-compose.deploy.yaml config
 
 - `.env` is local-only and ignored.
 - `.env.example` is the committed contract for required variables and safe defaults.
+- Host-specific files such as `../Environments/.env.vm2` are local-only and ignored by the workspace repository.
 - Do not commit real passwords, tokens, certificates, production URLs, or personal absolute paths.
 - Sensitive variables include `SQL_PASSWORD`, `MONGO_DB_PASSWORD`, `GRAFANA_PASSWORD`, `SEQ_DEFAULT_PASSWORD`, certificate passwords, and token variables.
+- `docker compose --env-file <file>` supplies values used while Compose interpolates image names, ports, bind mounts, and container environment entries. A service-level `env_file:` only populates that container's runtime environment and cannot supply bind-mount source paths.
+- Relative bind sources are resolved from the Compose project directory (`Orchestration/` for these root Compose files), not from the directory containing the selected environment file.
+- Required deploy values use `${VAR:?message}` and stop model rendering when missing or empty. `PAYMENT_CONSUMERS_AMOUNT` is optional and defaults to `1`.
 
 ## Service URLs
 
