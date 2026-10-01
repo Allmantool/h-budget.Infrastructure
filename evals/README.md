@@ -1,10 +1,10 @@
 # Home Ledger Codex Evals
 
-Product tests answer whether Home Ledger works. These cases assess whether Codex follows the repository's engineering system while changing Home Ledger.
+Layer A product tests answer whether Home Ledger works. Layer B cases here assess whether Codex follows the engineering system while changing Home Ledger. Never use a Layer B pass to replace an application assertion.
 
 ## Case format
 
-Every case records category, risk, source, task prompt, expected behavior, forbidden behavior, executable evidence, and grading. `validate.ps1` verifies the corpus structure and required category coverage; it does not pretend to run Codex or grade semantic quality.
+The Markdown cases record category, risk, source, prompt, expected/forbidden behavior, evidence, and grading. Runnable cases additionally carry `case.json`, a disposable fixture, protected independent checks, fixed revisions, and a bounded budget. `validate.ps1` verifies both layers' structure and protected hashes; it does not pretend that unexecuted design cases passed.
 
 Run the structural gate:
 
@@ -12,16 +12,26 @@ Run the structural gate:
 ./evals/validate.ps1
 ```
 
-## Running an eval
+## Running a disposable automated eval
+
+The installed authenticated Codex client can run the synthetic pilot without an API key:
+
+```powershell
+./evals/run-case.ps1 -CaseManifest ./evals/runnable/harness-evidence/case.json
+```
+
+The runner inherits the caller's configured model and service tier. `-Model` and `-ServiceTier` are explicit compatibility overrides for diagnosing an older client; record either override in the retained evidence. Before execution, it verifies the declared workspace revision and protected fixture revision marker. Collection records independently observed revisions and rejects changed paths outside `allowedScope`; the grader exits `0` for PASS, `1` for FAIL, and `2` for BLOCKED. Textual prohibitions such as network access still require sandbox, transcript, or reviewer evidence. One run is a smoke check, not evidence that the harness improved over a prior version.
+
+## Running a manual application eval
 
 1. Create an isolated branch/worktree from the case's declared baseline.
 2. Give the task prompt to a fresh Codex context with normal repository instructions.
 3. Retain the resulting diff, specification/scope contract, command transcript, and final response.
-4. Run the case's executable evidence and applicable repository verification gate.
-5. Have an independent reviewer apply `graders/review-rubric.md`.
-6. Store only non-sensitive summarized results under `results/`; do not commit credentials, raw private data, or generated build output.
+4. Collect the case's executable outcomes and applicable repository verification gate without changing protected graders.
+5. Grade deterministic outcomes with `grade-result.ps1`, then have an independent reviewer apply `graders/review-rubric.md` for design and maintainability.
+6. Store only non-sensitive summarized results under `results/`; do not commit credentials, raw private data, generated build output, or full model transcripts.
 
-Cases may use a synthetic mutation (for example, introduce a forbidden dependency and prove the architecture check fails) or a real task. Reset an eval fixture through its isolated worktree, never by destructively resetting a developer's working tree.
+Cases may use a synthetic mutation or a trustworthy fixed revision. Reset an eval fixture through its isolated worktree, never by destructively resetting a developer's working tree. If no trustworthy pre-fix revision exists, label the case as a future baseline rather than inventing one.
 
 ## Metrics
 

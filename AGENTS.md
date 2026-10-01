@@ -37,11 +37,17 @@ Browser telemetry is separate from realtime. Requests named `traces` are usually
 
 For non-trivial work, follow [the workspace task lifecycle](.codex/workflows/task-lifecycle.md). It defines the proportional scope contract, risk classification, scope-growth rule, verification evidence contract, and handoff expectations. Repository-specific `AGENTS.md` files and skills remain authoritative for implementation details.
 
+- Use the [`home-ledger-delivery` skill](.agents/skills/home-ledger-delivery/SKILL.md) to route normal and complex changes.
+- Root OpenSpec changes under `openspec/changes/` own cross-repository intent; use the actual `$openspec-*` skills generated for Codex and keep application behavior specs linked rather than duplicated.
+- Native project roles live under `.codex/agents/`; default flow is Analyst -> Implementer -> Verifier, while high/critical work uses Requirements -> Architect -> Implementer -> Evaluator + Tester.
+- Follow the [development runbook](docs/runbooks/codex-development.md) for exact entry points and the [handoff contract](.codex/roles/handoff.md) between stages.
+
 - Use `eng/verify-fast.ps1 -Area <area>` for the canonical inexpensive workspace check.
 - Use `eng/verify-full.ps1 -Area <area>` for the strongest locally executable area gate.
 - Use `-Area All` only for workspace-wide or cross-repository changes.
 - High and critical changes require the independent review workflow in [.codex/review/independent-review.md](.codex/review/independent-review.md).
 - Harness changes must pass `eng/verify-full.ps1 -Area Harness` and should add or update a case under `evals/` when they address a repeatable agent failure.
+- `eng/check-harness.ps1 -Mode Repository` is the root-only CI gate; it does not claim nested application coverage.
 
 ## Mandatory final SPA quality gates
 

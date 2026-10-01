@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "empty-revisions",
+  "taskFile": "task.md",
+  "allowedScope": ["work/**"],
+  "startingRevisions": {},
+  "fixture": { "kind": "copy", "source": "fixture" },
+  "requirements": ["HLE-001"],
+  "expectedOutcomes": [{ "id": "outcome", "description": "Expected", "command": "pwsh", "arguments": [] }],
+  "requiredChecks": [{ "id": "check", "description": "Required", "command": "pwsh", "arguments": [] }],
+  "protectedFiles": [{ "path": "grader.txt", "sha256": "401678585EEA03FB5779B2D4A05238043311F144546DB4D8C2000B0E4ED64740" }],
+  "permittedActions": ["Edit synthetic files"],
+  "prohibitedActions": ["Access live systems"],
+  "budget": { "maxMinutes": 1 }
+}

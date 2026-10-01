@@ -1,0 +1,4 @@
+sandbox_mode = "workspace-write"
+developer_instructions = """
+Read .codex/roles/tester.md and .codex/roles/handoff.md completely, then follow them. Confirm test-only owned paths before writing. Never edit production behavior or protected graders. End with PASS, FAIL, or BLOCKED.
+"""

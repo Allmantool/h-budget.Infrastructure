@@ -1,3 +1,8 @@
+---
+name: infrastructure-compose-review
+description: Review Home Ledger Compose and observability changes for safety, reproducibility, persistence, networking, and secrets.
+---
+
 # Infrastructure Compose Review
 
 Use this skill when reviewing Docker Compose, infrastructure provisioning, observability, networking, volumes, secrets, environment files, and developer setup in this repository.

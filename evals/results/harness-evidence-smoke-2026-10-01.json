@@ -1,0 +1,49 @@
+{
+  "caseId": "harness-evidence-fail-closed",
+  "label": "single-run smoke check",
+  "runDate": "2026-10-01",
+  "execution": "fresh native Codex subagent in an isolated synthetic Git repository",
+  "startingRevisions": {
+    "infra": "b9e896d1a6ff92659aad2ecea2410bfb93c4294a",
+    "fixture": "synthetic-v1"
+  },
+  "candidateBaselineRevision": "0e774bc1b97751dbf2b0eda4352dae15deea0cda",
+  "harnessRevision": "b9e896d1a6ff92659aad2ecea2410bfb93c4294a",
+  "harnessSnapshotSha256": "171537FE788FE982305AB012A66EA364EC1236845AD6F26FDCD24741B79E7D50",
+  "model": null,
+  "codexCliVersion": "0.114.0",
+  "elapsedSeconds": 191.678,
+  "usageMetrics": null,
+  "humanCorrections": 0,
+  "candidateChanges": {
+    "files": 2,
+    "insertions": 51,
+    "deletions": 4
+  },
+  "verdict": "PASS",
+  "constraintViolations": [],
+  "regressions": [],
+  "checks": [
+    {
+      "id": "candidate-tests",
+      "status": "PASS",
+      "evidence": "Visible evidence tests passed."
+    },
+    {
+      "id": "hidden-boundary",
+      "status": "PASS",
+      "evidence": "Independent cases distinguished PASS, FAIL, NOT_RUN, and missing evidence."
+    },
+    {
+      "id": "protected-files",
+      "status": "PASS",
+      "evidence": "Git-diff collection found changes only in the two explicitly allowed files; protected grader hashes matched."
+    }
+  ],
+  "notes": [
+    "An earlier exploratory pilot exposed two defects in the hidden test invocation/fixture paths. Those protected fixtures were repaired before this fresh final smoke run.",
+    "A separate fresh codex exec discovery probe was BLOCKED before task execution because the installed 0.114.0 CLI cannot decode the current model catalog and the configured model requires a newer client.",
+    "The model and usage metrics were not exposed by the native subagent interface and are recorded as null rather than estimated.",
+    "Elapsed time is observed wall-clock time from isolated fixture creation through receipt of the agent's final result."
+  ]
+}

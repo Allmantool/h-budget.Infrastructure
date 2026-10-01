@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "caseId": "grader-contract",
+  "candidateBaselineRevision": "fixture-baseline-1",
+  "startingRevisions": { "fixture": "abc123" },
+  "outcomes": [{ "id": "outcome", "status": "PASS", "evidence": "independent outcome passed" }],
+  "checks": [],
+  "constraintViolations": [],
+  "elapsedSeconds": 1,
+  "humanCorrections": 0,
+  "usageMetrics": null
+}

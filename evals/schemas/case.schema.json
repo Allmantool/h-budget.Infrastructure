@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://home-ledger.local/evals/case.schema.json",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "id",
+    "taskFile",
+    "allowedScope",
+    "startingRevisions",
+    "fixture",
+    "requirements",
+    "expectedOutcomes",
+    "requiredChecks",
+    "protectedFiles",
+    "permittedActions",
+    "prohibitedActions",
+    "budget"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "id": { "type": "string", "minLength": 1 },
+    "taskFile": { "type": "string", "minLength": 1 },
+    "allowedScope": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+    "startingRevisions": { "type": "object", "minProperties": 1, "additionalProperties": { "type": "string" } },
+    "fixture": {
+      "type": "object",
+      "required": ["kind", "source"],
+      "properties": {
+        "kind": { "enum": ["copy", "git-worktree"] },
+        "source": { "type": "string", "minLength": 1 }
+      }
+    },
+    "requirements": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+    "expectedOutcomes": { "$ref": "#/$defs/commands" },
+    "requiredChecks": { "$ref": "#/$defs/commands" },
+    "protectedFiles": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["path", "sha256"],
+        "properties": {
+          "path": { "type": "string", "minLength": 1 },
+          "sha256": { "type": "string", "pattern": "^[A-Fa-f0-9]{64}$" }
+        }
+      }
+    },
+    "permittedActions": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+    "prohibitedActions": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+    "budget": {
+      "type": "object",
+      "required": ["maxMinutes"],
+      "properties": { "maxMinutes": { "type": "integer", "minimum": 1, "maximum": 120 } }
+    }
+  },
+  "$defs": {
+    "commands": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "description", "command", "arguments"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "description": { "type": "string", "minLength": 1 },
+          "command": { "type": "string", "minLength": 1 },
+          "arguments": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    }
+  }
+}

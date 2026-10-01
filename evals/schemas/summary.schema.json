@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://home-ledger.local/evals/summary.schema.json",
+  "type": "object",
+  "required": [
+    "caseId",
+    "label",
+    "runDate",
+    "execution",
+    "startingRevisions",
+    "candidateBaselineRevision",
+    "harnessRevision",
+    "harnessSnapshotSha256",
+    "model",
+    "codexCliVersion",
+    "elapsedSeconds",
+    "usageMetrics",
+    "humanCorrections",
+    "candidateChanges",
+    "verdict",
+    "constraintViolations",
+    "regressions",
+    "checks",
+    "notes"
+  ],
+  "properties": {
+    "caseId": { "type": "string", "minLength": 1 },
+    "label": { "const": "single-run smoke check" },
+    "runDate": { "type": "string", "minLength": 1 },
+    "execution": { "type": "string", "minLength": 1 },
+    "startingRevisions": { "type": "object", "minProperties": 1, "additionalProperties": { "type": "string" } },
+    "candidateBaselineRevision": { "type": "string", "minLength": 1 },
+    "harnessRevision": { "type": "string", "minLength": 1 },
+    "harnessSnapshotSha256": { "type": "string", "pattern": "^[A-Fa-f0-9]{64}$" },
+    "model": { "type": ["string", "null"] },
+    "codexCliVersion": { "type": "string", "minLength": 1 },
+    "elapsedSeconds": { "type": "number", "minimum": 0 },
+    "usageMetrics": { "type": ["object", "null"] },
+    "humanCorrections": { "type": "integer", "minimum": 0 },
+    "candidateChanges": {
+      "type": "object",
+      "required": ["files", "insertions", "deletions"],
+      "properties": {
+        "files": { "type": "integer", "minimum": 0 },
+        "insertions": { "type": "integer", "minimum": 0 },
+        "deletions": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "verdict": { "enum": ["PASS", "FAIL", "BLOCKED"] },
+    "constraintViolations": { "type": "array", "items": { "type": "string" } },
+    "regressions": { "type": "array", "items": { "type": "string" } },
+    "checks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "status", "evidence"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "status": { "enum": ["PASS", "FAIL", "NOT_RUN"] },
+          "evidence": { "type": "string" }
+        }
+      }
+    },
+    "notes": { "type": "array", "items": { "type": "string" } }
+  }
+}

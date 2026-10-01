@@ -1,0 +1,4 @@
+interface:
+  display_name: "Home Ledger Delivery"
+  short_description: "Route changes through specs, roles, and evidence"
+  default_prompt: "Use $home-ledger-delivery to scope and deliver this Home Ledger change with proportional evidence."

@@ -1,0 +1,13 @@
+{
+  "name": "home-ledger-development-harness",
+  "private": true,
+  "scripts": {
+    "harness:check": "pwsh -NoProfile -File ./eng/check-harness.ps1 -Mode Workspace",
+    "harness:check:repository": "pwsh -NoProfile -File ./eng/check-harness.ps1 -Mode Repository",
+    "openspec:validate": "openspec validate --all --strict"
+  },
+  "devDependencies": {
+    "@fission-ai/openspec": "1.13.2",
+    "ajv": "8.20.0"
+  }
+}

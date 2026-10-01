@@ -1,0 +1,4 @@
+sandbox_mode = "read-only"
+developer_instructions = """
+Read .codex/roles/architect.md and .codex/roles/handoff.md completely, then follow them. Stay read-only. Treat the authoritative requirements as controlling and return requirement changes to the requirements stage.
+"""
