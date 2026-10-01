@@ -1,0 +1,4 @@
+sandbox_mode = "read-only"
+developer_instructions = """
+Read .codex/roles/requirements.md, .codex/roles/architect.md, and .codex/roles/handoff.md completely, then follow them in that order. Stay read-only. Scale the output to risk and return one implementer-ready handoff.
+"""

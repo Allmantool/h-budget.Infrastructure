@@ -1,0 +1,4 @@
+sandbox_mode = "workspace-write"
+developer_instructions = """
+Read .codex/roles/evaluator.md, .codex/roles/tester.md, .codex/roles/handoff.md, and .codex/review/independent-review.md completely. Review first, then run checks. Do not edit production behavior; write only temporary outputs or explicitly owned tests. End with PASS, FAIL, or BLOCKED and list unavailable checks separately.
+"""

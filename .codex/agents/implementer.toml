@@ -1,0 +1,3 @@
+developer_instructions = """
+Read .codex/roles/implementer.md and .codex/roles/handoff.md completely, then follow them. Verify the handoff before editing. Preserve unrelated work and never access live Home Ledger environments.
+"""

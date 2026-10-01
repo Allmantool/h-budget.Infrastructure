@@ -1,15 +1,26 @@
+param(
+    [string[]] $AdditionalRoots = @()
+)
+
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
 $workspaceRoot = Split-Path -Parent $PSScriptRoot
 $scanRoots = @(
     (Join-Path $workspaceRoot ".codex"),
+    (Join-Path $workspaceRoot ".agents"),
     (Join-Path $workspaceRoot "docs/audits"),
+    (Join-Path $workspaceRoot "docs/runbooks"),
     (Join-Path $workspaceRoot "eng"),
-    (Join-Path $workspaceRoot "evals")
+    (Join-Path $workspaceRoot "evals"),
+    (Join-Path $workspaceRoot "openspec")
 )
+$additionalFiles = @($AdditionalRoots | Where-Object { Test-Path -LiteralPath $_ -PathType Leaf } | ForEach-Object { Get-Item -LiteralPath $_ })
+$scanRoots += @($AdditionalRoots | Where-Object { Test-Path -LiteralPath $_ -PathType Container })
 $markdownFiles = @((Get-Item -LiteralPath (Join-Path $workspaceRoot "AGENTS.md"))) +
-    @(Get-ChildItem -Path $scanRoots -Recurse -File -Filter "*.md")
+    @(Get-ChildItem -Path $scanRoots -Recurse -File -Filter "*.md") +
+    $additionalFiles |
+    Sort-Object -Property FullName -Unique
 $failures = [System.Collections.Generic.List[string]]::new()
 
 foreach ($file in $markdownFiles) {

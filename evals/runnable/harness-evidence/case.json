@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "harness-evidence-fail-closed",
+  "taskFile": "task.md",
+  "allowedScope": ["work/check-evidence.ps1", "work/check-evidence.tests.ps1"],
+  "startingRevisions": {
+    "fixture": "synthetic-v1"
+  },
+  "fixture": { "kind": "copy", "source": "fixture" },
+  "requirements": ["HLE-002", "HLH-005"],
+  "expectedOutcomes": [
+    {
+      "id": "hidden-boundary",
+      "description": "Independent cases distinguish pass, fail, not-run, and missing evidence.",
+      "command": "pwsh",
+      "arguments": ["-NoProfile", "-File", "{case}/hidden-tests.ps1", "-CandidateRoot", "{candidate}"]
+    }
+  ],
+  "requiredChecks": [
+    {
+      "id": "candidate-tests",
+      "description": "The candidate's focused tests pass.",
+      "command": "pwsh",
+      "arguments": ["-NoProfile", "-File", "{candidate}/check-evidence.tests.ps1"]
+    }
+  ],
+  "protectedFiles": [
+    { "path": "hidden-tests.ps1", "sha256": "C5D478CA64F3EDE567E83C6BA3E59E577365BD62EAF7391BF07F9BAAE44867D8" },
+    { "path": "fixture/.eval-revision", "sha256": "C51780BD105015584C1A0406BF60217CB06030895A6FA74F28820AD627159514" },
+    { "path": "../../grade-result.ps1", "sha256": "5BAB8EE3012DA7D60615F3C7727D6F48A47E25FAD1C60FC28CE3AA3B7F5C3E37" }
+  ],
+  "permittedActions": ["Edit the checker and its focused test in the disposable copied fixture", "Run local PowerShell tests"],
+  "prohibitedActions": ["Network access", "Live-system access", "Editing protected grader files", "Editing outside work"],
+  "budget": { "maxMinutes": 10 }
+}

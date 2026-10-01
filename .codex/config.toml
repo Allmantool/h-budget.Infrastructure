@@ -1,0 +1,33 @@
+[features]
+multi_agent = true
+
+[agents]
+max_threads = 3
+
+[agents.analyst]
+description = "Default planning role combining requirements analysis and proportional architecture planning."
+config_file = "agents/analyst.toml"
+
+[agents.implementer]
+description = "Implements approved changes and focused tests within explicitly owned paths."
+config_file = "agents/implementer.toml"
+
+[agents.verifier]
+description = "Default independent review and test role for an immutable candidate."
+config_file = "agents/verifier.toml"
+
+[agents.requirements]
+description = "Defines observable behavior, domain rules, acceptance scenarios, and unresolved assumptions."
+config_file = "agents/requirements.toml"
+
+[agents.architect]
+description = "Designs boundaries, contracts, recovery behavior, compatibility, and a scoped plan."
+config_file = "agents/architect.toml"
+
+[agents.evaluator]
+description = "Independently reviews requirement coverage, design, maintainability, scope, and operational constraints."
+config_file = "agents/evaluator.toml"
+
+[agents.tester]
+description = "Independently reproduces behavior and runs required checks without changing production behavior."
+config_file = "agents/tester.toml"

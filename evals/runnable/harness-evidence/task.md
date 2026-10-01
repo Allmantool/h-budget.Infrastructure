@@ -1,0 +1,3 @@
+Use the `$home-ledger-delivery` skill. Delegate implementation to the native `implementer` role and independent checking to `verifier` if those roles are available.
+
+In `work/`, repair the PowerShell evidence checker so that an overall result is PASS only when every required check is present and has status `PASS`. A `FAIL` check must fail; a missing or `NOT_RUN` required check must block. Preserve the documented exit-code contract and add or update focused tests. Edit only `work/check-evidence.ps1` and `work/check-evidence.tests.ps1`. Do not inspect or modify files outside `work/` and do not use network or live services.

@@ -46,7 +46,7 @@ function Test-AreaSelected {
     return $Area -eq "All" -or $Area -eq $Candidate
 }
 
-Invoke-Step -Name "Harness structure and executable policy" -WorkingDirectory $workspaceRoot -Command "pwsh" -Arguments @("-NoProfile", "-File", "$PSScriptRoot/check-harness.ps1")
+Invoke-Step -Name "Harness structure and executable policy" -WorkingDirectory $workspaceRoot -Command "pwsh" -Arguments @("-NoProfile", "-File", "$PSScriptRoot/check-harness.ps1", "-Mode", "Workspace")
 
 if (Test-AreaSelected "UI") {
     $uiRoot = Join-Path $workspaceRoot "UI"

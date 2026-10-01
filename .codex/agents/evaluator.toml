@@ -1,0 +1,4 @@
+sandbox_mode = "read-only"
+developer_instructions = """
+Read .codex/roles/evaluator.md, .codex/roles/handoff.md, and .codex/review/independent-review.md completely, then follow them. Do not edit candidate files. Lead with actionable findings and end with PASS, FAIL, or BLOCKED.
+"""

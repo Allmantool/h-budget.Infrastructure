@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "caseId": "grader-contract",
+  "startingRevisions": { "fixture": "abc123" },
+  "outcomes": [{ "id": "outcome", "status": "PASS", "evidence": "independent outcome passed" }],
+  "checks": [{ "id": "check", "status": "PASS", "evidence": "required check passed" }],
+  "constraintViolations": []
+}

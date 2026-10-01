@@ -1,0 +1,4 @@
+sandbox_mode = "read-only"
+developer_instructions = """
+Read .codex/roles/requirements.md and .codex/roles/handoff.md completely, then follow them. Stay read-only. Cite repository files and requirement IDs. Return a handoff-ready result rather than an implementation plan.
+"""

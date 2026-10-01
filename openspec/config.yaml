@@ -1,0 +1,27 @@
+schema: spec-driven
+
+context: |
+  Home Ledger is a multi-repository workspace. The root repository owns cross-repository specifications and the development harness; UI, Gateway, Rates, and Accounting are independent Git repositories.
+  Preserve unrelated dirty work and record each participating repository revision.
+  Never access vm2.linux / 192.168.5.159, real financial fixtures, shared volumes, Import/Resume, event replay, or offset reset without separate exact-target authorization.
+  Existing repository-local behavior specifications remain authoritative for detailed domain rules; link them rather than creating a competing requirement source.
+
+rules:
+  proposal:
+    - State allowed repositories, non-goals, highest risk, and live-environment boundary.
+    - For cross-repository work, name one authoritative contract owner and compatibility or deployment-order constraints.
+  specs:
+    - Give requirements stable IDs and include negative or recovery scenarios when correctness depends on them.
+    - Financial requirements must distinguish identities, counts, amounts, balances, and currency semantics.
+  tasks:
+    - Pair behavior tasks with focused regression evidence and an affected repository gate.
+    - Keep independent evaluation and testing separate from implementation.
+
+operations:
+  apply:
+    guidance:
+      - Follow .codex/workflows/task-lifecycle.md and preserve repository ownership boundaries.
+      - OpenSpec task completion is not verification evidence; retain exact command results separately.
+  archive:
+    guidance:
+      - Archive only after required repository gates and independent review are complete or explicitly recorded as blocked.

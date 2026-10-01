@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://home-ledger.local/evals/result.schema.json",
+  "type": "object",
+  "required": ["schemaVersion", "caseId", "candidateBaselineRevision", "startingRevisions", "outcomes", "checks", "constraintViolations", "elapsedSeconds", "humanCorrections"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "caseId": { "type": "string", "minLength": 1 },
+    "candidateBaselineRevision": { "type": "string", "minLength": 1 },
+    "startingRevisions": { "type": "object", "minProperties": 1, "additionalProperties": { "type": ["string", "null"] } },
+    "outcomes": { "$ref": "#/$defs/evidence" },
+    "checks": { "$ref": "#/$defs/evidence" },
+    "constraintViolations": { "type": "array", "items": { "type": "string" } },
+    "elapsedSeconds": { "type": "number", "minimum": 0 },
+    "humanCorrections": { "type": "integer", "minimum": 0 },
+    "usageMetrics": { "type": ["object", "null"] }
+  },
+  "$defs": {
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "status", "evidence"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "status": { "enum": ["PASS", "FAIL", "NOT_RUN"] },
+          "evidence": { "type": "string" }
+        }
+      }
+    }
+  }
+}
