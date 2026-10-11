@@ -28,7 +28,6 @@ rustdesk.deb
 Configurations/*
 !Configurations/Flyway/*
 !Configurations/Kafka/*
-!Configurations/Prometheus/
 !Configurations/Prometheus/*
 !Configurations/filebeat.docker.yml
 !Configurations/grafana-provisioning.yml
