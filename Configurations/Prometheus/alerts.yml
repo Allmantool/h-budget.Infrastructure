@@ -1,0 +1,225 @@
+groups:
+  - name: home-ledger-data-protection
+    interval: 30s
+    rules:
+      - alert: HomeLedgerDataProtectionCapabilityBlocked
+        expr: homebudget_dataprotection_capability_ready == 0
+        for: 15m
+        labels:
+          severity: warning
+          service: accounting-api
+        annotations:
+          summary: Independent recovery protection is not ready
+          description: "Data-protection capability validation is blocked. A local recovery-set creation does not satisfy independent protection."
+
+      - alert: HomeLedgerProtectedCutoffUnavailable
+        expr: homebudget_dataprotection_capability_ready == 1 and homebudget_dataprotection_protected_cutoff_available == 0
+        for: 5m
+        labels:
+          severity: critical
+          service: accounting-api
+        annotations:
+          summary: No independently protected recovery cutoff is available
+          description: "Recovery protection is configured but no integrity-verified independently published cutoff is available."
+
+      - alert: HomeLedgerProtectedCutoffAgeWarning
+        expr: homebudget_dataprotection_protected_cutoff_age >= 2700 and homebudget_dataprotection_protected_cutoff_age < 3600 and homebudget_dataprotection_capability_ready == 1 and homebudget_dataprotection_protected_cutoff_available == 1
+        for: 0m
+        labels:
+          severity: warning
+          service: accounting-api
+        annotations:
+          summary: Protected recovery cutoff is approaching the RPO limit
+          description: "The latest independently protected and integrity-verified common cutoff is {{ $value }} seconds old (warning at 45 minutes)."
+
+      - alert: HomeLedgerProtectedCutoffAgeCritical
+        expr: homebudget_dataprotection_protected_cutoff_age >= 3600 and homebudget_dataprotection_capability_ready == 1 and homebudget_dataprotection_protected_cutoff_available == 1
+        for: 0m
+        labels:
+          severity: critical
+          service: accounting-api
+        annotations:
+          summary: Protected recovery cutoff exceeds the RPO limit
+          description: "The latest independently protected and integrity-verified common cutoff is {{ $value }} seconds old (critical at 60 minutes)."
+
+      - alert: HomeLedgerDataProtectionPipelineFailure
+        expr: increase(homebudget_dataprotection_failures_total{stage=~"capture|copy|integrity_verification"}[10m]) > 0
+        for: 0m
+        labels:
+          severity: critical
+          service: accounting-api
+        annotations:
+          summary: Recovery capture, copy, or integrity verification failed
+          description: "A bounded data-protection pipeline stage failed. Protected cutoff is unchanged."
+
+      - alert: HomeLedgerDataProtectionOperationFailure
+        expr: increase(homebudget_dataprotection_operation_failures_total[10m]) > 0
+        for: 0m
+        labels:
+          severity: critical
+          service: accounting-api
+        annotations:
+          summary: Durable data-protection operation failed
+          description: "A background data-protection operation entered the failed state."
+
+      - alert: HomeLedgerDataProtectionReconciliationFailure
+        expr: increase(homebudget_dataprotection_reconciliation_failures_total[10m]) > 0
+        for: 0m
+        labels:
+          severity: critical
+          service: accounting-api
+        annotations:
+          summary: Data-protection reconciliation failed
+          description: "A data-protection operation failed while reconciling its target state."
+
+      - alert: HomeLedgerIntegrityVerificationStale
+        expr: homebudget_dataprotection_capability_ready == 1 and homebudget_dataprotection_integrity_verification_available == 1 and homebudget_dataprotection_integrity_verification_age >= 3600
+        for: 5m
+        labels:
+          severity: warning
+          service: accounting-api
+        annotations:
+          summary: Recovery integrity verification is stale
+          description: "No recovery artifact has passed integrity verification within the 60-minute protection window."
+
+      - alert: HomeLedgerRestoreDrillOverdue
+        expr: homebudget_dataprotection_capability_ready == 1 and homebudget_dataprotection_restore_drill_available == 1 and homebudget_dataprotection_restore_drill_age >= 2592000
+        for: 1h
+        labels:
+          severity: warning
+          service: accounting-api
+        annotations:
+          summary: Isolated recovery drill is overdue
+          description: "The last successful isolated restore drill is at least 30 days old. Integrity verification alone is not a restore drill."
+
+      - alert: HomeLedgerRestoreDrillNeverCompleted
+        expr: homebudget_dataprotection_capability_ready == 1 and homebudget_dataprotection_restore_drill_available == 0
+        for: 30d
+        labels:
+          severity: warning
+          service: accounting-api
+        annotations:
+          summary: No isolated recovery drill has completed
+          description: "Independent protection has been ready for 30 days without a successful isolated restore drill."
+
+      - alert: HomeLedgerRecoveryCapacityLow
+        expr: homebudget_dataprotection_capability_ready == 1 and homebudget_dataprotection_capacity_headroom_ratio < 0.15
+        for: 15m
+        labels:
+          severity: warning
+          service: accounting-api
+        annotations:
+          summary: Recovery storage capacity headroom is low
+          description: "Recovery storage has less than 15 percent measured capacity headroom."
+
+      - alert: HomeLedgerAcceptedPendingWorkStuck
+        expr: homebudget_dataprotection_accepted_pending_work > 0
+        for: 15m
+        labels:
+          severity: warning
+          service: accounting-api
+        annotations:
+          summary: Accepted pending commands remain unsettled
+          description: "Durably accepted work remains pending and must stay recoverable until settlement."
+
+  - name: home-ledger-payment-pipeline
+    interval: 30s
+    rules:
+      - alert: HomeLedgerOutboxStuck
+        expr: homebudget_outbox_pending_count > 0 and homebudget_outbox_oldest_pending_age > 600
+        for: 10m
+        labels:
+          severity: warning
+          service: accounting-api
+        annotations:
+          summary: Payment outbox has old pending rows
+          description: "Oldest pending outbox row is {{ $value }} seconds old. Check the outbox publisher and Kafka reachability."
+
+      - alert: HomeLedgerOutboxDeadLetters
+        expr: homebudget_outbox_failed_deadletter_count > 0
+        for: 5m
+        labels:
+          severity: critical
+          service: accounting-api
+        annotations:
+          summary: Payment outbox has failed or dead-lettered rows
+          description: "Payment outbox has {{ $value }} failed/dead-lettered row(s). Inspect dbo.OutboxAccountPayments.LastError."
+
+      - alert: HomeLedgerKafkaConsumerLagHigh
+        expr: max(homebudget_kafka_consumer_lag) > 1000 or max(kafka_consumergroup_lag{consumergroup=~".*accounting.*payments.*"}) > 1000
+        for: 10m
+        labels:
+          severity: warning
+          service: accounting-payments-consumer
+        annotations:
+          summary: Kafka payment consumer lag is high
+          description: "Kafka lag is above threshold for 10 minutes. Check worker health, consumer group assignment, and EventStore write latency."
+
+      - alert: HomeLedgerKafkaProcessingFailures
+        expr: increase(homebudget_kafka_processing_failures_total[10m]) > 0
+        for: 0m
+        labels:
+          severity: warning
+          service: accounting-payments-consumer
+        annotations:
+          summary: Kafka payment processing failures detected
+          description: "Payment consumer reported processing failures in the last 10 minutes."
+
+      - alert: HomeLedgerEventStoreAppendFailures
+        expr: increase(homebudget_eventstore_append_failures_total[10m]) > 0
+        for: 0m
+        labels:
+          severity: critical
+          service: accounting-payments-consumer
+        annotations:
+          summary: EventStore append failures detected
+          description: "EventStore append failed for payment events. Inspect worker logs by CorrelationId, MessageId, and StreamId."
+
+      - alert: HomeLedgerEventStoreDlqGrowing
+        expr: increase(homebudget_eventstore_deadlettered_total[15m]) > 0 or increase(homebudget_eventstore_dlq_count[15m]) > 0
+        for: 0m
+        labels:
+          severity: critical
+          service: accounting-payments-consumer
+        annotations:
+          summary: EventStore dead-letter queue has new payment events
+          description: "New payment events were written to the EventStore dead-letter stream."
+
+      - alert: HomeLedgerProjectionLagHigh
+        expr: homebudget_projection_lag > 900
+        for: 10m
+        labels:
+          severity: warning
+          service: accounting-payments-consumer
+        annotations:
+          summary: Payment projection lag is high
+          description: "Payment projection lag is {{ $value }} seconds. Check EventStore subscription and MongoDB writes."
+
+      - alert: HomeLedgerProjectionFailures
+        expr: increase(homebudget_projection_failures_total[10m]) > 0
+        for: 0m
+        labels:
+          severity: critical
+          service: accounting-payments-consumer
+        annotations:
+          summary: Payment projection failures detected
+          description: "Projection sync failed. Query _projection_audit for failed runs and inspect logs by StreamId."
+
+      - alert: HomeLedgerReconciliationFailures
+        expr: increase(homebudget_reconciliation_failures_total[10m]) > 0
+        for: 0m
+        labels:
+          severity: critical
+          service: accounting-payments-consumer
+        annotations:
+          summary: Migration/projection reconciliation failure detected
+          description: "History reconciliation failed during payment projection rewrite."
+
+      - alert: HomeLedgerReadinessFailed
+        expr: min_over_time(aspnetcore_healthcheck_status{health_check_name=~"sql-server|mongodb|kafka|eventstoredb|redis"}[5m]) == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: Accounting dependency readiness failed
+          description: "One or more readiness checks are unhealthy for 5 minutes."
