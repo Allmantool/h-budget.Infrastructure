@@ -11,6 +11,31 @@ services:
       - OTEL_SERVICE_NAME=HomeBudget-Accounting-Api
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://gf-alloy:4317
       - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+      - DataProtectionApi__Enabled=${DATA_PROTECTION_API_ENABLED}
+      - DataProtectionApi__Authority=${DATA_PROTECTION_AUTHORITY}
+      - DataProtectionApi__Audience=${DATA_PROTECTION_AUDIENCE}
+      - DataProtectionApi__AdministratorClaimType=${DATA_PROTECTION_ADMIN_CLAIM_TYPE}
+      - DataProtectionApi__AdministratorClaimValue=${DATA_PROTECTION_ADMIN_CLAIM_VALUE}
+      - DataProtectionApi__RequiredScope=${DATA_PROTECTION_REQUIRED_SCOPE}
+      - DataProtectionRecovery__Enabled=${DATA_PROTECTION_RECOVERY_ENABLED}
+      - DataProtectionRecovery__BackupCadenceMinutes=${DATA_PROTECTION_BACKUP_CADENCE_MINUTES}
+      - DataProtectionRecovery__MaximumRpoMinutes=${DATA_PROTECTION_MAXIMUM_RPO_MINUTES}
+      - DataProtectionRecovery__TargetRtoMinutes=${DATA_PROTECTION_TARGET_RTO_MINUTES}
+      - DataProtectionRecovery__PitrWindowDays=${DATA_PROTECTION_PITR_WINDOW_DAYS}
+      - DataProtectionRecovery__AllRecoveryPointsHours=${DATA_PROTECTION_ALL_POINTS_HOURS}
+      - DataProtectionRecovery__DailyRecoveryPointsDays=${DATA_PROTECTION_DAILY_POINTS_DAYS}
+      - DataProtectionRecovery__MonthlyRecoveryPointsMonths=${DATA_PROTECTION_MONTHLY_POINTS_MONTHS}
+      - DataProtectionRecovery__RestoreDrillIntervalDays=${DATA_PROTECTION_RESTORE_DRILL_INTERVAL_DAYS}
+      - DataProtectionRecovery__ProtectedCutoffWarningMinutes=${DATA_PROTECTION_CUTOFF_WARNING_MINUTES}
+      - DataProtectionRecovery__ProtectedCutoffCriticalMinutes=${DATA_PROTECTION_CUTOFF_CRITICAL_MINUTES}
+      - DataProtectionRecovery__RecordChangeThreshold=${DATA_PROTECTION_RECORD_CHANGE_THRESHOLD}
+      - DataProtectionRecovery__ByteChangeThreshold=${DATA_PROTECTION_BYTE_CHANGE_THRESHOLD}
+      - DataProtectionRecovery__MaximumCoalescingMinutes=${DATA_PROTECTION_MAXIMUM_COALESCING_MINUTES}
+      - DataProtectionRecovery__BackupProvider=${DATA_PROTECTION_BACKUP_PROVIDER}
+      - DataProtectionRecovery__IndependentStore=${DATA_PROTECTION_INDEPENDENT_STORE}
+      - DataProtectionRecovery__KeyReference=${DATA_PROTECTION_KEY_REFERENCE}
+      - DataProtectionRecovery__NotificationTarget=${DATA_PROTECTION_NOTIFICATION_TARGET}
+      - DataProtectionRecovery__RecoveryHostResourceId=${DATA_PROTECTION_RECOVERY_HOST_RESOURCE_ID}
     ports:
       - "5307:80"
       - "5308:443"
@@ -66,6 +91,9 @@ services:
       - ObservabilityOptions__TelemetryEndpoint=http://gf-alloy:4317
       - SeqOptions__IsEnabled=true
       - SeqOptions__Uri=http://logging-seq:5341
+      - DataProtectionRecovery__Enabled=${DATA_PROTECTION_RECOVERY_ENABLED}
+      - DataProtectionRecovery__BackupCadenceMinutes=${DATA_PROTECTION_BACKUP_CADENCE_MINUTES}
+      - DataProtectionRecovery__MaximumCoalescingMinutes=${DATA_PROTECTION_MAXIMUM_COALESCING_MINUTES}
     expose:
       - "80"
     volumes:
