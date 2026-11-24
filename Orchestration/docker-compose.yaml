@@ -57,7 +57,7 @@ services:
         condition: service_healthy
 
   redis_server:
-    image: redis:8.10.3
+    image: redis:8.12.0
     container_name: homebudget-cache
     ports:
       - "6579:6379"
