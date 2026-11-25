@@ -1,0 +1,68 @@
+rule_files:
+  - ../alerts.yml
+
+evaluation_interval: 1m
+
+tests:
+  - name: local captures do not suppress the 45-minute protected-cutoff warning
+    interval: 1m
+    input_series:
+      - series: homebudget_dataprotection_capability_ready
+        values: "1"
+      - series: homebudget_dataprotection_protected_cutoff_available
+        values: "1"
+      - series: homebudget_dataprotection_protected_cutoff_age
+        values: "2700"
+      - series: 'homebudget_dataprotection_recovery_sets_total{state="created"}'
+        values: "8"
+    alert_rule_test:
+      - eval_time: 0m
+        alertname: HomeLedgerProtectedCutoffAgeWarning
+        exp_alerts:
+          - exp_labels:
+              severity: warning
+              service: accounting-api
+            exp_annotations:
+              summary: Protected recovery cutoff is approaching the RPO limit
+              description: "The latest independently protected and integrity-verified common cutoff is 2700 seconds old (warning at 45 minutes)."
+
+  - name: local captures do not suppress the 60-minute protected-cutoff critical alert
+    interval: 1m
+    input_series:
+      - series: homebudget_dataprotection_capability_ready
+        values: "1"
+      - series: homebudget_dataprotection_protected_cutoff_available
+        values: "1"
+      - series: homebudget_dataprotection_protected_cutoff_age
+        values: "3600"
+      - series: 'homebudget_dataprotection_recovery_sets_total{state="created"}'
+        values: "20"
+    alert_rule_test:
+      - eval_time: 0m
+        alertname: HomeLedgerProtectedCutoffAgeCritical
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+              service: accounting-api
+            exp_annotations:
+              summary: Protected recovery cutoff exceeds the RPO limit
+              description: "The latest independently protected and integrity-verified common cutoff is 3600 seconds old (critical at 60 minutes)."
+
+  - name: successful independent publication remains below the warning threshold
+    interval: 1m
+    input_series:
+      - series: homebudget_dataprotection_capability_ready
+        values: "1"
+      - series: homebudget_dataprotection_protected_cutoff_available
+        values: "1"
+      - series: homebudget_dataprotection_protected_cutoff_age
+        values: "2699"
+      - series: 'homebudget_dataprotection_recovery_sets_total{state="independently_protected"}'
+        values: "1"
+    alert_rule_test:
+      - eval_time: 0m
+        alertname: HomeLedgerProtectedCutoffAgeWarning
+        exp_alerts: []
+      - eval_time: 0m
+        alertname: HomeLedgerProtectedCutoffAgeCritical
+        exp_alerts: []
